@@ -1,0 +1,13 @@
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/UnityEngine.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/UnityEditor.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/UnityEngine.UI.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/UnityEngine.Networking.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Mono.Cecil.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Unity.SerializationLogic.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Unity.DataContract.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/ICSharpCode.NRefactory.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Unity.UNetWeaver.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Unity.UNetWeaver.dll.mdb
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Unity.CecilTools.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Mono.Cecil.Pdb.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Mono.Cecil.Mdb.dll
