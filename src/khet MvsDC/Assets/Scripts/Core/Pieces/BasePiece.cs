@@ -11,15 +11,15 @@
   protected bool isSelected;
   protected int rotation;
 
-  public BasePiece(int x, int y, int rotation, PieceColor color, Board board) 
+  protected BasePiece(int x, int y, int rotation, PieceColor color, Board board) 
     : this(new Point(x, y), rotation, color, board) {}
 
-  public BasePiece(Point position, int rotation, PieceColor color, Board board) : this(position, color, board) {
+  protected BasePiece(Point position, int rotation, PieceColor color, Board board) : this(position, color, board) {
     this.rotation = rotation;
   } 
 
-  public BasePiece(int x, int y, PieceColor color, Board board) : this(new Point(x, y), color, board) {}
-  public BasePiece(Point position, PieceColor color, Board board) {
+  protected BasePiece(int x, int y, PieceColor color, Board board) : this(new Point(x, y), color, board) {}
+  protected BasePiece(Point position, PieceColor color, Board board) {
     this.position = position;
     this.color = color;
     this.Board = board;

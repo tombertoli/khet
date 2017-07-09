@@ -9,4 +9,5 @@ public struct Point {
     this.x = x;
     this.y = y;
   }
+
 }

@@ -11,3 +11,7 @@
 /Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Unity.CecilTools.dll
 /Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Mono.Cecil.Pdb.dll
 /Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Mono.Cecil.Mdb.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Assembly-CSharp.dll.mdb
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/Temp/bin/Debug/Assembly-CSharp.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/obj/Debug/Assembly-CSharp.dll
+/Users/Toto-OSX/Desktop/khet/src/khet MvsDC/obj/Debug/Assembly-CSharp.dll.mdb

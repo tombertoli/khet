@@ -26,12 +26,35 @@ public class Board {
     }
   }
 
-  public void MovePiece(Point from, Point to, GamePiece piece) {
-    DisoccupyPoint(from);
-    OccupyPoint(to, piece);
+  public void MovePiece(GamePiece piece, Point to) {
+    DisoccupyPoint(piece.Position);
+    OccupyPoint(piece, to);
   }
 
-  private void OccupyPoint(Point position, GamePiece piece) {
+  public GamePiece[,] GetAdjacent(GamePiece piece) {
+    GamePiece[,] res = new GamePiece[3, 3];
+    Point point = piece.Position;
+
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < 3; j++) {
+        if (i == 1 && j == 1) {
+          res[i, j] = piece;
+          continue;
+        }
+
+        if ((point.x + i < 0 || point.x + i > Width) && (point.y + j < 0 || point.y + j > Height)) {
+          res[i, j] = null;
+          continue;
+        }
+
+        res[i, j] = board[point.x + i, point.y + j];
+      }
+    }
+
+    return res;
+  }
+
+  private void OccupyPoint(GamePiece piece, Point position) {
     board[position.x, position.y] = piece;
   }
 
@@ -41,8 +64,8 @@ public class Board {
 }
 
 public static class BoardTemplates { 
-  public static PieceTypes[,] Classic() {
-    PieceTypes[,] board = new PieceTypes[8, 10];
+  /*public static GamePiece[,] Classic() {
+    GamePiece[,] board = new GamePiece[8, 10];
 
     for (int i = 0; i < board.GetLength(0); i++) {
       for (int j = 0; j < board.GetLength(1); j++) {
@@ -55,5 +78,5 @@ public static class BoardTemplates {
 
       }
     }
-  }
+  }*/
 }
