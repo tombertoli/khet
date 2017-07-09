@@ -11,8 +11,6 @@ public class Glow : MonoBehaviour {
   void Start() {
     r = GetComponent<Renderer>();
     baseMaterial = r.material;
-
-    new Pyramid(new Point(1, 2), PieceColor.Grey, new Board(8, 10)).GetAvailablePositions();;
   }
 
   void Update() {

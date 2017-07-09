@@ -12,6 +12,7 @@ public interface GamePiece {
   int[] GetAvailableRotations();
 
   void MakeMove(Point finalPosition);
+  void Rotate(int rot);
 }
 
 public enum PieceTypes {

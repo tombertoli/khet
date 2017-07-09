@@ -30,4 +30,9 @@
   public abstract int[] GetAvailableRotations();
 
   public abstract void MakeMove(Point finalPosition);
+  public abstract void Rotate(int rot);
+
+  public override string ToString() {
+    return string.Format("[PieceType={2}, Position={0}, Rotation={1}, Color={3}, IsSelected={4}]", Position, Rotation, PieceType, Color, IsSelected);
+  }
 }

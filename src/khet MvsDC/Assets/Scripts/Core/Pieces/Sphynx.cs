@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Sphynx : BasePiece {
   public Sphynx(int x, int y, int rotation, PieceColor color, Board board) 
@@ -21,6 +22,14 @@ public class Sphynx : BasePiece {
   public override void MakeMove(Point finalPosition) { 
     Debug.LogError("Porque se llama MakeMove en un Sphynx?");
     return; 
+  }
+
+  public override void Rotate(int rot) {
+    List<int> rotations = new List<int>(GetAvailableRotations());
+    if (!rotations.Contains(rot)) return;
+
+    if ((rotation == 3 && rot == 1) || (rotation == 1 && rot == -1)) rotation = 0;
+    else rotation += rot;
   }
 }
 

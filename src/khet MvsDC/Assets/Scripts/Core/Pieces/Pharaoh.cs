@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 
-public class Pyramid : BasePiece {
-  public Pyramid(int x, int y, int rotation, PieceColor color, Board board) 
+public class Pharaoh : BasePiece {
+  public Pharaoh(int x, int y, int rotation, PieceColor color, Board board) 
     : base(new Point(x, y), rotation, color, board) { }
 
-  public Pyramid(Point position, int rotation, PieceColor color, Board board) : base(position, rotation, color, board) { } 
+  public Pharaoh(Point position, int rotation, PieceColor color, Board board) : base(position, rotation, color, board) { } 
 
-  public Pyramid(int x, int y, PieceColor color, Board board) : base(new Point(x, y), color, board) { }
-  public Pyramid(Point position, PieceColor color, Board board) : base(position, color, board) { }
+  public Pharaoh(int x, int y, PieceColor color, Board board) : base(new Point(x, y), color, board) { }
+  public Pharaoh(Point position, PieceColor color, Board board) : base(position, color, board) { }
 
   public override Point[] GetAvailablePositions() { 
     GamePiece[,] pieces = Board.GetAdjacent(this);
