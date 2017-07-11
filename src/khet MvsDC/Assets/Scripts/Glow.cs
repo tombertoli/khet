@@ -17,8 +17,10 @@ public class Glow : MonoBehaviour {
 
     for (int i = 0; i < b.Width; i++) {
       for (int j = 0; j < b.Height; j++) {
+        if ((b.GetPieceAt(i, j) is EmptyPoint)) continue;
+        
         GameObject ga = (GameObject)Instantiate(go, new Vector3(b.GetPieceAt(i, j).Position.x, go.transform.position.y, b.GetPieceAt(i, j).Position.y), Quaternion.identity);
-        ga.transform.parent = transform.parent;
+        ga.transform.parent = GameObject.Find("Pieces").transform;
       }
     }
   }
