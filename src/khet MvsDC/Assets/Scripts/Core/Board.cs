@@ -16,6 +16,8 @@ public class Board {
     this.height = board.GetLength(1);
 
     foreach (GamePiece gp in this.board) {
+      if (gp == null) throw new UnityException("Incomplete board");
+
       gp.Board = this;
     }
   }
@@ -61,6 +63,10 @@ public class Board {
     board[piece.Position.x, piece.Position.y] = piece;
   }
 
+  public GamePiece GetPieceAt(int x, int y) {
+    return GetPieceAt(new Point(x, y));
+  }
+
   public GamePiece GetPieceAt(Point point) {
     return board[point.x, point.y];
   }
@@ -70,11 +76,18 @@ public class Board {
   }
 
   public bool UnderlineEqualsColor(GamePiece piece, Point position) {
-    if (underlines[position.x, position.y] == Underline.RedHorus   && piece.Color == PieceColor.Red
-     || underlines[position.x, position.y] == Underline.SilverAnkh && piece.Color == PieceColor.Grey
-     || underlines[position.x, position.y] == Underline.Blank) return true;
+    if ((underlines[position.x, position.y] == Underline.RedHorus   && piece.Color == PieceColor.Red)
+     || (underlines[position.x, position.y] == Underline.SilverAnkh && piece.Color == PieceColor.Silver)
+     || (underlines[position.x, position.y] == Underline.Blank)) return true;
 
     return false;
+  }
+
+  public Board AssignPieces(GamePiece[,] pieces, Underline[,] underline) {
+    board = pieces;
+    underlines = underline;
+
+    return this;
   }
 
   private void OccupyPoint(GamePiece piece, Point position) {
@@ -83,6 +96,10 @@ public class Board {
 
   private void DisoccupyPoint(Point position) {
     board[position.x, position.y] = new EmptyPoint(position.x, position.y);
+  }
+
+  public override string ToString() {
+    return string.Format("[Board: Width={0}, Height={1}]", Width, Height);
   }
 }
 

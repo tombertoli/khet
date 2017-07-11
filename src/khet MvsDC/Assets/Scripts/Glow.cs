@@ -4,6 +4,7 @@ using System.Collections;
 [RequireComponent (typeof(Collider), typeof(Renderer))]
 public class Glow : MonoBehaviour {
   [SerializeField] private Material outlineMaterial;
+  [SerializeField] private GameObject go;
   private Material baseMaterial;
   private Renderer r;
   private bool permanent, above;
@@ -11,6 +12,15 @@ public class Glow : MonoBehaviour {
   void Start() {
     r = GetComponent<Renderer>();
     baseMaterial = r.material;
+
+    Board b = BoardTemplates.LoadClassic();
+
+    for (int i = 0; i < b.Width; i++) {
+      for (int j = 0; j < b.Height; j++) {
+        GameObject ga = (GameObject)Instantiate(go, new Vector3(b.GetPieceAt(i, j).Position.x, go.transform.position.y, b.GetPieceAt(i, j).Position.y), Quaternion.identity);
+        ga.transform.parent = transform.parent;
+      }
+    }
   }
 
   void Update() {

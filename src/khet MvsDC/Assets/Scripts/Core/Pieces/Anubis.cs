@@ -1,13 +1,8 @@
 ﻿using System.Collections.Generic;
 
 public class Anubis : BasePiece {
-  public Anubis(int x, int y, int rotation, PieceColor color, Board board) 
-    : base(new Point(x, y), rotation, color, board) { }
-
-  public Anubis(Point position, int rotation, PieceColor color, Board board) : base(position, rotation, color, board) { } 
-
-  public Anubis(int x, int y, PieceColor color, Board board) : base(new Point(x, y), color, board) { }
-  public Anubis(Point position, PieceColor color, Board board) : base(position, color, board) { }
+  public Anubis(Point position, int rotation, PieceColor color, Board board)
+    : base(position, rotation, color, board, PieceTypes.Anubis) { } 
 
   public override Point[] GetAvailablePositions() { 
     GamePiece[,] pieces = Board.GetAdjacent(this);

@@ -4,7 +4,7 @@ public class EmptyPoint : GamePiece {
   public Board Board { get { return null; } set { Board = null; } }
   public Point Position { get { return position; } }
   public int Rotation { get { return 0; } }
-  public PieceTypes PieceType { get { return PieceTypes.None; } }
+  public PieceTypes PieceType { get { return PieceTypes.Empty; } }
   public PieceColor Color { get { return PieceColor.None; } }
   public bool IsSelected { get { return false; } }
 

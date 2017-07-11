@@ -1,14 +1,9 @@
 ﻿using System.Collections.Generic;
 
 public class Scarab : BasePiece {
-  public Scarab(int x, int y, int rotation, PieceColor color, Board board) 
-    : base(new Point(x, y), rotation, color, board) { }
-
-  public Scarab(Point position, int rotation, PieceColor color, Board board) : base(position, rotation, color, board) { } 
-
-  public Scarab(int x, int y, PieceColor color, Board board) : base(new Point(x, y), color, board) { }
-  public Scarab(Point position, PieceColor color, Board board) : base(position, color, board) { }
-
+  public Scarab(Point position, int rotation, PieceColor color, Board board)
+    : base(position, rotation, color, board, PieceTypes.Scarab) { } 
+  
   public override Point[] GetAvailablePositions() { 
     GamePiece[,] pieces = Board.GetAdjacent(this);
     List<Point> ret = new List<Point>();

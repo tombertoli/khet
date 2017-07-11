@@ -2,7 +2,7 @@
   public Board Board { get; set; }
   public Point Position { get { return position; } }
   public int Rotation { get { return rotation; } }
-  public PieceTypes PieceType { get { return PieceTypes.Sphynx; } }
+  public PieceTypes PieceType { get { return type; } }
   public PieceColor Color { get { return color; } }
   public bool IsSelected { get { return isSelected; } }
 
@@ -10,20 +10,14 @@
   protected PieceColor color;
   protected bool isSelected;
   protected int rotation;
+  protected PieceTypes type;
 
-  protected BasePiece(int x, int y, int rotation, PieceColor color, Board board) 
-    : this(new Point(x, y), rotation, color, board) {}
-
-  protected BasePiece(Point position, int rotation, PieceColor color, Board board) : this(position, color, board) {
-    this.rotation = rotation;
-  } 
-
-  protected BasePiece(int x, int y, PieceColor color, Board board) : this(new Point(x, y), color, board) {}
-  protected BasePiece(Point position, PieceColor color, Board board) {
+  protected BasePiece(Point position, int rotation, PieceColor color, Board board, PieceTypes type) {
     this.position = position;
     this.color = color;
     this.Board = board;
-    rotation = 0;
+    this.rotation = rotation;
+    this.type = type;
   }
 
   public abstract Point[] GetAvailablePositions();

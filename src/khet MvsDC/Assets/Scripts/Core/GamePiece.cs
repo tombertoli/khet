@@ -16,7 +16,7 @@ public interface GamePiece {
 }
 
 public enum PieceTypes {
-  None, 
+  Empty, 
   Scarab, 
   Sphynx, 
   Anubis, 
@@ -26,6 +26,6 @@ public enum PieceTypes {
 
 public enum PieceColor {
   None,
-  Grey,
+  Silver,
   Red
 }

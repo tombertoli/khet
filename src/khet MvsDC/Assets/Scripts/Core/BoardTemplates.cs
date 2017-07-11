@@ -1,43 +1,51 @@
 ﻿using System.IO;
+using UnityEngine;
 
 public static class BoardTemplates { 
-  public static Board Custom(string pathWithFile) {
-    string[] piece = File.ReadAllLines(pathWithFile + ".kbt");
-    string[] underline = File.ReadAllLines(pathWithFile + "-underline.kut");
+  public static Board LoadCustom(string filePath) {
+    string[] pieceFile = File.ReadAllLines(filePath + ".kbt");
+    int pieceFileSize = pieceFile[0].Length / 2;
+    string[] underlineFile = File.ReadAllLines(filePath + "-underline.kut");
 
-    GamePiece[,] pieces = new GamePiece[piece[0].Length, piece.Length];
-    Underline[,] underlines = new Underline[piece[0].Length, piece.Length];
+    Board board = new Board(pieceFile.Length, pieceFileSize);
+    GamePiece[,] pieces = new GamePiece[pieceFile.Length, pieceFileSize];
+    Underline[,] underlines = new Underline[underlineFile.Length, underlineFile[0].Length];
 
-    for (int i = 0; i < piece.Length; i++) {
-      for (int j = 0; j < piece[i].Length; j++) {
-        if (piece[i][j] == 'I')      pieces[i, j] = new Pharaoh(new Point(i, j), PieceColor);
-        else if (piece[i][j] == 'S') pieces[i, j] = new Sphynx(new Point(i, j), PieceColor);
-        else if (piece[i][j] == 'C') pieces[i, j] = new Scarab(new Point(i, j), PieceColor);
-        else if (piece[i][j] == 'A') pieces[i, j] = new Anubis(new Point(i, j), PieceColor);
-        else if (piece[i][j] == 'P') pieces[i, j] = new Pyramid(new Point(i, j), PieceColor);
+    for (int i = 0; i < pieceFile.Length; i++) {
+      for (int j = 0; j < pieceFile[0].Length; j++) {
+        if (j % 2 != 0) continue;
+
+        char c = pieceFile[i][j / 2];
+        GamePiece gp;
+        PieceColor pc = PieceColor.None;
+
+        if (pieceFile[i][j + 1] == 'R')      pc = PieceColor.Red;
+        else if (pieceFile[i][j + 1] == 'S') pc = PieceColor.Silver;
+        else                             pc = PieceColor.None;
+
+        if      (c == 'I') gp = new Pharaoh(new Point(i, j / 2), 0, pc, board);
+        else if (c == 'S') gp = new Sphynx(new Point(i, j / 2), 0, pc, board);
+        else if (c == 'C') gp = new Scarab(new Point(i, j / 2), 0, pc, board);
+        else if (c == 'A') gp = new Anubis(new Point(i, j / 2), 0, pc, board);
+        else if (c == 'P') gp = new Pyramid(new Point(i, j / 2), 0, pc, board);
+        else               gp = new EmptyPoint(new Point(i, j / 2));
+
+        pieces[i, j / 2] = gp;
       }
     }
 
-    for (int i = 0; i < underline.Length; i++) {
-      for (int j = 0; j < underline[i].Length; j++) {
-        if (underline[i][j] == 'R')      underlines[i, j] = Underline.RedHorus;
-        else if (underline[i][j] == 'S') underlines[i, j] = Underline.SilverAnkh;
-        else                             underlines[i, j] = Underline.Blank;
+    for (int i = 0; i < underlineFile.Length; i++) {
+      for (int j = 0; j < underlineFile[i].Length; j++) {
+        if (underlineFile[i][j] == 'R')      underlines[i, j] = Underline.RedHorus;
+        else if (underlineFile[i][j] == 'S') underlines[i, j] = Underline.SilverAnkh;
+        else                                 underlines[i, j] = Underline.Blank;
       }
     }
 
-    return new Board(pieces, underlines);
-    /*
-    for (int i = 0; i < board.GetLength(0); i++) {
-      for (int j = 0; j < board.GetLength(1); j++) {
-        if (i == 0) {
-          if (j == 0) board[i, j] = PieceTypes.Sphynx;
-          else if (j == 4 || j == 6) board[i, j] = PieceTypes.Anubis;
-          else if (j == 5) board[i, j] = PieceTypes.Pharaoh;
-          else if (j == 7) board[i, j] = PieceTypes.Pyramid;
-        } else if (i == 1) board[i, 2] = PieceTypes.Pyramid;
+    return board.AssignPieces(pieces, underlines);
+  }
 
-      }
-    }*/
+  public static Board LoadClassic() {
+    return LoadCustom("./layouts/classic");
   }
 }

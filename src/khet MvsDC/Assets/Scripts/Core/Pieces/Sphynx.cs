@@ -2,14 +2,8 @@
 using System.Collections.Generic;
 
 public class Sphynx : BasePiece {
-  public Sphynx(int x, int y, int rotation, PieceColor color, Board board) 
-    : base(new Point(x, y), rotation, color, board) { }
-  
   public Sphynx(Point position, int rotation, PieceColor color, Board board)
-    : base(position, rotation, color, board) { } 
-
-  public Sphynx(int x, int y, PieceColor color, Board board) : base(new Point(x, y), color, board) { }
-  public Sphynx(Point position, PieceColor color, Board board) : base(position, color, board) { }
+    : base(position, rotation, color, board, PieceTypes.Sphynx) { } 
 
   public override Point[] GetAvailablePositions() { return null; }
   public override int[] GetAvailableRotations() {
