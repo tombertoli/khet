@@ -1,17 +1,17 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using UnityEngine;
 
 public static class BoardTemplates { 
   public static Board LoadCustom(string filePath) {
     string[] pieceFile = File.ReadAllLines(filePath + ".kbt");
-    int pieceFileSize = pieceFile[1].Length;
-    string[] underlineFile = File.ReadAllLines(filePath + "-underline.kut");
+    Point pieceFileSize = GetPieceFileSize(pieceFile);
 
-    Board board = new Board(pieceFile.Length, pieceFileSize);
-    GamePiece[,] pieces = new GamePiece[pieceFile.Length, pieceFileSize];
-    PieceColor[,] colors = new PieceColor[pieceFile.Length, pieceFileSize];
-    Underline[,] underlines = new Underline[underlineFile.Length, underlineFile[0].Length];
-
+    Board board             = new Board(pieceFileSize.x, pieceFileSize.y);
+    GamePiece[,] pieces     = new GamePiece[pieceFileSize.x, pieceFileSize.y];
+    PieceColor[,] colors    = new PieceColor[pieceFileSize.x, pieceFileSize.y];
+    Underline[,] underlines = new Underline[pieceFileSize.x, pieceFileSize.y];
+    
     for (int i = 0; i < pieceFile.Length; i++) {
       if (pieceFile[i].Equals("[Color]"))
         i = SetColors(pieceFile, i + 1, ref colors);
@@ -100,5 +100,29 @@ public static class BoardTemplates {
     }
 
     return Mathf.Clamp(index + 1, 0, pieceFile.Length - 1);
+  }
+  
+  private static Point GetPieceFileSize(string[] pieceFile) {
+    int index = pieceFile[0].IndexOf('(') + 1;
+    string width = "", height = "";
+    
+    string curr = "";
+    for (int i = index; i < pieceFile[0].Length; i++) {
+      if (pieceFile[0][i] == ',') {
+        width = curr;
+        curr = "";
+        continue;
+      } else if (pieceFile[0][i] == ')') {
+        height = curr;
+        curr = "";
+        break;
+      }
+      
+      if (pieceFile[0][i] == ' ') continue;
+      
+      curr += pieceFile[0][i];
+    }
+    
+    return new Point(Convert.ToInt32(width), Convert.ToInt32(height));
   }
 }

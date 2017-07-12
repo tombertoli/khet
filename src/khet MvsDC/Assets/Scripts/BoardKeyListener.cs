@@ -27,7 +27,7 @@ public class BoardKeyListener : MonoBehaviour {
     Quaternion sumRotation = rotator.rotation * addRotation;
 
     while (rotator.rotation != sumRotation) {
-      rotator.rotation = Quaternion.RotateTowards(rotator.rotation, sumRotation, turnDelta);
+      rotator.rotation = Quaternion.RotateTowards(rotator.rotation, sumRotation, turnDelta * Time.deltaTime);
 
       yield return null;
     }

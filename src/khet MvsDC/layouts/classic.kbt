@@ -1,14 +1,4 @@
-[Color]
-R   RRRR  
-  R       
-   S      
-R S RR R S
-R S SS R S
-      R   
-       S  
-  SSSS   S
-~
-
+(8, 10)
 [Underline]
 RS      RS
 R        S
@@ -29,4 +19,15 @@ P P CC P P
       P   
        P  
   PAIA   S
+~
+
+[Color]
+R   RRRR  
+  R       
+   S      
+R S RR R S
+R S SS R S
+      R   
+       S  
+  SSSS   S
 ~

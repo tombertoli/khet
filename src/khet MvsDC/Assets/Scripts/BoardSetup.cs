@@ -7,25 +7,31 @@ public class BoardSetup : MonoBehaviour {
 
 	void Awake () {
     b = BoardTemplates.LoadClassic();
-
+    
     for (int i = 0; i < b.Width; i++) {
       for (int j = 0; j < b.Height; j++) {
         GamePiece gp = b.GetPieceAt(i, j);
-        if ((gp is EmptyPoint)) continue;
+        if ((gp is EmptyPoint)) {
+          continue;
+        }
+        
+        if (gp == null) throw new UnityException("Invalid board");
 
         Vector3 position = new Vector3(
-                             gp.Position.x + transform.position.x,
+                             Mathf.Ceil(gp.Position.x + transform.position.x),
                              transform.position.y,
-                             gp.Position.y + transform.position.z);
+                             Mathf.Ceil(gp.Position.y + transform.position.z));
         
-        GameObject ga = (GameObject)Instantiate(go, position, ParsePieceRotation(gp.Rotation));
-        ga.transform.parent = transform;
+        GameObject instance = (GameObject)Instantiate(go, position, ParsePieceRotation(gp.Rotation));
+        instance.transform.parent = transform;
       }
     }
 	}
 
-  public GamePiece GetPieceFromCoord(Vector3 position) {
-    return b.GetPieceAt((int)(position.x - transform.position.x),(int)( position.z - transform.position.z));
+  public GamePiece GetPieceFromCoord(Vector3 position, int delta) {
+    float x = (position.x * 10) + delta;
+    float y = (position.z * 10) + delta;
+    return b.GetPieceAt((int) x,(int) y);
   }
 
   public Quaternion ParsePieceRotation(int rotation) {

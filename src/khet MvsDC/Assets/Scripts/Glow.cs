@@ -13,8 +13,7 @@ public class Glow : MonoBehaviour {
     baseMaterial = r.material;
   }
 
-  void OnMouseEnter() {
-    
+  void OnMouseEnter() {    
     r.material = outlineMaterial;
     above = true;
   }

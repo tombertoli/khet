@@ -4,17 +4,14 @@ using System.Collections;
 [RequireComponent (typeof(Renderer))]
 public class ColorChanger : MonoBehaviour {
   Renderer r;
-  public BoardSetup bs;
-	// Use this for initialization
-	void Start () {
+  public GameObject bs;
+  public int delta = 0;
+  
+	void Start () {    
     r = GetComponent < Renderer>();
-    GamePiece gp = bs.GetPieceFromCoord(transform.position);
-
+    GamePiece gp = bs.GetComponent<BoardSetup>().GetPieceFromCoord(transform.localPosition, delta);
+    
+    Debug.Log(gp);
     if (gp.Color == PieceColor.Red) r.material.color = Color.red;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }
