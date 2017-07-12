@@ -3,15 +3,16 @@ using System.Collections;
 
 [RequireComponent (typeof(Renderer))]
 public class ColorChanger : MonoBehaviour {
+  [SerializeField] private GameObject bs;
+  [SerializeField] private float delta = .125f;
   Renderer r;
-  public GameObject bs;
-  public int delta = 0;
-  
+    
 	void Start () {    
     r = GetComponent < Renderer>();
-    GamePiece gp = bs.GetComponent<BoardSetup>().GetPieceFromCoord(transform.localPosition, delta);
+    Vector3 pos = transform.localPosition;
     
-    Debug.Log(gp);
+    GamePiece gp = bs.GetComponent<BoardSetup>().GetPieceFromCoord(pos, delta);
+    
     if (gp.Color == PieceColor.Red) r.material.color = Color.red;
 	}
 }

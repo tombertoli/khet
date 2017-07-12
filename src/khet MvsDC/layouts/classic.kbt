@@ -10,17 +10,6 @@ R        S
 RS      RS
 ~
 
-[Pieces]
-S   AIAP  
-  P       
-   P      
-P P CC P P
-P P CC P P
-      P   
-       P  
-  PAIA   S
-~
-
 [Color]
 R   RRRR  
   R       
@@ -30,4 +19,15 @@ R S SS R S
       R   
        S  
   SSSS   S
+~
+
+[Pieces]
+S   AIAP  
+  P       
+   P      
+P P CC P P
+P P CC P P
+      P   
+       P  
+  PAIA   S
 ~

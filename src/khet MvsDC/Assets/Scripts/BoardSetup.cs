@@ -18,20 +18,22 @@ public class BoardSetup : MonoBehaviour {
         if (gp == null) throw new UnityException("Invalid board");
 
         Vector3 position = new Vector3(
-                             Mathf.Ceil(gp.Position.x + transform.position.x),
+                             gp.Position.x + transform.position.x,
                              transform.position.y,
-                             Mathf.Ceil(gp.Position.y + transform.position.z));
+                             gp.Position.y + transform.position.z);
         
         GameObject instance = (GameObject)Instantiate(go, position, ParsePieceRotation(gp.Rotation));
         instance.transform.parent = transform;
+        instance.GetComponent<ColorChanger>
       }
     }
 	}
 
-  public GamePiece GetPieceFromCoord(Vector3 position, int delta) {
-    float x = (position.x * 10) + delta;
-    float y = (position.z * 10) + delta;
-    return b.GetPieceAt((int) x,(int) y);
+  public GamePiece GetPieceFromCoord(Vector3 position, float delta) {
+    float x = (position.x) + (delta * );
+    float y = (position.z) + delta;
+    Debug.Log("x:" + x + " y:" + y);
+    return b.GetPieceAt((int)x, (int)y);
   }
 
   public Quaternion ParsePieceRotation(int rotation) {
