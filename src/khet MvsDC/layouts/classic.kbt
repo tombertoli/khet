@@ -1,3 +1,26 @@
+[Color]
+R   RRRR  
+  R       
+   S      
+R S RR R S
+R S SS R S
+      R   
+       S  
+  SSSS   S
+~
+
+[Underline]
+RS      RS
+R        S
+R        S
+R        S
+R        S
+R        S
+R        S
+RS      RS
+~
+
+[Pieces]
 S   AIAP  
   P       
    P      
@@ -6,3 +29,4 @@ P P CC P P
       P   
        P  
   PAIA   S
+~
