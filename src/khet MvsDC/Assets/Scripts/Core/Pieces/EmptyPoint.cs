@@ -6,7 +6,7 @@ public class EmptyPoint : GamePiece {
   public int Rotation { get { return 0; } }
   public PieceTypes PieceType { get { return PieceTypes.Empty; } }
   public PieceColor Color { get { return PieceColor.None; } }
-  public bool IsSelected { get { return false; } }
+  public bool IsSelected { get { return false; } set { IsSelected = false; } }
 
   private Point position;
 

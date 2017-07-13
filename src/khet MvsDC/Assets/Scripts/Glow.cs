@@ -6,7 +6,7 @@ public class Glow : MonoBehaviour {
   [SerializeField] private Material outlineMaterial;
   private Material baseMaterial;
   private Renderer r;
-  private bool permanent, above;
+  private bool permanent;
 
   void Start() {
     r = GetComponent<Renderer>();
@@ -15,7 +15,6 @@ public class Glow : MonoBehaviour {
 
   void OnMouseEnter() {    
     r.material = outlineMaterial;
-    above = true;
   }
 
   void OnMouseOver() {
@@ -25,7 +24,5 @@ public class Glow : MonoBehaviour {
   void OnMouseExit() {
     if (!permanent)
       r.material = baseMaterial;
-
-    above = false;
   }
 }

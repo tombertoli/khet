@@ -1,38 +1,44 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+[RequireComponent (typeof(LineRenderer))]
 public class LaserPointer : MonoBehaviour {
-  public LineRenderer line;
+  [SerializeField] private static float seconds = 2;
+  public static LineRenderer line;
+  
+  private static int index = 0;
 
-	// Use this for initialization
 	void Start () {
+    line = GetComponent<LineRenderer>();
     line.enabled = false;
 	}
 
-  void Update() {
-    if (Input.GetMouseButtonDown(0)) {
-      StartCoroutine(Fire());
-    }
-  }
-
-  private IEnumerator Fire() {
-    FireLaser();
-    yield return new WaitForSeconds(2);
+  public static IEnumerator Fire(Vector3 position, Vector3 direction) {
+    FireLaser(position, direction);
+    yield return new WaitForSeconds(seconds);
     TurnOff();
   }
-	
-  public void FireLaser() {
-    Ray ray = new Ray(transform.position, transform.forward);
+  
+  public static void AddPosition(Vector3 position, Vector3 direction) {
+    Ray ray = new Ray(position, direction);
     RaycastHit hitInfo;
 
-    Physics.Raycast(ray, out hitInfo, 50);
+    Debug.Log(Physics.Raycast(ray, out hitInfo, 50));
+    Debug.Log(hitInfo.transform);
 
-
-    line.SetPosition(0, ray.origin);
-    line.SetPosition(1, hitInfo.point);
+    line.SetPosition(index, ray.origin);
+    
+    Vector3 endPoint = hitInfo.point == Vector3.zero ? ray.GetPoint(50) : hitInfo.point;
+    Debug.Log(endPoint);
+    line.SetPosition(++index, endPoint);
+  }
+	
+  public static void FireLaser(Vector3 position, Vector3 direction) {
+    index = 0;
+    line.enabled = true;
   }
 
-  public void TurnOff() {
+  public static void TurnOff() {
     line.enabled = false;
   }
 }

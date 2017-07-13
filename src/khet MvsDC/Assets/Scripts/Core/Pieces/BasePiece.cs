@@ -4,11 +4,10 @@
   public int Rotation { get { return rotation; } }
   public PieceTypes PieceType { get { return type; } }
   public PieceColor Color { get { return color; } }
-  public bool IsSelected { get { return isSelected; } }
+  public bool IsSelected { get; set; }
 
   protected Point position;
   protected PieceColor color;
-  protected bool isSelected;
   protected int rotation;
   protected PieceTypes type;
 

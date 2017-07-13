@@ -25,19 +25,14 @@ public class BoardSetup : MonoBehaviour {
         
         GameObject instance = (GameObject)Instantiate(go, position, ParsePieceRotation(gp.Rotation));
         instance.transform.parent = transform;
-        instance.GetComponent<PieceSetup>().Piece = gp;
-
-        if (gp is Sphynx) {
-          instance.AddComponent<LaserPointer>();
-
-          GameObject laserInstance = (GameObject)Instantiate(laser, position, ParsePieceRotation(gp.Rotation));
-          instance.GetComponent<LaserPointer>().line = laserInstance.GetComponent<LineRenderer>();
-        }
+        
+        PieceSetup ps = instance.GetComponent<PieceSetup>();
+        ps.Piece = gp;
       }
     }
 	}
 
   public Quaternion ParsePieceRotation(int rotation) {
-    return Quaternion.Euler(0, 45 * rotation, 0);
+    return Quaternion.Euler(0, 90 * rotation, 0);
   }
 }

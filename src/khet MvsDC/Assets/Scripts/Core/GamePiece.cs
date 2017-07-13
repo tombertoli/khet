@@ -6,7 +6,7 @@ public interface GamePiece {
   int Rotation { get; }
   PieceTypes PieceType { get; }
   PieceColor Color { get; }
-  bool IsSelected { get; }
+  bool IsSelected { get; set; }
 
   Point[] GetAvailablePositions();
   int[] GetAvailableRotations();
