@@ -3,6 +3,7 @@ using System.Collections;
 
 public class BoardSetup : MonoBehaviour {
   [SerializeField] private GameObject go;
+  [SerializeField] private GameObject laser;
   [System.NonSerialized] public static Board b;
 
 	void Awake () {
@@ -24,17 +25,17 @@ public class BoardSetup : MonoBehaviour {
         
         GameObject instance = (GameObject)Instantiate(go, position, ParsePieceRotation(gp.Rotation));
         instance.transform.parent = transform;
-        instance.GetComponent<ColorChanger>
+        instance.GetComponent<PieceSetup>().Piece = gp;
+
+        if (gp is Sphynx) {
+          instance.AddComponent<LaserPointer>();
+
+          GameObject laserInstance = (GameObject)Instantiate(laser, position, ParsePieceRotation(gp.Rotation));
+          instance.GetComponent<LaserPointer>().line = laserInstance.GetComponent<LineRenderer>();
+        }
       }
     }
 	}
-
-  public GamePiece GetPieceFromCoord(Vector3 position, float delta) {
-    float x = (position.x) + (delta * );
-    float y = (position.z) + delta;
-    Debug.Log("x:" + x + " y:" + y);
-    return b.GetPieceAt((int)x, (int)y);
-  }
 
   public Quaternion ParsePieceRotation(int rotation) {
     return Quaternion.Euler(0, 45 * rotation, 0);
