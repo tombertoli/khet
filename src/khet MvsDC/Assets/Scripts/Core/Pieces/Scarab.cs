@@ -9,10 +9,17 @@ public class Scarab : BasePiece {
     List<Point> ret = new List<Point>();
 
     foreach (GamePiece gp in pieces) {
-      if (gp != null && (!(gp is Scarab) || !(gp is Sphynx) || !(gp is Pharaoh))) {
-        if (gp is EmptyPoint) {
-          if (Board.UnderlineEqualsColor(this, gp.Position)) ret.Add(gp.Position);
-        }
+      if (gp == null) continue;
+      
+      switch (gp.PieceType) {
+        case PieceTypes.Anubis:
+        case PieceTypes.Pyramid:
+        case PieceTypes.Empty:
+          if (Board.UnderlineEqualsColor(this, gp.Position)) 
+            ret.Add(gp.Position);
+          break;
+        default:
+          continue;
       }
     }
 

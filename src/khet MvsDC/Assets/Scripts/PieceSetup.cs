@@ -55,7 +55,6 @@ public class PieceSetup : MonoBehaviour {
           Vector3 gizmo = Piece.ParsePosition(p);
                 
           Gizmos.DrawCube(gizmo, new Vector3(.5f, .5f, .5f));
-          Debug.Log(p);
         }
       } else 
         Debug.Log("no positions");
