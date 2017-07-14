@@ -87,6 +87,11 @@ public class Board {
     board = pieces;
     underlines = underline;
 
+    foreach (GamePiece p in pieces) {
+      if (p.PieceType != PieceTypes.Empty)
+        p.Board = this;
+    }
+    
     return this;
   }
 

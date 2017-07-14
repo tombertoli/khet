@@ -3,57 +3,82 @@ using System.Collections;
 
 [RequireComponent (typeof(Renderer), typeof(Collider))]
 public class PieceSetup : MonoBehaviour {
-  [SerializeField] private GameObject bs, Laser;
+  [SerializeField] private GameObject bs;
   [SerializeField] private Material silverMaterial, redMaterial;
 
-  public delegate void LaserHit();
-  public event LaserHit OnLaserHit;
-  
   public GamePiece Piece { get; set; }
   private Renderer r;
-  private Collider collider;
   private bool isAbove = false;
+  Vector3 pos, norm;
     
-	void Start () {    
-    collider = GetComponent<Collider>();
-    
+	void Start () {        
     r = GetComponent <Renderer>();
     
     if (Piece.Color == PieceColor.Red)         r.material = redMaterial;
     else if (Piece.Color == PieceColor.Silver) r.material = silverMaterial;
-    
   }
     
-  void Update() {    
-    if (Piece.IsSelected && Input.GetButtonDown("Submit") && Piece is Sphynx){
-      LaserPointer.AddPosition(transform.position, transform.forward);
-      StartCoroutine(LaserPointer.Fire(transform.position, transform.forward));
+  void Update() {
+    Debug.DrawRay(transform.position, transform.forward, Color.red);
+    Debug.DrawRay(pos, norm, Color.green);
+    
+    if (Piece.IsSelected) {
+      if (Input.GetButtonDown("Submit") && Piece is Sphynx) {
+        Debug.Log("fired");
+        LaserPointer.FireLaser(transform.position, transform.forward);
+      }
     }
     
     if (!isAbove && Piece.IsSelected && Input.GetButtonDown("Fire1")) {
       Piece.IsSelected = false;
-      Debug.Log("Deselected");
     } else if (isAbove && Input.GetButtonDown("Fire1")) {
       Piece.IsSelected = !Piece.IsSelected;
-      Debug.Log("Selected");
+
+      LaserPointer.TargetChanged();
+      
+      if (Piece.PieceType == PieceTypes.Sphynx)
+        LaserPointer.AddPosition(transform.position, transform.forward);
     }    
   }
   
-  void OnMouseEnter() {
-    isAbove = true;
-  }
+  void OnMouseEnter() { isAbove = true; }
   
-  void OnMouseExit() {
-    isAbove = false;
+  #if UNITY_EDITOR
+  void OnDrawGizmos() {
+    if (!Piece.IsSelected) return;
+    
+    Point[] points = Piece.GetAvailablePositions();
+      Debug.Log("Selected");
+      
+      if (points != null) {
+        foreach (Point p in points) {
+          Vector3 gizmo = Piece.ParsePosition(p);
+                
+          Gizmos.DrawCube(gizmo, new Vector3(.5f, .5f, .5f));
+          Debug.Log(p);
+        }
+      } else 
+        Debug.Log("no positions");
   }
+  #endif
   
-  void OnTriggerEnter(Collider col) {
-    Debug.Log("trigger");
-    if (!col.gameObject.CompareTag("Laser")) return;
+  void OnMouseExit() { isAbove = false; }
+
+  public void OnLaserHit(Vector3 point, Vector3 normal) {
+    Vector3 temp = transform.InverseTransformPoint(point);
+    Debug.Log(temp);
     
-    LaserPointer.AddPosition(transform.position, transform.forward);
-    
-    if (OnLaserHit != null)
-      OnLaserHit();
+    if (Piece.PieceType == PieceTypes.Pyramid) {
+      if (temp.x < 0) {
+        norm = Quaternion.Euler(0, 90, 0) * normal;
+      } else if (temp.z < 0)
+        norm = Quaternion.Euler(0, -90, 0) * normal;
+      
+      temp.x = 0;
+      temp.z = 0;
+      pos = transform.TransformPoint(temp);
+    }
+    Debug.Log("hit" + Piece);
+    LaserPointer.AddPosition(pos, norm);
   }
 }

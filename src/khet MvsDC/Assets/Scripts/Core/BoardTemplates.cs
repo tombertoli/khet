@@ -114,7 +114,7 @@ public static class BoardTemplates {
 
       for (int j = 0; j < pieceFile[i].Length; j++) {
         char c = pieceFile[i][j];
-        
+
         if (c == ' ') continue;
         int rotation = Convert.ToInt32(c);
 

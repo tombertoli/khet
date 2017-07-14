@@ -3,11 +3,12 @@ using System.Collections;
 
 public class BoardSetup : MonoBehaviour {
   [SerializeField] private GameObject go;
-  [SerializeField] private GameObject laser;
   [System.NonSerialized] public static Board b;
 
 	void Awake () {
     b = BoardTemplates.LoadClassic();
+    BasePiece.transPos = transform.position;
+    EmptyPoint.transPos = transform.position;
     
     for (int i = 0; i < b.Width; i++) {
       for (int j = 0; j < b.Height; j++) {

@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class Pyramid : BasePiece {
   public Pyramid(Point position, int rotation, PieceColor color, Board board)
     : base(position, rotation, color, board, PieceTypes.Pyramid) { } 
 
   public override Point[] GetAvailablePositions() { 
+    Debug.Log(Board);
     GamePiece[,] pieces = Board.GetAdjacent(this);
     List<Point> ret = new List<Point>();
 

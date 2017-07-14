@@ -1,44 +1,52 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent (typeof(LineRenderer))]
 public class LaserPointer : MonoBehaviour {
   [SerializeField] private static float seconds = 2;
   public static LineRenderer line;
-  
-  private static int index = 0;
+
+  private static LaserPointer reference;  
+  private static List<Vector3> points = new List<Vector3>();
 
 	void Start () {
     line = GetComponent<LineRenderer>();
     line.enabled = false;
+    reference = this;
 	}
 
-  public static IEnumerator Fire(Vector3 position, Vector3 direction) {
-    FireLaser(position, direction);
+  private static IEnumerator TurnOff() {
     yield return new WaitForSeconds(seconds);
-    TurnOff();
+    line.enabled = false;
   }
   
   public static void AddPosition(Vector3 position, Vector3 direction) {
     Ray ray = new Ray(position, direction);
     RaycastHit hitInfo;
 
-    Debug.Log(Physics.Raycast(ray, out hitInfo, 50));
-    Debug.Log(hitInfo.transform);
-
-    line.SetPosition(index, ray.origin);
+    Physics.Raycast(ray, out hitInfo, 50);
+    points.Add(ray.origin);
     
     Vector3 endPoint = hitInfo.point == Vector3.zero ? ray.GetPoint(50) : hitInfo.point;
-    Debug.Log(endPoint);
-    line.SetPosition(++index, endPoint);
+    points.Add(endPoint);
+
+    if (hitInfo.collider == null) return;
+
+    PieceSetup ps = hitInfo.collider.gameObject.GetComponent<PieceSetup>();
+    ps.OnLaserHit(hitInfo.point, hitInfo.normal);
   }
 	
   public static void FireLaser(Vector3 position, Vector3 direction) {
-    index = 0;
+    line.SetVertexCount(points.Count);
+    line.SetPositions(points.ToArray());
     line.enabled = true;
+    reference.StartCoroutine(TurnOff());
   }
 
-  public static void TurnOff() {
-    line.enabled = false;
+  public static void TargetChanged() {
+    points.Clear();
+    line.SetVertexCount(points.Count);
+    line.SetPositions(new Vector3[] { });
   }
 }

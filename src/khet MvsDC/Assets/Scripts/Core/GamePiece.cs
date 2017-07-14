@@ -10,7 +10,8 @@ public interface GamePiece {
 
   Point[] GetAvailablePositions();
   int[] GetAvailableRotations();
-
+  
+  Vector3 ParsePosition(Point p);
   void MakeMove(Point finalPosition);
   void Rotate(int rot);
 }
