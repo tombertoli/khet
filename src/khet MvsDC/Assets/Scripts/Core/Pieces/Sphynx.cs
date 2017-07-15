@@ -13,6 +13,10 @@ public class Sphynx : BasePiece {
     return new int[] { 0 };
   }
 
+  public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
+    return false; 
+  }
+
   public override void MakeMove(Point finalPosition) { 
     Debug.LogError("Porque se llama MakeMove en un Sphynx?");
     return; 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Scarab : BasePiece {
   public Scarab(Point position, int rotation, PieceColor color, Board board)
@@ -30,13 +31,25 @@ public class Scarab : BasePiece {
     return new int[] { -1, 0, 1 };
   }
 
+  public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
+    if (normal == -transform.right || normal == -transform.forward)
+      normal = Quaternion.Euler(0, 90, 0) * normal;
+    else if (normal == transform.forward || normal == transform.right)
+      normal = Quaternion.Euler(0, -90, 0) * normal;
+
+    point.x = point.z = 0;
+
+    LaserPointer.AddPosition(transform.TransformPoint(point), normal);
+    return false;
+  }
+
   public override void MakeMove(Point finalPosition) {
     List<Point> positions = new List<Point>(GetAvailablePositions());
     if (!positions.Contains(finalPosition)) return;
 
     GamePiece piece = Board.GetPieceAt(finalPosition);
 
-    if (!(piece is EmptyPoint))
+    if (!(piece.PieceType == PieceTypes.Empty))
       piece.MakeMove(position);
 
     Board.MovePiece(this, finalPosition);

@@ -4,18 +4,20 @@ using System.Collections.Generic;
 public class Board {
   public int Width { get { return width; } }
   public int Height { get { return height; } }
+  public GamePiece[,] Pieces { get { return pieces; } }
+  public Underline[,] Underlines { get { return Underlines; } }
 
   private int width, height;
-  private GamePiece[,] board;
+  private GamePiece[,] pieces;
   private Underline[,] underlines;
 
   public Board(GamePiece[,] board, Underline[,] underlines) {
-    this.board = board;
+    this.pieces = board;
     this.underlines = underlines;
     this.width = board.GetLength(0);
     this.height = board.GetLength(1);
 
-    foreach (GamePiece gp in this.board) {
+    foreach (GamePiece gp in this.pieces) {
       if (gp == null) throw new UnityException("Incomplete board");
 
       gp.Board = this;
@@ -25,12 +27,12 @@ public class Board {
   public Board(int width, int height) {
     this.width = width;
     this.height = height;
-    board = new GamePiece[width, height];
+    pieces = new GamePiece[width, height];
     underlines = new Underline[width, height];
 
-    for (int i = 0; i < board.GetLength(0); i++) {
-      for (int j = 0; j < board.GetLength(1); j++) {
-        board[i, j] = new EmptyPoint(i, j);
+    for (int i = 0; i < pieces.GetLength(0); i++) {
+      for (int j = 0; j < pieces.GetLength(1); j++) {
+        pieces[i, j] = new EmptyPoint(i, j);
         underlines[i, j] = Underline.Blank;
       }
     }
@@ -39,6 +41,10 @@ public class Board {
   public void MovePiece(GamePiece piece, Point to) {
     DisoccupyPoint(piece.Position);
     OccupyPoint(piece, to);
+  }
+
+  public void RemovePiece(GamePiece piece) {
+    DisoccupyPoint(piece.Position);
   }
 
   public GamePiece[,] GetAdjacent(GamePiece piece) {
@@ -60,7 +66,7 @@ public class Board {
   }
 
   public void SetPieceAt(GamePiece piece) {
-    board[piece.Position.x, piece.Position.y] = piece;
+    pieces[piece.Position.x, piece.Position.y] = piece;
   }
 
   public GamePiece GetPieceAt(int x, int y) {
@@ -68,7 +74,7 @@ public class Board {
   }
 
   public GamePiece GetPieceAt(Point point) {
-    return board[point.x, point.y];
+    return pieces[point.x, point.y];
   }
 
   public Underline GetUnderline(Point point) {
@@ -84,7 +90,7 @@ public class Board {
   }
 
   public Board AssignPieces(GamePiece[,] pieces, Underline[,] underline) {
-    board = pieces;
+    this.pieces = pieces;
     underlines = underline;
 
     foreach (GamePiece p in pieces) {
@@ -96,11 +102,11 @@ public class Board {
   }
 
   private void OccupyPoint(GamePiece piece, Point position) {
-    board[position.x, position.y] = piece;
+    pieces[position.x, position.y] = piece;
   }
 
   private void DisoccupyPoint(Point position) {
-    board[position.x, position.y] = new EmptyPoint(position.x, position.y);
+    pieces[position.x, position.y] = new EmptyPoint(position.x, position.y);
   }
 
   public override string ToString() {

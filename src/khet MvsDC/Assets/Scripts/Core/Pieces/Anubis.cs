@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Anubis : BasePiece {
   public Anubis(Point position, int rotation, PieceColor color, Board board)
@@ -8,10 +9,13 @@ public class Anubis : BasePiece {
     GamePiece[,] pieces = Board.GetAdjacent(this);
     List<Point> ret = new List<Point>();
 
-    foreach (GamePiece gp in pieces) {
-      if (gp is EmptyPoint) {
-        if (Board.UnderlineEqualsColor(this, gp.Position))
-          ret.Add(gp.Position);
+    for (int i = 0; i < pieces.GetLength(0); i++) {
+      for(int j = 0; j < pieces.GetLength(1); j++) {
+        GamePiece gp = pieces[i, j];
+
+        if (gp.PieceType == PieceTypes.Empty) {
+          if (Board.UnderlineEqualsColor(this, gp.Position)) ret.Add(gp.Position);
+        }
       }
     }
 
@@ -20,6 +24,13 @@ public class Anubis : BasePiece {
 
   public override int[] GetAvailableRotations() {
     return new int[] { -1, 0, 1 };
+  }
+
+  public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
+    if (normal != transform.forward) return false;
+
+    Die();
+    return true;
   }
 
   public override void MakeMove(Point finalPosition) {

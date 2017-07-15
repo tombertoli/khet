@@ -25,8 +25,13 @@ public abstract class BasePiece : GamePiece {
   public abstract Point[] GetAvailablePositions();
   public abstract int[] GetAvailableRotations();
 
+  public abstract bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
   public abstract void MakeMove(Point finalPosition);
   public abstract void Rotate(int rot);
+
+  protected void Die() {
+    Board.RemovePiece(this);
+  }
   
   public Vector3 ParsePosition(Point point) {
     return new Vector3(
@@ -34,6 +39,10 @@ public abstract class BasePiece : GamePiece {
       transPos.y,
       point.y + transPos.z
     );
+  }
+
+  public Quaternion GetRotation() {
+    return Quaternion.Euler(0, rotation * 90, 0);
   }
 
   public override string ToString() {

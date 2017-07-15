@@ -19,6 +19,12 @@ public class LaserPointer : MonoBehaviour {
   private static IEnumerator TurnOff() {
     yield return new WaitForSeconds(seconds);
     line.enabled = false;
+
+    PieceSetup[] pss = GameObject.FindObjectsOfType<PieceSetup>();
+
+    for(int i = 0; i < pss.Length; i++) {
+      if (pss[i].willDestroyOnLaser) Destroy(pss[i].gameObject);
+    }
   }
   
   public static void AddPosition(Vector3 position, Vector3 direction) {
@@ -38,15 +44,19 @@ public class LaserPointer : MonoBehaviour {
   }
 	
   public static void FireLaser(Vector3 position, Vector3 direction) {
+    if (line.enabled) return;
+
     line.SetVertexCount(points.Count);
     line.SetPositions(points.ToArray());
     line.enabled = true;
+
     reference.StartCoroutine(TurnOff());
   }
 
   public static void TargetChanged() {
+    Debug.Log("cleared");
     points.Clear();
     line.SetVertexCount(points.Count);
-    line.SetPositions(new Vector3[] { });
+    line.SetPositions(points.ToArray());
   }
 }

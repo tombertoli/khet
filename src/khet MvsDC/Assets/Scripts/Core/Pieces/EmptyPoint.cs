@@ -19,6 +19,10 @@ public class EmptyPoint : GamePiece {
   public Point[] GetAvailablePositions() { return null; }
   public int[] GetAvailableRotations() { return new int[] { 0 }; }
 
+  public bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) { 
+    throw new System.NotImplementedException("An empty can't handle a laser");
+  }
+
   public Vector3 ParsePosition(Point point) {
     return new Vector3(
       point.x + transPos.x,
@@ -26,6 +30,8 @@ public class EmptyPoint : GamePiece {
       point.y + transPos.z
     );
   }
+
+  public Quaternion GetRotation() { return Quaternion.identity; }    
   
   public void MakeMove(Point finalPosition) { 
     Debug.LogError("Porque se llama MakeMove en una EmptyPiece?");

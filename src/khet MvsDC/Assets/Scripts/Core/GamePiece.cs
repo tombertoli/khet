@@ -12,6 +12,9 @@ public interface GamePiece {
   int[] GetAvailableRotations();
   
   Vector3 ParsePosition(Point p);
+  Quaternion GetRotation();
+
+  bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
   void MakeMove(Point finalPosition);
   void Rotate(int rot);
 }
