@@ -17,17 +17,9 @@ public class Sphynx : BasePiece {
     return false; 
   }
 
-  public override void MakeMove(Point finalPosition) { 
+  public override void MakeMove(IGamePiece piece) { 
     Debug.LogError("Porque se llama MakeMove en un Sphynx?");
     return; 
-  }
-
-  public override void Rotate(int rot) {
-    List<int> rotations = new List<int>(GetAvailableRotations());
-    if (!rotations.Contains(rot)) return;
-
-    if ((rotation == 3 && rot == 1) || (rotation == 1 && rot == -1)) rotation = 0;
-    else rotation += rot;
   }
 }
 

@@ -10,7 +10,7 @@ public class BoardSetup : MonoBehaviour {
     BasePiece.transPos = transform.position;
     EmptyPoint.transPos = transform.position;
     
-    foreach (GamePiece gp in b.Pieces) {
+    foreach (IGamePiece gp in b.Pieces) {
       if ((gp.PieceType == PieceTypes.Empty)) {
         continue;
       }
@@ -30,10 +30,12 @@ public class BoardSetup : MonoBehaviour {
     }
   }
 
-  public void MoveMade(GamePiece piece) {
-    foreach (PieceSetup setup in GameObject.FindObjectsOfType<PieceSetup>()) {
-      if (setup.Piece != piece) continue;
-      setup.OnPieceMoved();
+  public void MoveMade(IGamePiece piece, Point point, bool shouldSelect) {
+    PieceSetup[] gos = GameObject.FindObjectsOfType<PieceSetup>();
+
+    for (int i = 0; i < gos.Length; i++) {
+      if (gos[i].Piece != piece) continue;
+      gos[i].OnPieceMoved(point, shouldSelect);
     }
   }
 }

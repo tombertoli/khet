@@ -6,10 +6,10 @@ public class Scarab : BasePiece {
     : base(position, rotation, color, board, PieceTypes.Scarab) { } 
   
   public override Point[] GetAvailablePositions() { 
-    GamePiece[,] pieces = Board.GetAdjacent(this);
+    IGamePiece[,] pieces = Board.GetAdjacent(this);
     List<Point> ret = new List<Point>();
 
-    foreach (GamePiece gp in pieces) {
+    foreach (IGamePiece gp in pieces) {
       if (gp == null) continue;
       
       switch (gp.PieceType) {
@@ -31,17 +31,11 @@ public class Scarab : BasePiece {
     return new int[] { -1, 0, 1 };
   }
 
-  public override void MakeMove(Point finalPosition) {
-    List<Point> positions = new List<Point>(GetAvailablePositions());
-    if (!positions.Contains(finalPosition)) return;
+  public override void MakeMove(IGamePiece piece) {
+    //List<Point> positions = new List<Point>(GetAvailablePositions());
+    //if (!positions.Contains(finalPosition)) return;
 
-    GamePiece piece = Board.GetPieceAt(finalPosition);
-
-    if (!(piece is EmptyPoint))
-      piece.MakeMove(position);
-
-    position = finalPosition;
-    Board.MovePiece(this, finalPosition);
+    Board.SwapPieces(this, piece);
   }
 
   public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
@@ -54,13 +48,5 @@ public class Scarab : BasePiece {
 
     LaserPointer.AddPosition(transform.TransformPoint(point), normal);
     return false;
-  }
-
-  public override void Rotate(int rot) {
-    List<int> rotations = new List<int>(GetAvailableRotations());
-    if (!rotations.Contains(rot)) return;
-
-    if ((rotation == 3 && rot == 1) || (rotation == 1 && rot == -1)) rotation = 0;
-    else rotation += rot;
   }
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public abstract class BasePiece : GamePiece {
+public abstract class BasePiece : IGamePiece {
   public Board Board { get; set; }
   public Point Position { get { return position; } }
   public int Rotation { get { return rotation; } }
@@ -23,19 +23,45 @@ public abstract class BasePiece : GamePiece {
     this.type = type;
   }
 
-  public abstract Point[] GetAvailablePositions();
+  public virtual Point[] GetAvailablePositions() {
+    IGamePiece[,] pieces = Board.GetAdjacent(this);
+    List<Point> ret = new List<Point>();
+
+    for (int i = 0; i < pieces.GetLength(0); i++) {
+      for(int j = 0; j < pieces.GetLength(1); j++) {
+        IGamePiece gp = pieces[i, j];
+        if (gp == null) continue;
+
+        if (gp.PieceType == PieceTypes.Empty) {
+          if (Board.UnderlineEqualsColor(this, gp.Position)) ret.Add(gp.Position);
+        }
+      }
+    }
+
+    return ret.ToArray();
+  }
   public abstract int[] GetAvailableRotations();
 
   public abstract bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
-  public virtual void MakeMove(Point finalPosition) {
-    List<Point> positions = new List<Point>(GetAvailablePositions());
-    if (!positions.Contains(finalPosition)) return;
 
-    position = finalPosition;
-    Board.MovePiece(this, finalPosition);
+  public virtual void MakeMove(IGamePiece piece) {
+    Board.SwapPieces(this, piece);
   }
 
-  public abstract void Rotate(int rot);
+  public virtual void PositionChanged() {
+    position = Board.GetPositionFrom(this);
+    Debug.Log(Board.GetPositionFrom(this));
+  }
+
+  public virtual Quaternion Rotate(int rot) {
+    List<int> rotations = new List<int>(GetAvailableRotations());
+    if (!rotations.Contains(rot)) return GetRotation();
+
+    if ((rotation == 3 && rot == 1) || (rotation == 1 && rot == -1)) rotation = 0;
+    else rotation += rot;
+
+    return GetRotation();
+  }
 
   protected void Die() {
     Board.RemovePiece(this);

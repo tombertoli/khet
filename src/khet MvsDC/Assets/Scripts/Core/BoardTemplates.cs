@@ -8,7 +8,7 @@ public static class BoardTemplates {
     Point pieceFileSize = GetPieceFileSize(pieceFile);
 
     Board board             = new Board(setup, pieceFileSize.x, pieceFileSize.y);
-    GamePiece[,] pieces     = new GamePiece[pieceFileSize.x, pieceFileSize.y];
+    IGamePiece[,] pieces     = new IGamePiece[pieceFileSize.x, pieceFileSize.y];
     PieceColor[,] colors    = new PieceColor[pieceFileSize.x, pieceFileSize.y];
     Underline[,] underlines = new Underline[pieceFileSize.x, pieceFileSize.y];
     int[,] rotations        = new int[pieceFileSize.x, pieceFileSize.y];
@@ -36,7 +36,7 @@ public static class BoardTemplates {
     return LoadCustom(setup, "./layouts/classic");
   }
 
-  private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, int[,] rotations, ref GamePiece[,] pieces) {
+  private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, int[,] rotations, ref IGamePiece[,] pieces) {
     int a = 0;
 
     for (int i = index; i < pieceFile.Length; i++) {
@@ -44,14 +44,14 @@ public static class BoardTemplates {
 
       for (int j = 0; j < pieceFile[i].Length; j++) {
         char c = pieceFile[i][j];
-        GamePiece gp;
+        IGamePiece gp;
 
         if (c == 'I')      gp = new Pharaoh(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'S') gp = new Sphynx(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'C') gp = new Scarab(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'A') gp = new Anubis(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'P') gp = new Pyramid(new Point(a, j), rotations[a, j], colors[a, j], null);
-        else               gp = new EmptyPoint(new Point(a, j));
+        else               gp = new EmptyPoint(null, new Point(a, j));
 
         pieces[a, j] = gp;
       }

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public interface GamePiece {
+public interface IGamePiece {
   Board Board { get; set; }
   Point Position { get; }
   int Rotation { get; }
@@ -15,8 +15,10 @@ public interface GamePiece {
   Quaternion GetRotation();
 
   bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
-  void MakeMove(Point finalPosition);
-  void Rotate(int rot);
+  void MakeMove(IGamePiece piece);
+  void PositionChanged();
+
+  Quaternion Rotate(int rot);
 }
 
 public enum PieceTypes {

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 [RequireComponent (typeof(LineRenderer))]
 public class LaserPointer : MonoBehaviour {
@@ -16,6 +17,25 @@ public class LaserPointer : MonoBehaviour {
     reference = this;
 	}
 
+  public static void AddPosition(Vector3 position, Vector3 direction) {
+    if (line.enabled) return;
+
+    Ray ray = new Ray(position, direction);
+    RaycastHit hitInfo;
+
+    Physics.Raycast(ray, out hitInfo, 50);
+    points.Add(ray.origin);
+
+    Vector3 endPoint = hitInfo.point == Vector3.zero ? ray.GetPoint(50) : hitInfo.point;
+    points.Add(endPoint);
+
+    if (hitInfo.collider == null) return;
+    Debug.Log(hitInfo.collider.gameObject);
+
+    PieceSetup ps = hitInfo.collider.gameObject.GetComponent<PieceSetup>();
+    ps.OnLaserHit(hitInfo.point, hitInfo.normal);
+  }
+
   private static IEnumerator TurnOff() {
     yield return new WaitForSeconds(seconds);
     line.enabled = false;
@@ -23,24 +43,11 @@ public class LaserPointer : MonoBehaviour {
     PieceSetup[] pss = GameObject.FindObjectsOfType<PieceSetup>();
 
     for(int i = 0; i < pss.Length; i++) {
-      if (pss[i].willDestroyOnLaser) Destroy(pss[i].gameObject);
+      if (pss[i].willDestroyOnLaser) {
+        Destroy(pss[i].gameObject);
+        break;
+      }
     }
-  }
-  
-  public static void AddPosition(Vector3 position, Vector3 direction) {
-    Ray ray = new Ray(position, direction);
-    RaycastHit hitInfo;
-
-    Physics.Raycast(ray, out hitInfo, 50);
-    points.Add(ray.origin);
-    
-    Vector3 endPoint = hitInfo.point == Vector3.zero ? ray.GetPoint(50) : hitInfo.point;
-    points.Add(endPoint);
-
-    if (hitInfo.collider == null) return;
-
-    PieceSetup ps = hitInfo.collider.gameObject.GetComponent<PieceSetup>();
-    ps.OnLaserHit(hitInfo.point, hitInfo.normal);
   }
 	
   public static void FireLaser(Vector3 position, Vector3 direction) {
@@ -54,8 +61,19 @@ public class LaserPointer : MonoBehaviour {
   }
 
   public static void TargetChanged() {
+    if (line.enabled) {
+      reference.StartCoroutine(WaitForOff());
+      return;
+    }
+
     points.Clear();
     line.SetVertexCount(points.Count);
     line.SetPositions(points.ToArray());
+  }
+
+  private static IEnumerator WaitForOff() {
+    while (line.enabled) yield return null;
+
+    TargetChanged();
   }
 }

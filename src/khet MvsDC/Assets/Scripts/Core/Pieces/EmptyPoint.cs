@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-public class EmptyPoint : GamePiece {
-  public Board Board { get { return null; } set { Board = null; } }
+public class EmptyPoint : IGamePiece {
+  public Board Board { get; set; }
   public Point Position { get { return position; } }
   public int Rotation { get { return 0; } }
   public PieceTypes PieceType { get { return PieceTypes.Empty; } }
@@ -11,9 +11,10 @@ public class EmptyPoint : GamePiece {
 
   private Point position;
 
-  public EmptyPoint(int x, int y) : this(new Point(x, y)) {}
-  public EmptyPoint(Point position) {
+  public EmptyPoint(Board board, int x, int y) : this(board, new Point(x, y)) {}
+  public EmptyPoint(Board board, Point position) {
     this.position = position;
+    this.Board = board;
   }
 
   public Point[] GetAvailablePositions() { return null; }
@@ -31,18 +32,23 @@ public class EmptyPoint : GamePiece {
     );
   }
 
-  public Quaternion GetRotation() { return Quaternion.identity; }    
-  
-  public void MakeMove(Point finalPosition) { 
+  public Quaternion GetRotation() { return Quaternion.identity; }
+
+  public void MakeMove(IGamePiece finalPosition) { 
     Debug.LogError("Porque se llama MakeMove en una EmptyPiece?");
   }
 
-  public void Rotate(int rot) {
+  public void PositionChanged() { 
+    position = Board.GetPositionFrom(this);
+  }
+
+  public Quaternion Rotate(int rot) {
     Debug.LogError("Porque se llama Rotate en una EmptyPiece?");
+    return Quaternion.identity;
   }
 
   public override string ToString() {
-    return string.Format("[EmptyPiece{0}, Position={1}, Rotation={2}, PieceType={3}, Color={4}, IsSelected={5}]", Board, Position, Rotation, PieceType, Color, IsSelected);
+    return string.Format("[EmptyPoint{0}, Position={1}, Rotation={2}, PieceType={3}, Color={4}, IsSelected={5}]", Board, Position, Rotation, PieceType, Color, IsSelected);
   }
 }
 

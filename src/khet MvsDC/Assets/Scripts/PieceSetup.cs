@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,12 +8,13 @@ public class PieceSetup : MonoBehaviour {
   [SerializeField] private GameObject placeholderGO;
   [SerializeField] private Material silverMaterial, redMaterial;
 
-  public GamePiece Piece { get; set; }
+  public IGamePiece Piece { get; set; }
   public bool willDestroyOnLaser { get; private set; }
 
   private Renderer r;
   private bool isAbove = false;
   private List<GameObject> movementPH = new List<GameObject>();
+  private static bool placeholdersActive = false, selectionLocked = false;
 
 	void Start () {        
     r = GetComponent <Renderer>();
@@ -20,60 +22,83 @@ public class PieceSetup : MonoBehaviour {
     if (Piece.Color == PieceColor.Red)         r.material = redMaterial;
     else if (Piece.Color == PieceColor.Silver) r.material = silverMaterial;
   }
-    
-  void Update() {
-    if (Piece.IsSelected && Input.GetButtonDown("Fire1")) {
-      LaserPointer.TargetChanged();
 
-      if (!Movement.mouseAbove) {
+  void Update() { if (Piece.PieceType != PieceTypes.Sphynx) DoUpdate(); }
+  void LateUpdate() { if (Piece.PieceType == PieceTypes.Sphynx) DoUpdate(); }
+
+  void DoUpdate() {
+    if (!selectionLocked && Piece.IsSelected && Input.GetButtonDown("Fire1")) {
+      if (!isAbove && !Movement.mouseAbove) {
+        Piece.IsSelected = false;
+        LaserPointer.TargetChanged();
+
         HidePlaceholders();
+      } else {
+        if (Piece.PieceType == PieceTypes.Sphynx) StartCoroutine(CalculateLaser());
+        else ShowPlaceholders();
       }
-    }
+    } 
 
     if (Input.GetButtonDown("Fire1")) {
-      if (!isAbove || Movement.mouseAbove) Piece.IsSelected = false;
-      else Piece.IsSelected = !Piece.IsSelected;
-
-      if (Piece.IsSelected) {
-        if (Piece.PieceType == PieceTypes.Sphynx) LaserPointer.AddPosition(transform.position, transform.forward);
-
-        ShowPlaceholders();
-      }
+      if (Piece.IsSelected && !placeholdersActive) ShowPlaceholders();
+      else if (!Piece.IsSelected && placeholdersActive) HidePlaceholders();
     }
 
     if (Piece.IsSelected 
       && Piece.PieceType == PieceTypes.Sphynx 
       && Input.GetButtonDown("Submit")) {
       LaserPointer.FireLaser(transform.position, transform.forward);
-    } 
+      LaserPointer.TargetChanged();
+      StartCoroutine(CalculateLaser());
+    }
 
-    Debug.Log(Piece.IsSelected);
+    if (Piece.IsSelected) {
+      if (Input.GetButtonDown("TurnLeft")) StartCoroutine(Rotate(-1));
+      else if (Input.GetButtonDown("TurnRight")) StartCoroutine(Rotate(1));
+    }
   }
-  
-  void OnMouseEnter() { isAbove = true; }
-  void OnMouseExit() { isAbove = false; }
+    
+  void OnMouseEnter() { if (!Movement.mouseAbove) isAbove = true; }
+  void OnMouseExit() { if (!Movement.mouseAbove) isAbove = false; }
+
+  void OnMouseOver() {
+    if (!selectionLocked && Input.GetButtonDown("Fire1")) {
+      Piece.IsSelected = !Piece.IsSelected;
+
+      if (!Piece.IsSelected) {
+        HidePlaceholders();
+        LaserPointer.TargetChanged();
+      }
+    }
+  }
 
   public void OnLaserHit(Vector3 point, Vector3 normal) {
-    Debug.Log("hit" + Piece);
     Vector3 temp = transform.InverseTransformPoint(point);
 
     willDestroyOnLaser = Piece.HandleLaser(transform, ref temp, ref normal);
   }
 
-  public void OnPieceMoved() {
-    HidePlaceholders();
+  public void OnPieceMoved(Point point, bool shouldSelect) {
     Piece.IsSelected = false;
-    StartCoroutine(Move(Piece.GetPositionInWorld()));
+    StartCoroutine(Move(BasePiece.ParsePosition(point), shouldSelect));
   }
 
-  private IEnumerator Move(Vector3 position) {
+  private IEnumerator Move(Vector3 position, bool shouldSelect) {
+    HidePlaceholders();
+    selectionLocked = true;
+
     while (transform.position != position) {
-      transform.position = Vector3.Lerp(transform.position, position, .15f);
+      transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * 5);
       yield return null;
     }
 
-    Piece.IsSelected = true;
-    ShowPlaceholders();
+    Piece.IsSelected = shouldSelect;
+    selectionLocked = false;
+
+    if (!placeholdersActive && shouldSelect)
+      ShowPlaceholders(); 
+
+    Debug.Log(Piece.Position.ToString() + Piece);
   }
 
   private void ShowPlaceholders() {
@@ -83,6 +108,7 @@ public class PieceSetup : MonoBehaviour {
     if (points == null) return;
 
     Vector3[] positions = BasePiece.ParsePositions(points);
+    HidePlaceholders();
 
     for (int i = 0; i < positions.Length; i++) {
       movementPH.Add(Instantiate(placeholderGO, positions[i], Piece.GetRotation()) as GameObject);
@@ -91,13 +117,38 @@ public class PieceSetup : MonoBehaviour {
       m.point = points[i];
       m.transform.parent = transform;
     }
+
+    placeholdersActive = true;
   }
 
   private void HidePlaceholders() {
+    if (Piece.PieceType == PieceTypes.Sphynx) return;
+
     for(int i = 0; i < movementPH.Count; i++) {
       Destroy(movementPH[i]);
     }
 
     movementPH.Clear();
+    placeholdersActive = false;
+  }
+
+  private IEnumerator CalculateLaser() {
+    int limit = 20;
+    while (placeholdersActive && limit <= 0) {
+      limit--;
+      yield return null;
+    }
+
+    if (limit <= 0) yield break;
+    LaserPointer.AddPosition(transform.position, transform.forward);
+  }
+
+  private IEnumerator Rotate(int rotation) {
+    Quaternion rot = Piece.Rotate(rotation);
+
+    while (transform.rotation != rot) {
+      transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 5);
+      yield return null;
+    }
   }
 }
