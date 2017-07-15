@@ -3,11 +3,11 @@ using System.IO;
 using UnityEngine;
 
 public static class BoardTemplates { 
-  public static Board LoadCustom(string filePath) {
+  public static Board LoadCustom(BoardSetup setup, string filePath) {
     string[] pieceFile = File.ReadAllLines(filePath + ".kbt");
     Point pieceFileSize = GetPieceFileSize(pieceFile);
 
-    Board board             = new Board(pieceFileSize.x, pieceFileSize.y);
+    Board board             = new Board(setup, pieceFileSize.x, pieceFileSize.y);
     GamePiece[,] pieces     = new GamePiece[pieceFileSize.x, pieceFileSize.y];
     PieceColor[,] colors    = new PieceColor[pieceFileSize.x, pieceFileSize.y];
     Underline[,] underlines = new Underline[pieceFileSize.x, pieceFileSize.y];
@@ -32,8 +32,8 @@ public static class BoardTemplates {
     return board.AssignPieces(pieces, underlines);
   }
 
-  public static Board LoadClassic() {
-    return LoadCustom("./layouts/classic");
+  public static Board LoadClassic(BoardSetup setup) {
+    return LoadCustom(setup, "./layouts/classic");
   }
 
   private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, int[,] rotations, ref GamePiece[,] pieces) {

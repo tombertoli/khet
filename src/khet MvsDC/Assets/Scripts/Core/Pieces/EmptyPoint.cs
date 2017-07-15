@@ -23,11 +23,11 @@ public class EmptyPoint : GamePiece {
     throw new System.NotImplementedException("An empty can't handle a laser");
   }
 
-  public Vector3 ParsePosition(Point point) {
+  public Vector3 GetPositionInWorld() {
     return new Vector3(
-      point.x + transPos.x,
+      position.x + transPos.x,
       transPos.y,
-      point.y + transPos.z
+      position.y + transPos.z
     );
   }
 

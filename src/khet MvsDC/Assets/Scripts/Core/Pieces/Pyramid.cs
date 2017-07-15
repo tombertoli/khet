@@ -12,6 +12,7 @@ public class Pyramid : BasePiece {
     for (int i = 0; i < pieces.GetLength(0); i++) {
       for(int j = 0; j < pieces.GetLength(1); j++) {
         GamePiece gp = pieces[i, j];
+        if (gp == null) continue;
 
         if (gp.PieceType == PieceTypes.Empty) {
           if (Board.UnderlineEqualsColor(this, gp.Position)) ret.Add(gp.Position);
@@ -40,14 +41,6 @@ public class Pyramid : BasePiece {
 
     LaserPointer.AddPosition(transform.TransformPoint(point), normal);
     return false;
-  }
-
-  public override void MakeMove(Point finalPosition) {
-    List<Point> positions = new List<Point>(GetAvailablePositions());
-    if (!positions.Contains(finalPosition)) return;
-
-    Board.MovePiece(this, finalPosition);
-    position = finalPosition;
   }
 
   public override void Rotate(int rot) {

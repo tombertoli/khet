@@ -12,6 +12,7 @@ public class Anubis : BasePiece {
     for (int i = 0; i < pieces.GetLength(0); i++) {
       for(int j = 0; j < pieces.GetLength(1); j++) {
         GamePiece gp = pieces[i, j];
+        if (gp == null) continue;
 
         if (gp.PieceType == PieceTypes.Empty) {
           if (Board.UnderlineEqualsColor(this, gp.Position)) ret.Add(gp.Position);
@@ -31,14 +32,6 @@ public class Anubis : BasePiece {
 
     Die();
     return true;
-  }
-
-  public override void MakeMove(Point finalPosition) {
-    List<Point> positions = new List<Point>(GetAvailablePositions());
-    if (!positions.Contains(finalPosition)) return;
-
-    Board.MovePiece(this, finalPosition);
-    position = finalPosition;
   }
 
   public override void Rotate(int rot) {

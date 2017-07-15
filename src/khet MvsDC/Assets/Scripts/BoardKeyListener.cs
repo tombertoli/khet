@@ -8,7 +8,7 @@ public class BoardKeyListener : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-    if (!started && (Input.GetKeyDown(turnBoardRight) || Input.GetKeyDown(turnBoardLeft))) {
+    if (!started && (Input.GetKeyDown(turnBoardRight) || Input.GetKeyDown(turnBoardLeft)) && !LaserPointer.line.enabled) {
       started = true;
 
       Quaternion finalRot = Input.GetKeyDown(turnBoardRight) ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);

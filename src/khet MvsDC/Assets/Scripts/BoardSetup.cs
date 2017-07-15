@@ -6,12 +6,12 @@ public class BoardSetup : MonoBehaviour {
   [System.NonSerialized] public static Board b;
 
 	void Awake () {
-    b = BoardTemplates.LoadClassic();
+    b = BoardTemplates.LoadClassic(this);
     BasePiece.transPos = transform.position;
     EmptyPoint.transPos = transform.position;
     
     foreach (GamePiece gp in b.Pieces) {
-      if ((gp.PieceType == PieceTypes.Empty )) {
+      if ((gp.PieceType == PieceTypes.Empty)) {
         continue;
       }
       
@@ -27,6 +27,13 @@ public class BoardSetup : MonoBehaviour {
       
       PieceSetup ps = instance.GetComponent<PieceSetup>();
       ps.Piece = gp;
+    }
+  }
+
+  public void MoveMade(GamePiece piece) {
+    foreach (PieceSetup setup in GameObject.FindObjectsOfType<PieceSetup>()) {
+      if (setup.Piece != piece) continue;
+      setup.OnPieceMoved();
     }
   }
 }

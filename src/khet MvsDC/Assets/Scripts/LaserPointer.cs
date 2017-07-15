@@ -54,7 +54,6 @@ public class LaserPointer : MonoBehaviour {
   }
 
   public static void TargetChanged() {
-    Debug.Log("cleared");
     points.Clear();
     line.SetVertexCount(points.Count);
     line.SetPositions(points.ToArray());

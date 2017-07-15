@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent (typeof(Renderer), typeof(Collider))]
 public class PieceSetup : MonoBehaviour {
+  [SerializeField] private GameObject placeholderGO;
   [SerializeField] private Material silverMaterial, redMaterial;
 
   public GamePiece Piece { get; set; }
@@ -10,7 +12,7 @@ public class PieceSetup : MonoBehaviour {
 
   private Renderer r;
   private bool isAbove = false;
-  private Point[] availablePositions;
+  private List<GameObject> movementPH = new List<GameObject>();
 
 	void Start () {        
     r = GetComponent <Renderer>();
@@ -20,16 +22,23 @@ public class PieceSetup : MonoBehaviour {
   }
     
   void Update() {
-    Debug.DrawRay(transform.position, transform.forward, Color.blue);
-
-    if (Piece.IsSelected && Input.GetButtonDown("Fire1"))
+    if (Piece.IsSelected && Input.GetButtonDown("Fire1")) {
       LaserPointer.TargetChanged();
 
+      if (!Movement.mouseAbove) {
+        HidePlaceholders();
+      }
+    }
+
     if (Input.GetButtonDown("Fire1")) {
-      if (!isAbove) Piece.IsSelected = false;
+      if (!isAbove || Movement.mouseAbove) Piece.IsSelected = false;
       else Piece.IsSelected = !Piece.IsSelected;
 
-      if (Piece.IsSelected && Piece.PieceType == PieceTypes.Sphynx) LaserPointer.AddPosition(transform.position, transform.forward);
+      if (Piece.IsSelected) {
+        if (Piece.PieceType == PieceTypes.Sphynx) LaserPointer.AddPosition(transform.position, transform.forward);
+
+        ShowPlaceholders();
+      }
     }
 
     if (Piece.IsSelected 
@@ -37,37 +46,58 @@ public class PieceSetup : MonoBehaviour {
       && Input.GetButtonDown("Submit")) {
       LaserPointer.FireLaser(transform.position, transform.forward);
     } 
+
+    Debug.Log(Piece.IsSelected);
   }
   
   void OnMouseEnter() { isAbove = true; }
   void OnMouseExit() { isAbove = false; }
-  
-#if UNITY_EDITOR
-  void OnDrawGizmos() {
-    if (!Piece.IsSelected) return;
-
-    availablePositions = availablePositions == null ? Piece.GetAvailablePositions() : availablePositions;
-
-    if (availablePositions != null)
-      foreach (Point p in availablePositions)
-        Gizmos.DrawCube(Piece.ParsePosition(p), new Vector3(.5f, .5f, .5f));
-  }
-#endif
 
   public void OnLaserHit(Vector3 point, Vector3 normal) {
     Debug.Log("hit" + Piece);
     Vector3 temp = transform.InverseTransformPoint(point);
 
     willDestroyOnLaser = Piece.HandleLaser(transform, ref temp, ref normal);
-    /*if (Piece.PieceType == PieceTypes.Pyramid) {
-      if (normal == -transform.right)
-        norm = Quaternion.Euler(0, 90, 0) * normal;
-      else if (normal == transform.forward)
-        norm = Quaternion.Euler(0, -90, 0) * normal;
-      
-      temp.x = 0;
-      temp.z = 0;
-      pos = transform.TransformPoint(temp);
-    }*/
+  }
+
+  public void OnPieceMoved() {
+    HidePlaceholders();
+    Piece.IsSelected = false;
+    StartCoroutine(Move(Piece.GetPositionInWorld()));
+  }
+
+  private IEnumerator Move(Vector3 position) {
+    while (transform.position != position) {
+      transform.position = Vector3.Lerp(transform.position, position, .15f);
+      yield return null;
+    }
+
+    Piece.IsSelected = true;
+    ShowPlaceholders();
+  }
+
+  private void ShowPlaceholders() {
+    if (Piece.PieceType == PieceTypes.Sphynx) return;
+
+    Point[] points = Piece.GetAvailablePositions();
+    if (points == null) return;
+
+    Vector3[] positions = BasePiece.ParsePositions(points);
+
+    for (int i = 0; i < positions.Length; i++) {
+      movementPH.Add(Instantiate(placeholderGO, positions[i], Piece.GetRotation()) as GameObject);
+      Movement m = movementPH[movementPH.Count - 1].GetComponent<Movement>();
+      m.piece = Piece;
+      m.point = points[i];
+      m.transform.parent = transform;
+    }
+  }
+
+  private void HidePlaceholders() {
+    for(int i = 0; i < movementPH.Count; i++) {
+      Destroy(movementPH[i]);
+    }
+
+    movementPH.Clear();
   }
 }

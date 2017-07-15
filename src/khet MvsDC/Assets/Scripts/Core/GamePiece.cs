@@ -11,7 +11,7 @@ public interface GamePiece {
   Point[] GetAvailablePositions();
   int[] GetAvailableRotations();
   
-  Vector3 ParsePosition(Point p);
+  Vector3 GetPositionInWorld();
   Quaternion GetRotation();
 
   bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);

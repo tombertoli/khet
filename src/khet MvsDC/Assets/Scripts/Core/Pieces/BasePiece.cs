@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public abstract class BasePiece : GamePiece {
   public Board Board { get; set; }
@@ -26,19 +27,44 @@ public abstract class BasePiece : GamePiece {
   public abstract int[] GetAvailableRotations();
 
   public abstract bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
-  public abstract void MakeMove(Point finalPosition);
+  public virtual void MakeMove(Point finalPosition) {
+    List<Point> positions = new List<Point>(GetAvailablePositions());
+    if (!positions.Contains(finalPosition)) return;
+
+    position = finalPosition;
+    Board.MovePiece(this, finalPosition);
+  }
+
   public abstract void Rotate(int rot);
 
   protected void Die() {
     Board.RemovePiece(this);
   }
   
-  public Vector3 ParsePosition(Point point) {
+  public Vector3 GetPositionInWorld() {
+    return new Vector3(
+      position.x + transPos.x,
+      transPos.y,
+      position.y + transPos.z
+    );
+  }
+
+  public static Vector3 ParsePosition(Point point) {
     return new Vector3(
       point.x + transPos.x,
       transPos.y,
       point.y + transPos.z
     );
+  }
+
+  public static Vector3[] ParsePositions(Point[] point) {
+    Vector3[] ret = new Vector3[point.Length];
+
+    for(int i = 0; i < point.Length; i++) {
+      ret[i] = BasePiece.ParsePosition(point[i]);
+    }
+
+    return ret;
   }
 
   public Quaternion GetRotation() {

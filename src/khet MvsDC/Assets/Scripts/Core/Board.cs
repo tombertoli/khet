@@ -10,8 +10,10 @@ public class Board {
   private int width, height;
   private GamePiece[,] pieces;
   private Underline[,] underlines;
+  private BoardSetup setup;
 
-  public Board(GamePiece[,] board, Underline[,] underlines) {
+  public Board(BoardSetup setup, GamePiece[,] board, Underline[,] underlines) {
+    this.setup = setup;
     this.pieces = board;
     this.underlines = underlines;
     this.width = board.GetLength(0);
@@ -24,7 +26,8 @@ public class Board {
     }
   }
 
-  public Board(int width, int height) {
+  public Board(BoardSetup setup, int width, int height) {
+    this.setup = setup;
     this.width = width;
     this.height = height;
     pieces = new GamePiece[width, height];
@@ -41,6 +44,8 @@ public class Board {
   public void MovePiece(GamePiece piece, Point to) {
     DisoccupyPoint(piece.Position);
     OccupyPoint(piece, to);
+
+    setup.MoveMade(piece);
   }
 
   public void RemovePiece(GamePiece piece) {
@@ -53,7 +58,7 @@ public class Board {
 
     for (int i = -1; i < 2; i++) {
       for (int j = -1; j < 2; j++) {
-        if ((point.x + i < 0 || point.x + i > Width) || (point.y + j < 0 || point.y + j > Height)) {
+        if ((point.x + i < 0 || point.x + i >= Width) || (point.y + j < 0 || point.y + j >= Height)) {
           res[i + 1, j + 1] = null;
           continue; 
         }
