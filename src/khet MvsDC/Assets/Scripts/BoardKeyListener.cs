@@ -8,7 +8,7 @@ public class BoardKeyListener : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-    if (!started && (Input.GetKeyDown(turnBoardRight) || Input.GetKeyDown(turnBoardLeft))) {
+    if (!started && (Input.GetKeyDown(turnBoardRight) || Input.GetKeyDown(turnBoardLeft)) && !LaserPointer.line.enabled) {
       started = true;
 
       Quaternion finalRot = Input.GetKeyDown(turnBoardRight) ? Quaternion.Euler(0, 90, 0) : Quaternion.Euler(0, -90, 0);
@@ -27,7 +27,7 @@ public class BoardKeyListener : MonoBehaviour {
     Quaternion sumRotation = rotator.rotation * addRotation;
 
     while (rotator.rotation != sumRotation) {
-      rotator.rotation = Quaternion.RotateTowards(rotator.rotation, sumRotation, turnDelta);
+      rotator.rotation = Quaternion.RotateTowards(rotator.rotation, sumRotation, turnDelta * Time.deltaTime);
 
       yield return null;
     }

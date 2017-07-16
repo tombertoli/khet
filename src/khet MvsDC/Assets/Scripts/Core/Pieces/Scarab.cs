@@ -1,18 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Scarab : BasePiece {
   public Scarab(Point position, int rotation, PieceColor color, Board board)
     : base(position, rotation, color, board, PieceTypes.Scarab) { } 
   
   public override Point[] GetAvailablePositions() { 
-    GamePiece[,] pieces = Board.GetAdjacent(this);
+    IGamePiece[,] pieces = Board.GetAdjacent(this);
     List<Point> ret = new List<Point>();
 
-    foreach (GamePiece gp in pieces) {
-      if (gp != null && (!(gp is Scarab) || !(gp is Sphynx) || !(gp is Pharaoh))) {
-        if (gp is EmptyPoint) {
-          if (Board.UnderlineEqualsColor(this, gp.Position)) ret.Add(gp.Position);
-        }
+    foreach (IGamePiece gp in pieces) {
+      if (gp == null) continue;
+      
+      switch (gp.PieceType) {
+        case PieceTypes.Anubis:
+        case PieceTypes.Pyramid:
+        case PieceTypes.Empty:
+          if (Board.UnderlineEqualsColor(this, gp.Position)) 
+            ret.Add(gp.Position);
+          break;
+        default:
+          continue;
       }
     }
 
@@ -23,24 +31,22 @@ public class Scarab : BasePiece {
     return new int[] { -1, 0, 1 };
   }
 
-  public override void MakeMove(Point finalPosition) {
-    List<Point> positions = new List<Point>(GetAvailablePositions());
-    if (!positions.Contains(finalPosition)) return;
+  public override void MakeMove(IGamePiece piece) {
+    //List<Point> positions = new List<Point>(GetAvailablePositions());
+    //if (!positions.Contains(finalPosition)) return;
 
-    GamePiece piece = Board.GetPieceAt(finalPosition);
-
-    if (!(piece is EmptyPoint))
-      piece.MakeMove(position);
-
-    Board.MovePiece(this, finalPosition);
-    position = finalPosition;
+    Board.SwapPieces(this, piece);
   }
 
-  public override void Rotate(int rot) {
-    List<int> rotations = new List<int>(GetAvailableRotations());
-    if (!rotations.Contains(rot)) return;
+  public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
+    if (normal == -transform.right || normal == -transform.forward)
+      normal = Quaternion.Euler(0, 90, 0) * normal;
+    else if (normal == transform.forward || normal == transform.right)
+      normal = Quaternion.Euler(0, -90, 0) * normal;
 
-    if ((rotation == 3 && rot == 1) || (rotation == 1 && rot == -1)) rotation = 0;
-    else rotation += rot;
+    point.x = point.z = 0;
+
+    LaserPointer.AddPosition(transform.TransformPoint(point), normal);
+    return false;
   }
 }
