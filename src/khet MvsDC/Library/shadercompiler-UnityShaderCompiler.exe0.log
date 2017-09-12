@@ -1,2 +1,38 @@
 Base path: D:/Perfiles/43172380/Desktop/Unity/Editor/Data
 Cmd: getPlatforms
+Cmd: preprocess
+  insize=435 outsize=435 ok=1
+Cmd: preprocess
+  insize=9916 outsize=5453 ok=1
+Cmd: preprocess
+  insize=1044 outsize=1035 ok=1
+Cmd: preprocess
+  error: 1 plat 18 at (102): Both vertex and fragment programs must be present in a CGPROGRAM. Excluding it from compilation.
+  insize=2109 outsize=3537 ok=1
+Cmd: preprocess
+  insize=2635 outsize=2294 ok=1
+Cmd: preprocess
+  insize=1310 outsize=384 ok=1
+Cmd: preprocess
+  error: 2 plat 18 at (46): Syntax error
+  insize=2570 outsize=1035 ok=0
+Cmd: preprocess
+  insize=2635 outsize=2294 ok=1
+Cmd: preprocess
+  insize=2635 outsize=26215 ok=1
+Cmd: preprocess
+  insize=2624 outsize=2283 ok=1
+Cmd: preprocess
+  insize=435 outsize=435 ok=1
+Cmd: preprocess
+  insize=1044 outsize=1035 ok=1
+Cmd: preprocess
+  insize=1357 outsize=642 ok=1
+Cmd: preprocess
+  insize=1310 outsize=384 ok=1
+Cmd: preprocess
+  insize=2629 outsize=2288 ok=1
+Cmd: preprocess
+  insize=2624 outsize=2283 ok=1
+Cmd: preprocess
+  insize=2621 outsize=2280 ok=1
