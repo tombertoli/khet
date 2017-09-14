@@ -40,8 +40,8 @@ public abstract class BasePiece : IGamePiece {
 
     return ret.ToArray();
   }
-  public abstract int[] GetAvailableRotations();
 
+  public abstract int[] GetAvailableRotations();
   public abstract bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
 
   public virtual void MakeMove(IGamePiece piece) {
