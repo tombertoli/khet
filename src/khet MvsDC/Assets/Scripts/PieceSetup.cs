@@ -30,13 +30,13 @@ public class PieceSetup : MonoBehaviour {
     if (!selectionLocked && Piece.IsSelected && Input.GetButtonDown("Fire1")) {
       if (!isAbove && !Movement.mouseAbove) {
         Piece.IsSelected = false;
-        LaserPointer.TargetChanged();
+        //LaserPointer.TargetChanged();
 
         HidePlaceholders();
-      } else {
+      }/* else {
         if (Piece.PieceType == PieceTypes.Sphynx) StartCoroutine(CalculateLaser());
         else ShowPlaceholders();
-      }
+      }*/
     } 
 
     if (Input.GetButtonDown("Fire1")) {
@@ -44,17 +44,23 @@ public class PieceSetup : MonoBehaviour {
       else if (!Piece.IsSelected && placeholdersActive) HidePlaceholders();
     }
 
-    if (Piece.IsSelected 
+    /*if (Piece.IsSelected 
       && Piece.PieceType == PieceTypes.Sphynx 
       && Input.GetButtonDown("Submit")) {
+
       LaserPointer.FireLaser(transform.position, transform.forward);
-      LaserPointer.TargetChanged();
-      StartCoroutine(CalculateLaser());
-    }
+      //LaserPointer.TargetChanged();
+      //StartCoroutine(CalculateLaser());
+    }*/
 
     if (Piece.IsSelected) {
-      if (Input.GetButtonDown("TurnLeft")) StartCoroutine(Rotate(-1));
-      else if (Input.GetButtonDown("TurnRight")) StartCoroutine(Rotate(1));
+      if (Input.GetButtonDown("TurnLeft")) {
+        StartCoroutine(Rotate(-1));
+        HidePlaceholders();
+      } else if (Input.GetButtonDown("TurnRight")) {
+        StartCoroutine(Rotate(1));
+        HidePlaceholders();
+      }
     }
   }
     
@@ -67,7 +73,7 @@ public class PieceSetup : MonoBehaviour {
 
       if (!Piece.IsSelected) {
         HidePlaceholders();
-        LaserPointer.TargetChanged();
+        //LaserPointer.TargetChanged();
       }
     }
   }
@@ -78,12 +84,12 @@ public class PieceSetup : MonoBehaviour {
     willDestroyOnLaser = Piece.HandleLaser(transform, ref temp, ref normal);
   }
 
-  public void OnPieceMoved(Point point, bool shouldSelect) {
+  public void OnPieceMoved(Point point) {
     Piece.IsSelected = false;
-    StartCoroutine(Move(BasePiece.ParsePosition(point), shouldSelect));
+    StartCoroutine(Move(BasePiece.ParsePosition(point)));
   }
 
-  private IEnumerator Move(Vector3 position, bool shouldSelect) {
+  private IEnumerator Move(Vector3 position) {
     HidePlaceholders();
     selectionLocked = true;
 
@@ -91,12 +97,12 @@ public class PieceSetup : MonoBehaviour {
       transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * 5);
       yield return null;
     }
+    TurnManager.EndTurn();
+    
+    
 
-    Piece.IsSelected = shouldSelect;
+    Piece.IsSelected = false;
     selectionLocked = false;
-
-    if (!placeholdersActive && shouldSelect)
-      ShowPlaceholders(); 
 
     Debug.Log(Piece.Position.ToString() + Piece);
   }
@@ -150,5 +156,6 @@ public class PieceSetup : MonoBehaviour {
       transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 5);
       yield return null;
     }
+    TurnManager.EndTurn();
   }
 }

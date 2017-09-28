@@ -41,14 +41,7 @@ public class Board {
     }
   }
 
-  /*public void MovePiece(IGamePiece piece, Point to, bool shouldSelect) {
-    DisoccupyPoint(piece.Position);
-    OccupyPoint(piece, to);
-
-    setup.MoveMade(piece, to, shouldSelect);
-  }
-  */
-
+  
   public void SwapPieces(IGamePiece piece, IGamePiece target) {
     Point targetPoint = target.Position, piecePoint = piece.Position;
     Debug.Log(targetPoint);
@@ -59,8 +52,8 @@ public class Board {
     target.PositionChanged();
     piece.PositionChanged();
 
-    setup.MoveMade(piece, targetPoint, true);
-    setup.MoveMade(target, piecePoint, false);
+    setup.MoveMade(piece, targetPoint);
+    setup.MoveMade(target, piecePoint);
   }
 
   public void RemovePiece(IGamePiece piece) {

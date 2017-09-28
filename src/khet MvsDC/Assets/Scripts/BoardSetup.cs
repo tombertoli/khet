@@ -27,15 +27,22 @@ public class BoardSetup : MonoBehaviour {
       
       PieceSetup ps = instance.GetComponent<PieceSetup>();
       ps.Piece = gp;
+
+      if (gp.PieceType == PieceTypes.Sphynx) {
+        if (gp.Color == PieceColor.Red)
+          TurnManager.Red = ps.transform;
+        else
+          TurnManager.Silver = ps.transform;
+      }
     }
   }
 
-  public void MoveMade(IGamePiece piece, Point point, bool shouldSelect) {
+  public void MoveMade(IGamePiece piece, Point point) {
     PieceSetup[] gos = GameObject.FindObjectsOfType<PieceSetup>();
 
     for (int i = 0; i < gos.Length; i++) {
       if (gos[i].Piece != piece) continue;
-      gos[i].OnPieceMoved(point, shouldSelect);
+      gos[i].OnPieceMoved(point);
     }
   }
 }

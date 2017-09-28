@@ -16,7 +16,7 @@ public class LaserPointer : MonoBehaviour {
     line.enabled = false;
     reference = this;
 	}
-
+  
   public static void AddPosition(Vector3 position, Vector3 direction) {
     if (line.enabled) return;
 
@@ -40,7 +40,7 @@ public class LaserPointer : MonoBehaviour {
     yield return new WaitForSeconds(seconds);
     line.enabled = false;
 
-    PieceSetup[] pss = GameObject.FindObjectsOfType<PieceSetup>();
+    PieceSetup[] pss = FindObjectsOfType<PieceSetup>();
 
     for(int i = 0; i < pss.Length; i++) {
       if (pss[i].willDestroyOnLaser) {
@@ -53,6 +53,8 @@ public class LaserPointer : MonoBehaviour {
   public static void FireLaser(Vector3 position, Vector3 direction) {
     if (line.enabled) return;
 
+    TargetChanged();
+    AddPosition(position, direction);
     line.SetVertexCount(points.Count);
     line.SetPositions(points.ToArray());
     line.enabled = true;
@@ -60,7 +62,7 @@ public class LaserPointer : MonoBehaviour {
     reference.StartCoroutine(TurnOff());
   }
 
-  public static void TargetChanged() {
+  private static void TargetChanged() {
     if (line.enabled) {
       reference.StartCoroutine(WaitForOff());
       return;
