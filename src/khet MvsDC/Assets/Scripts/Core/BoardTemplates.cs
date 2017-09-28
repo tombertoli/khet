@@ -15,7 +15,7 @@ public static class BoardTemplates {
     IGamePiece[,] pieces    = new IGamePiece[pieceFileSize.x, pieceFileSize.y];
     PieceColor[,] colors    = new PieceColor[pieceFileSize.x, pieceFileSize.y];
     Underline[,] underlines = new Underline[pieceFileSize.x, pieceFileSize.y];
-    int[,] rotations        = new int[pieceFileSize.x, pieceFileSize.y];
+    Quaternion[,] rotations = new Quaternion[pieceFileSize.x, pieceFileSize.y];
     
     for (int i = 0; i < pieceFile.Length; i++) {
       if (pieceFile[i].Equals("[Color]"))
@@ -42,7 +42,7 @@ public static class BoardTemplates {
     return LoadCustom(setup, defPath + @"\classic.kbt");
   }
 
-  private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, int[,] rotations, ref IGamePiece[,] pieces) {
+  private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, Quaternion[,] rotations, ref IGamePiece[,] pieces) {
     int a = 0;
 
     for (int i = index; i < pieceFile.Length; i++) {
@@ -112,7 +112,7 @@ public static class BoardTemplates {
     return Mathf.Clamp(index + 1, 0, pieceFile.Length - 1);
   }
   
-  private static int SetRotations(string[] pieceFile, int index, ref int[,] rotations) {
+  private static int SetRotations(string[] pieceFile, int index, ref Quaternion[,] rotations) {
     int a = 0;
 
     for (int i = index; i < pieceFile.Length; i++) {
@@ -124,7 +124,7 @@ public static class BoardTemplates {
         if (c == ' ') continue;
         int rotation = Convert.ToInt32(c);
 
-        rotations[a, j] = rotation;
+        rotations[a, j] = BasePiece.ParseRotation(rotation);
       }
 
       a++;

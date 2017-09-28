@@ -23,7 +23,7 @@ public class BoardSetup : MonoBehaviour {
                            transform.position.y,
                            gp.Position.y + transform.position.z);
       
-      GameObject instance = (GameObject)Instantiate(go, position, gp.GetRotation());
+      GameObject instance = (GameObject)Instantiate(go, position, gp.Rotation);
       instance.transform.parent = transform;
       
       PieceSetup ps = instance.GetComponent<PieceSetup>();

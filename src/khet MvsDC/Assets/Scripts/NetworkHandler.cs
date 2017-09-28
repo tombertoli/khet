@@ -24,15 +24,15 @@ public class NetworkHandler : NetworkBehaviour {
 	[ClientRpc]
 	private void RpcOnPieceRotated(Point position, Quaternion rotation) {
 		IGamePiece piece = BoardSetup.b.GetPieceAt(position);
-		Debug.Log("rotated " + piece.Rotation);
+    Debug.Log("rotated " + piece.Rotation.eulerAngles);
 		
 		if (sentByLocal) {
+      Debug.Log("rotation sent by local");
 			sentByLocal = false;
 			return;
 		}
 
-		int final = BasePiece.InverseParseRotation(rotation) - piece.Rotation;
-		piece.Rotate(false, final);
+    piece.Rotate(false, rotation);
 	}
 
 	[Command]

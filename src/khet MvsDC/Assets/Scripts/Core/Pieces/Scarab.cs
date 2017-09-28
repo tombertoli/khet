@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 public class Scarab : BasePiece {
-  public Scarab(Point position, int rotation, PieceColor color, Board board)
+  public Scarab(Point position, Quaternion rotation, PieceColor color, Board board)
     : base(position, rotation, color, board, PieceTypes.Scarab) { } 
   
   public override Point[] GetAvailablePositions() { 
@@ -27,8 +27,11 @@ public class Scarab : BasePiece {
     return ret.ToArray();
   }
 
-  public override int[] GetAvailableRotations() {
-    return new int[] { -1, 0, 1 };
+  public override Quaternion[] GetAvailableRotations() {
+    Quaternion left = Quaternion.Euler(0, rotation.eulerAngles.y - 90, 0);
+    Quaternion right = Quaternion.Euler (0, rotation.eulerAngles.y + 90, 0);
+
+    return new Quaternion[] { left, right };
   }
 
   public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {

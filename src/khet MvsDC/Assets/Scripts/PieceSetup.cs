@@ -34,8 +34,8 @@ public class PieceSetup : MonoBehaviour {
 
         HidePlaceholders();
       } else {
-        if (Piece.PieceType == PieceTypes.Sphynx) StartCoroutine(CalculateLaser());
-        else ShowPlaceholders();
+        //if (Piece.PieceType == PieceTypes.Sphynx) StartCoroutine(CalculateLaser());
+        /*else*/ ShowPlaceholders();
       }
     } 
 
@@ -47,9 +47,10 @@ public class PieceSetup : MonoBehaviour {
     if (Piece.IsSelected 
       && Piece.PieceType == PieceTypes.Sphynx 
       && Input.GetButtonDown("Submit")) {
-      LaserPointer.FireLaser(transform.position, transform.forward);
-      LaserPointer.TargetChanged();
       StartCoroutine(CalculateLaser());
+      /*LaserPointer.FireLaser(transform.position, transform.forward);
+      LaserPointer.TargetChanged();
+      StartCoroutine(CalculateLaser());*/
     }
 
     if (Piece.IsSelected) {
@@ -106,6 +107,7 @@ public class PieceSetup : MonoBehaviour {
   private IEnumerator Rotate(Quaternion rotation) {
     HidePlaceholders();
     selectionLocked = true;
+    Debug.Log ("rotating gameObject");
 
     while (transform.rotation != rotation) {
       transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, 5);
@@ -126,7 +128,7 @@ public class PieceSetup : MonoBehaviour {
     HidePlaceholders();
 
     for (int i = 0; i < positions.Length; i++) {
-      movementPH.Add(Instantiate(placeholderGO, positions[i], Piece.GetRotation()) as GameObject);
+      movementPH.Add(Instantiate(placeholderGO, positions[i], Piece.Rotation) as GameObject);
       Movement m = movementPH[movementPH.Count - 1].GetComponent<Movement>();
       m.piece = Piece;
       m.point = points[i];

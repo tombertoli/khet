@@ -3,7 +3,7 @@
 public class EmptyPoint : IGamePiece {
   public Board Board { get; set; }
   public Point Position { get { return position; } }
-  public int Rotation { get { return 0; } }
+  public Quaternion Rotation { get { return Quaternion.identity; } }
   public PieceTypes PieceType { get { return PieceTypes.Empty; } }
   public PieceColor Color { get { return PieceColor.None; } }
   public bool IsSelected { get { return false; } set { IsSelected = false; } }
@@ -18,7 +18,7 @@ public class EmptyPoint : IGamePiece {
   }
 
   public Point[] GetAvailablePositions() { return null; }
-  public int[] GetAvailableRotations() { return new int[] { 0 }; }
+	public Quaternion[] GetAvailableRotations() { return new Quaternion[] { Quaternion.identity }; }
 
   public bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) { 
     throw new System.NotImplementedException("An empty can't handle a laser");
@@ -31,8 +31,6 @@ public class EmptyPoint : IGamePiece {
       position.y + transPos.z
     );
   }
-
-  public Quaternion GetRotation() { return Quaternion.identity; }
 
   public void MakeMove(bool sentByLocal, Point point) {
     Debug.LogError("Porque se llama MakeMove en una EmptyPiece?");
@@ -47,7 +45,7 @@ public class EmptyPoint : IGamePiece {
   }
 
   public void Rotate(bool sentByLocal, int rot) {
-    Debug.LogError("Porque se llama Rotate en una EmptyPiece?");
+  	Debug.LogError("Porque se llama Rotate en una EmptyPiece?");
   }
 
   public void Rotate(bool sentByLocal, Quaternion rot) {
