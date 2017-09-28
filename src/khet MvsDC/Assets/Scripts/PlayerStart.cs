@@ -1,16 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 
-public class PlayerStart : MonoBehaviour {
-	
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+public class PlayerStart : NetworkBehaviour {
+	void Awake() {
+		if (localPlayerAuthority) return;
+		
+		gameObject.SetActive(false);
 	}
 }

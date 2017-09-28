@@ -1,10 +1,21 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 public static class BoardTemplates { 
-  public static Board LoadCustom(BoardSetup setup, string filePath) {
-    string[] pieceFile = File.ReadAllLines(filePath + ".kbt");
+
+  [DllImport("System.Windows.Forms.dll")]
+  public static extern void OpenFileDialog();
+
+  public static Board LoadCustom(BoardSetup setup) {
+    System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
+    ofd.ShowDialog();
+    return null;
+  }
+
+  public static Board LoadCustom(BoardSetup setup, string text) {
+    string[] pieceFile = text.Split('\n'); //File.ReadAllLines(filePath + ".kbt");
     Point pieceFileSize = GetPieceFileSize(pieceFile);
 
     Board board             = new Board(setup, pieceFileSize.x, pieceFileSize.y);
@@ -33,7 +44,8 @@ public static class BoardTemplates {
   }
 
   public static Board LoadClassic(BoardSetup setup) {
-    return LoadCustom(setup, "./layouts/classic");
+    TextAsset text = Resources.Load("Layouts/classic.kbt") as TextAsset;
+    return LoadCustom(setup);
   }
 
   private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, int[,] rotations, ref IGamePiece[,] pieces) {
