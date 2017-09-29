@@ -3,23 +3,16 @@ using System.IO;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public static class BoardTemplates { 
+public static class BoardTemplates {
+  public static string classicText;
+  public static readonly string defPath = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\khet");
 
-  [DllImport("System.Windows.Forms.dll")]
-  public static extern void OpenFileDialog();
-
-  public static Board LoadCustom(BoardSetup setup) {
-    System.Windows.Forms.OpenFileDialog ofd = new System.Windows.Forms.OpenFileDialog();
-    ofd.ShowDialog();
-    return null;
-  }
-
-  public static Board LoadCustom(BoardSetup setup, string text) {
-    string[] pieceFile = text.Split('\n'); //File.ReadAllLines(filePath + ".kbt");
+  public static Board LoadCustom(BoardSetup setup, string file) {
+    string[] pieceFile = File.ReadAllLines(file);
     Point pieceFileSize = GetPieceFileSize(pieceFile);
 
     Board board             = new Board(setup, pieceFileSize.x, pieceFileSize.y);
-    IGamePiece[,] pieces     = new IGamePiece[pieceFileSize.x, pieceFileSize.y];
+    IGamePiece[,] pieces    = new IGamePiece[pieceFileSize.x, pieceFileSize.y];
     PieceColor[,] colors    = new PieceColor[pieceFileSize.x, pieceFileSize.y];
     Underline[,] underlines = new Underline[pieceFileSize.x, pieceFileSize.y];
     int[,] rotations        = new int[pieceFileSize.x, pieceFileSize.y];
@@ -44,8 +37,9 @@ public static class BoardTemplates {
   }
 
   public static Board LoadClassic(BoardSetup setup) {
-    TextAsset text = Resources.Load("Layouts/classic.kbt") as TextAsset;
-    return LoadCustom(setup);
+    if (!File.Exists(defPath + @"\classic.kbt")) TemplateManager.CreateFiles();
+
+    return LoadCustom(setup, defPath + @"\classic.kbt");
   }
 
   private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, int[,] rotations, ref IGamePiece[,] pieces) {
@@ -58,7 +52,7 @@ public static class BoardTemplates {
         char c = pieceFile[i][j];
         IGamePiece gp;
 
-        if (c == 'I')      gp = new Pharaoh(new Point(a, j), rotations[a, j], colors[a, j], null);
+        if      (c == 'I') gp = new Pharaoh(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'S') gp = new Sphynx(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'C') gp = new Scarab(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'A') gp = new Anubis(new Point(a, j), rotations[a, j], colors[a, j], null);
