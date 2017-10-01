@@ -95,9 +95,6 @@ public class PieceSetup : MonoBehaviour {
     Piece.IsSelected = shouldSelect;
     selectionLocked = false;
 
-    if (!placeholdersActive && shouldSelect)
-      ShowPlaceholders(); 
-
     Debug.Log(Piece.Position.ToString() + Piece);
   }
 

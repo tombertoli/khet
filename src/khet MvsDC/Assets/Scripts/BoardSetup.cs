@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BoardSetup : MonoBehaviour {
   [SerializeField] private GameObject go;
@@ -31,6 +32,8 @@ public class BoardSetup : MonoBehaviour {
   }
 
   public void MoveMade(IGamePiece piece, Point point, bool shouldSelect) {
+    if (piece.PieceType == PieceTypes.Empty) return;
+    
     PieceSetup[] gos = GameObject.FindObjectsOfType<PieceSetup>();
 
     for (int i = 0; i < gos.Length; i++) {

@@ -15,7 +15,8 @@ public interface IGamePiece {
   Quaternion GetRotation();
 
   bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
-  void MakeMove(IGamePiece piece);
+  void MakeMove(bool sentByLocal, Point point);
+  void MakeMove(bool sentByLocal, IGamePiece piece);
   void PositionChanged();
 
   Quaternion Rotate(int rot);

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public static class BoardTemplates {
   public static string classicText;
-  public static readonly string defPath = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\khet");
+  public static readonly string defPath = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\khet\Templates");
 
   public static Board LoadCustom(BoardSetup setup, string file) {
     string[] pieceFile = File.ReadAllLines(file);

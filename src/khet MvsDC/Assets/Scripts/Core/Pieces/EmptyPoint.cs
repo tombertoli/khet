@@ -34,7 +34,11 @@ public class EmptyPoint : IGamePiece {
 
   public Quaternion GetRotation() { return Quaternion.identity; }
 
-  public void MakeMove(IGamePiece finalPosition) { 
+  public void MakeMove(bool sentByLocal, Point point) {
+    Debug.LogError("Porque se llama MakeMove en una EmptyPiece?");
+  }
+
+  public void MakeMove(bool sentByLocal, IGamePiece finalPosition) { 
     Debug.LogError("Porque se llama MakeMove en una EmptyPiece?");
   }
 

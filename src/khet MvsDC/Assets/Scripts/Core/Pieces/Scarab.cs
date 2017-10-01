@@ -31,13 +31,6 @@ public class Scarab : BasePiece {
     return new int[] { -1, 0, 1 };
   }
 
-  public override void MakeMove(IGamePiece piece) {
-    //List<Point> positions = new List<Point>(GetAvailablePositions());
-    //if (!positions.Contains(finalPosition)) return;
-
-    Board.SwapPieces(this, piece);
-  }
-
   public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
     if (normal == -transform.right || normal == -transform.forward)
       normal = Quaternion.Euler(0, 90, 0) * normal;

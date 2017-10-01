@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 
 public abstract class BasePiece : IGamePiece {
+  public static Vector3 transPos { get; set; }
+
   public Board Board { get; set; }
   public Point Position { get { return position; } }
   public int Rotation { get { return rotation; } }
   public PieceTypes PieceType { get { return type; } }
   public PieceColor Color { get { return color; } }
   public bool IsSelected { get; set; }
-  public static Vector3 transPos { get; set; }
 
   protected Point position;
   protected PieceColor color;
@@ -40,24 +41,28 @@ public abstract class BasePiece : IGamePiece {
 
     return ret.ToArray();
   }
+
   public abstract int[] GetAvailableRotations();
 
   public abstract bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
 
-  public virtual void MakeMove(IGamePiece piece) {
-    Board.SwapPieces(this, piece);
+  public void MakeMove(bool sentByLocal, Point point) {
+    MakeMove(sentByLocal, Board.GetPieceAt(point));
   }
 
-  public virtual void PositionChanged() {
+  public void MakeMove(bool sentByLocal, IGamePiece piece) {
+    Board.SwapPieces(sentByLocal, this, piece);
+  }
+
+  public void PositionChanged() {
     position = Board.GetPositionFrom(this);
-    Debug.Log(Board.GetPositionFrom(this));
   }
 
-  public virtual Quaternion Rotate(int rot) {
+  public Quaternion Rotate(int rot) {
     List<int> rotations = new List<int>(GetAvailableRotations());
     if (!rotations.Contains(rot)) return GetRotation();
 
-    if ((rotation == 3 && rot == 1) || (rotation == 1 && rot == -1)) rotation = 0;
+    if ((rotation == 3 && rot == 1)) rotation = 0;
     else rotation += rot;
 
     return GetRotation();

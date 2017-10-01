@@ -16,8 +16,10 @@ public class TemplateManager : MonoBehaviour {
 
     if (!File.Exists(file)) { 
       Directory.CreateDirectory(BoardTemplates.defPath);
-      File.Create(file);
-      File.AppendAllText(file, reference.text.text);
+
+			using (FileStream s = File.Create(file))
+				using (StreamWriter sw = new StreamWriter(s))
+								sw.Write(reference.text.text);
     }
 	}
 }
