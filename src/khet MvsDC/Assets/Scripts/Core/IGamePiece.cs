@@ -19,7 +19,8 @@ public interface IGamePiece {
   void MakeMove(bool sentByLocal, IGamePiece piece);
   void PositionChanged();
 
-  Quaternion Rotate(int rot);
+  void Rotate(bool sentByLocal, int rot);
+  void Rotate(bool sentByLocal, Quaternion rot);
 }
 
 public enum PieceTypes {

@@ -46,9 +46,12 @@ public class EmptyPoint : IGamePiece {
     position = Board.GetPositionFrom(this);
   }
 
-  public Quaternion Rotate(int rot) {
+  public void Rotate(bool sentByLocal, int rot) {
     Debug.LogError("Porque se llama Rotate en una EmptyPiece?");
-    return Quaternion.identity;
+  }
+
+  public void Rotate(bool sentByLocal, Quaternion rot) {
+    Debug.LogError("Porque se llama Rotate en una EmptyPiece?");
   }
 
   public override string ToString() {

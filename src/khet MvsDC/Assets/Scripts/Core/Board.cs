@@ -65,6 +65,15 @@ public class Board {
     }
   }
 
+  public void RotatePiece(bool sentByLocal, Point point, Quaternion rot) {
+    setup.RotationMade(point, rot);
+
+    if (sentByLocal) {
+      NetworkHandler.reference.sentByLocal = true;
+      NetworkHandler.reference.CmdRotatePiece(point, rot);
+    }
+  }
+
   public void RemovePiece(IGamePiece piece) {
     DisoccupyPoint(piece.Position);
   }

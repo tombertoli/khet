@@ -54,18 +54,41 @@ public abstract class BasePiece : IGamePiece {
     Board.SwapPieces(sentByLocal, this, piece);
   }
 
-  public void PositionChanged() {
-    position = Board.GetPositionFrom(this);
+  public void Rotate(bool sentByLocal, Quaternion rot) {
+    List<int> rotations = new List<int>(GetAvailableRotations());
+    int inverse = InverseParseRotation(rot);
+
+    foreach(int i in rotations) Debug.Log(i + " rotation");
+    Debug.Log(rot.eulerAngles + " inverse: " + inverse);
+
+    if (!rotations.Contains(inverse)) {
+      return;
+    }
+
+    if ((rotation == 3 && inverse == 1)) rotation = 0;
+    else rotation += inverse;
+
+    Board.RotatePiece(sentByLocal, Position, GetRotation());
   }
 
-  public Quaternion Rotate(int rot) {
+  public void Rotate(bool sentByLocal, int rot) {
     List<int> rotations = new List<int>(GetAvailableRotations());
-    if (!rotations.Contains(rot)) return GetRotation();
+    Debug.Log(rot);
+
+    if (!rotations.Contains(rot)) { 
+      //Board.RotatePiece(sentByLocal, Position, GetRotation());
+      Debug.LogError("Algo con la rotacion");
+      return;
+    }
 
     if ((rotation == 3 && rot == 1)) rotation = 0;
     else rotation += rot;
-
-    return GetRotation();
+    
+    Board.RotatePiece(sentByLocal, Position, GetRotation());
+  }
+  
+  public void PositionChanged() {
+    position = Board.GetPositionFrom(this);
   }
 
   protected void Die() {
@@ -100,6 +123,14 @@ public abstract class BasePiece : IGamePiece {
 
   public Quaternion GetRotation() {
     return Quaternion.Euler(0, rotation * 90, 0);
+  }
+
+  public static Quaternion ParseRotation(int rot) {
+    return Quaternion.Euler(0, rot * 90, 0);
+  }
+
+  public static int InverseParseRotation(Quaternion rot) {
+    return (int)rot.eulerAngles.y / 90;
   }
 
   public override string ToString() {

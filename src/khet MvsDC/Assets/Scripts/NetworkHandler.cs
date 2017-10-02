@@ -14,25 +14,34 @@ public class NetworkHandler : NetworkBehaviour {
 	private void RpcOnPieceMoved(Point fromPosition, Point toPosition) {
 		if (sentByLocal) {
 			sentByLocal = false;
-
-			Debug.Log("sent by local");
 			return;
 		}
 
 		IGamePiece piece = BoardSetup.b.GetPieceAt(fromPosition);
-		Debug.Log("Rpcing? " + piece);
-
-		/*if (piece.Position == toPosition ||) {// || piece.PieceType == PieceTypes.Empty) {
-			Debug.Log("Same move");
-			return;
-		}*/
-
 		piece.MakeMove(false, toPosition);
+	}
+
+	[ClientRpc]
+	private void RpcOnPieceRotated(Point position, Quaternion rotation) {
+		IGamePiece piece = BoardSetup.b.GetPieceAt(position);
+		Debug.Log("rotated " + piece.Rotation);
+		
+		if (sentByLocal) {
+			sentByLocal = false;
+			return;
+		}
+
+		int final = BasePiece.InverseParseRotation(rotation) - piece.Rotation;
+		piece.Rotate(false, final);
 	}
 
 	[Command]
 	public void CmdMovePiece(Point fromPosition, Point toPosition) {
-		Debug.Log("Comandante");
 		RpcOnPieceMoved(fromPosition, toPosition);
+	}
+
+	[Command]
+	public void CmdRotatePiece(Point position, Quaternion rotation) {
+		RpcOnPieceRotated(position, rotation);
 	}
 }

@@ -113,7 +113,7 @@ public static class BoardTemplates {
   }
   
   private static int SetRotations(string[] pieceFile, int index, ref int[,] rotations) {
-      int a = 0;
+    int a = 0;
 
     for (int i = index; i < pieceFile.Length; i++) {
       if (pieceFile[i].Trim() == "~") return Mathf.Clamp(i + 1, 0, pieceFile.Length - 1);
