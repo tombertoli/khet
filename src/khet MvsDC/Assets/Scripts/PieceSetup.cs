@@ -8,7 +8,7 @@ public class PieceSetup : MonoBehaviour {
   [SerializeField] private GameObject placeholderGO;
   [SerializeField] private Material silverMaterial, redMaterial;
 
-  public IGamePiece Piece { get; set; }
+  public  IGamePiece Piece { get; set; }
   public bool willDestroyOnLaser { get; private set; }
 
   private Renderer r;
@@ -29,13 +29,8 @@ public class PieceSetup : MonoBehaviour {
   void DoUpdate() {
     if (!selectionLocked && Piece.IsSelected && Input.GetButtonDown("Fire1")) {
       if (!isAbove && !Movement.mouseAbove) {
-        Piece.IsSelected = false;
-        LaserPointer.TargetChanged();
-
+        Piece.IsSelected = false;       
         HidePlaceholders();
-      } else {
-        if (Piece.PieceType == PieceTypes.Sphynx) StartCoroutine(CalculateLaser());
-        else ShowPlaceholders();
       }
     } 
 
@@ -44,30 +39,38 @@ public class PieceSetup : MonoBehaviour {
       else if (!Piece.IsSelected && placeholdersActive) HidePlaceholders();
     }
 
-    if (Piece.IsSelected 
-      && Piece.PieceType == PieceTypes.Sphynx 
-      && Input.GetButtonDown("Submit")) {
-      LaserPointer.FireLaser(transform.position, transform.forward);
-      LaserPointer.TargetChanged();
-      StartCoroutine(CalculateLaser());
-    }
-
     if (Piece.IsSelected) {
-      if (Input.GetButtonDown("TurnLeft")) StartCoroutine(Rotate(-1));
-      else if (Input.GetButtonDown("TurnRight")) StartCoroutine(Rotate(1));
+      if (Input.GetButtonDown("TurnLeft")) {
+        StartCoroutine(Rotate(-1));
+      } else if (Input.GetButtonDown("TurnRight")) {
+        StartCoroutine(Rotate(1));
+      }
     }
   }
     
-  void OnMouseEnter() { if (!Movement.mouseAbove) isAbove = true; }
-  void OnMouseExit() { if (!Movement.mouseAbove) isAbove = false; }
+  void OnMouseEnter() {
+    isAbove = true;
+  }
+
+  void OnMouseExit() {
+    isAbove = false;
+  }
 
   void OnMouseOver() {
-    if (!selectionLocked && Input.GetButtonDown("Fire1")) {
+    if (!selectionLocked && Input.GetButtonDown("Fire1") && Piece.Color ==PieceColor.Red && TurnManager.turn == PieceColor.Red)
+      {
       Piece.IsSelected = !Piece.IsSelected;
 
       if (!Piece.IsSelected) {
         HidePlaceholders();
-        LaserPointer.TargetChanged();
+      }
+    }
+    if (!selectionLocked && Input.GetButtonDown("Fire1") && Piece.Color == PieceColor.Silver && TurnManager.turn == PieceColor.Silver) {
+      Piece.IsSelected = !Piece.IsSelected;
+
+      if (!Piece.IsSelected) {
+        HidePlaceholders();
+        //LaserPointer.TargetChanged();
       }
     }
   }
@@ -78,12 +81,12 @@ public class PieceSetup : MonoBehaviour {
     willDestroyOnLaser = Piece.HandleLaser(transform, ref temp, ref normal);
   }
 
-  public void OnPieceMoved(Point point, bool shouldSelect) {
+  public void OnPieceMoved(PieceColor color, Point point) {
     Piece.IsSelected = false;
-    StartCoroutine(Move(BasePiece.ParsePosition(point), shouldSelect));
+    StartCoroutine(Move(color, BasePiece.ParsePosition(point)));
   }
 
-  private IEnumerator Move(Vector3 position, bool shouldSelect) {
+  private IEnumerator Move(PieceColor changeTurnTo, Vector3 position) {
     HidePlaceholders();
     selectionLocked = true;
 
@@ -92,13 +95,27 @@ public class PieceSetup : MonoBehaviour {
       yield return null;
     }
 
-    Piece.IsSelected = shouldSelect;
+    if (Piece.Color != changeTurnTo)
+      TurnManager.EndTurn();
+     
+    Piece.IsSelected = false;
     selectionLocked = false;
 
-    if (!placeholdersActive && shouldSelect)
-      ShowPlaceholders(); 
-
     Debug.Log(Piece.Position.ToString() + Piece);
+  }
+
+  private IEnumerator Rotate(int rotation) {
+    if (Piece.Color == TurnManager.turn) {
+      HidePlaceholders();
+      Quaternion rot = Piece.Rotate(rotation);
+
+      while (transform.rotation != rot) {
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 5);
+        yield return null;
+      }
+
+      TurnManager.EndTurn();
+    }
   }
 
   private void ShowPlaceholders() {
@@ -141,14 +158,5 @@ public class PieceSetup : MonoBehaviour {
 
     if (limit <= 0) yield break;
     LaserPointer.AddPosition(transform.position, transform.forward);
-  }
-
-  private IEnumerator Rotate(int rotation) {
-    Quaternion rot = Piece.Rotate(rotation);
-
-    while (transform.rotation != rot) {
-      transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 5);
-      yield return null;
-    }
   }
 }
