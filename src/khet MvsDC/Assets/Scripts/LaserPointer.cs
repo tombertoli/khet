@@ -33,7 +33,7 @@ public class LaserPointer : MonoBehaviour {
     //Debug.Log(hitInfo.collider.gameObject);
 
     PieceSetup ps = hitInfo.collider.gameObject.GetComponent<PieceSetup>();
-    ps.OnLaserHit(hitInfo.point, hitInfo.normal);
+    ps.LaserHit(hitInfo.point, hitInfo.normal);
   }
 
   private static IEnumerator TurnOff() {

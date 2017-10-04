@@ -51,25 +51,25 @@ public class PieceSetup : MonoBehaviour {
   void OnMouseExit() { isAbove = false; }
 
   void OnMouseOver() {
-    if (!selectionLocked && Input.GetButtonDown("Fire1") && Piece.Color == TurnManager.GetTurn()) {
+    if (!selectionLocked && Input.GetButtonDown("Fire1") && Piece.Color == TurnManager.Turn) {
       SetSelection(!Piece.IsSelected);
 
       if (!Piece.IsSelected) HidePlaceholders();
     }
   }
 
-  public void OnLaserHit(Vector3 point, Vector3 normal) {
+  public void LaserHit(Vector3 point, Vector3 normal) {
     Vector3 temp = transform.InverseTransformPoint(point);
 
     willDestroyOnLaser = Piece.HandleLaser(transform, ref temp, ref normal);
   }
 
-  public void OnPieceMoved(PieceColor color, Point point) {
+  public void PieceMoved(PieceColor color, Point point) {
     SetSelection(false);
     StartCoroutine(Move(color, BasePiece.ParsePosition(point)));
   }
 
-  public void OnPieceRotated(Quaternion rotation) {
+  public void PieceRotated(Quaternion rotation) {
     SetSelection(false);
     StartCoroutine(Rotate(rotation));
   }
@@ -98,7 +98,7 @@ public class PieceSetup : MonoBehaviour {
   }
 
   private IEnumerator Rotate(Quaternion rotation) {
-    if (Piece.Color != TurnManager.GetTurn()) yield break;
+    if (Piece.Color != TurnManager.Turn) yield break;
 
     HidePlaceholders();
     selectionLocked = true;

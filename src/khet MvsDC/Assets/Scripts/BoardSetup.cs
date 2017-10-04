@@ -12,9 +12,7 @@ public class BoardSetup : MonoBehaviour {
     EmptyPoint.transPos = transform.position;
     
     foreach (IGamePiece gp in b.Pieces) {
-      if ((gp.PieceType == PieceTypes.Empty)) {
-        continue;
-      }
+      if ((gp.PieceType == PieceTypes.Empty)) continue;
       
       if (gp == null) throw new UnityException("Invalid board");
 
@@ -43,7 +41,7 @@ public class BoardSetup : MonoBehaviour {
 
     for (int i = 0; i < gos.Length; i++) {
       if (gos[i].Piece != piece) continue;
-      gos[i].OnPieceMoved(color, point);
+      gos[i].PieceMoved(color, point);
     }
   }
 
@@ -53,7 +51,7 @@ public class BoardSetup : MonoBehaviour {
     for (int i = 0; i < gos.Length; i++) {
       if (gos[i].Piece != b.GetPieceAt(point)) continue;
 
-      gos[i].OnPieceRotated(rotation);
+      gos[i].PieceRotated(rotation);
     }
   }
 }

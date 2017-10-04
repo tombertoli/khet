@@ -7,6 +7,7 @@ public class TurnManager {
   public delegate void TurnEvent();
   public static event TurnEvent TurnFinished;
   public static Transform Red, Silver;
+  public static PieceColor Turn { get { return waiting ? PieceColor.None : turn; } }
 
   private static PieceColor turn = PieceColor.Silver;
   private static bool waiting = false;
@@ -27,10 +28,6 @@ public class TurnManager {
 
     LaserPointer.FireLaser(temp.position, temp.forward);
     turn = tempColor;
-  }  
-
-  public static PieceColor GetTurn() {
-    return waiting ? PieceColor.None : turn;
   }
 }
 
