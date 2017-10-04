@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 
 public abstract class BasePiece : IGamePiece {
+  public static Vector3 transPos { get; set; }
+
   public Board Board { get; set; }
   public Point Position { get { return position; } }
-  public int Rotation { get { return rotation; } }
+  public Quaternion Rotation { get { return rotation; } }
   public PieceTypes PieceType { get { return type; } }
   public PieceColor Color { get { return color; } }
   public bool IsSelected { get; set; }
-  public static Vector3 transPos { get; set; }
 
   protected Point position;
   protected PieceColor color;
-  protected int rotation;
+  protected Quaternion rotation;
   protected PieceTypes type;
 
-  protected BasePiece(Point position, int rotation, PieceColor color, Board board, PieceTypes type) {
+  protected BasePiece(Point position, Quaternion rotation, PieceColor color, Board board, PieceTypes type) {
     this.position = position;
     this.color = color;
     this.Board = board;
@@ -40,27 +41,41 @@ public abstract class BasePiece : IGamePiece {
 
     return ret.ToArray();
   }
-  public abstract int[] GetAvailableRotations();
+
+  public abstract Quaternion[] GetAvailableRotations();
 
   public abstract bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
 
-  public virtual void MakeMove(IGamePiece piece) {
-    Board.SwapPieces(this, piece);
+  public void MakeMove(bool sentByLocal, Point point) {
+    MakeMove(sentByLocal, Board.GetPieceAt(point));
   }
 
-  public virtual void PositionChanged() {
+  public void MakeMove(bool sentByLocal, IGamePiece piece) {
+    Board.SwapPieces(sentByLocal, this, piece);
+  }
+
+  public void Rotate(bool sentByLocal, Quaternion finalRotation) {
+	List<Quaternion> rotations = new List<Quaternion>(GetAvailableRotations());
+    //int inverse = InverseParseRotation(rot);
+
+	foreach(Quaternion i in rotations) Debug.Log(i.eulerAngles + " rotation");
+    Debug.Log("final rotation: " + finalRotation.eulerAngles);
+
+    if (!rotations.Contains(finalRotation)) {
+	  Debug.Log ("rotation not contained");
+      return;
+    }
+	
+	rotation = finalRotation;
+	Board.RotatePiece(sentByLocal, Position, Rotation);
+  }
+
+  public void Rotate(bool sentByLocal, int rot) {
+	Rotate (sentByLocal, Quaternion.Euler(0, rotation.eulerAngles.y + (rot * 90), 0));
+  }
+  
+  public void PositionChanged() {
     position = Board.GetPositionFrom(this);
-    Debug.Log(Board.GetPositionFrom(this));
-  }
-
-  public virtual Quaternion Rotate(int rot) {
-    List<int> rotations = new List<int>(GetAvailableRotations());
-    if (!rotations.Contains(rot)) return GetRotation();
-
-    if ((rotation == 3 && rot == 1) || (rotation == 1 && rot == -1)) rotation = 0;
-    else rotation += rot;
-
-    return GetRotation();
   }
 
   protected void Die() {
@@ -93,9 +108,17 @@ public abstract class BasePiece : IGamePiece {
     return ret;
   }
 
-  public Quaternion GetRotation() {
-    return Quaternion.Euler(0, rotation * 90, 0);
+  public static Quaternion ParseRotation(int rot) {
+	return Quaternion.Euler(0, rot * 90, 0);
   }
+
+  /*public Quaternion GetRotation() {
+    return Quaternion.Euler(0, rotation * 90, 0);
+  } 
+
+  public static int InverseParseRotation(Quaternion rot) {
+    return (int)rot.eulerAngles.y / 90;
+  }*/
 
   public override string ToString() {
     return string.Format("[PieceType={2}, Position={0}, Rotation={1}, Color={3}, IsSelected={4}]", Position, Rotation, PieceType, Color, IsSelected);

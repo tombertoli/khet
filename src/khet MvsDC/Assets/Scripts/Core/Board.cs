@@ -41,18 +41,14 @@ public class Board {
     }
   }
 
-  /*public void MovePiece(IGamePiece piece, Point to, bool shouldSelect) {
-    DisoccupyPoint(piece.Position);
-    OccupyPoint(piece, to);
-
-    setup.MoveMade(piece, to, shouldSelect);
+  public void SwapPieces(bool sentByLocal, Point piece, Point target) {
+    SwapPieces(sentByLocal, GetPieceAt(piece), GetPieceAt(target));
   }
-  */
 
-  public void SwapPieces(IGamePiece piece, IGamePiece target) {
+  public void SwapPieces(bool sentByLocal, IGamePiece piece, IGamePiece target) {
     Point targetPoint = target.Position, piecePoint = piece.Position;
     Debug.Log(targetPoint);
-
+        
     OccupyPoint(piece, targetPoint);
     OccupyPoint(target, piecePoint);
 
@@ -61,6 +57,21 @@ public class Board {
 
     setup.MoveMade(piece, targetPoint, true);
     setup.MoveMade(target, piecePoint, false);
+
+    // NetworkHandler.reference.sentByLocal = true;
+    if (sentByLocal) {
+      NetworkHandler.reference.sentByLocal = true;
+      NetworkHandler.reference.CmdMovePiece(target.Position, piece.Position);
+    }
+  }
+
+  public void RotatePiece(bool sentByLocal, Point point, Quaternion rot) {
+    setup.RotationMade(point, rot);
+
+    if (sentByLocal) {
+      NetworkHandler.reference.sentByLocal = true;
+      NetworkHandler.reference.CmdRotatePiece(point, rot);
+    }
   }
 
   public void RemovePiece(IGamePiece piece) {

@@ -13,4 +13,14 @@ public struct Point {
   public override string ToString() {
     return string.Format("[{0}, {1}]", x, y);
   }
+
+  public static bool operator ==(Point left, Point right) {
+    if (left.x == right.x && left.y == right.y) return true;
+    else return false;
+  }
+
+  public static bool operator !=(Point left, Point right) {
+    if (left.x != right.x && left.y != right.y) return true;
+    else return false;
+  }
 }

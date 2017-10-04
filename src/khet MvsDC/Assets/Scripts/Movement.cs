@@ -11,6 +11,6 @@ public class Movement : MonoBehaviour {
 
   void OnMouseOver() {
     if (!Input.GetButtonDown("Fire1")) return;
-    piece.MakeMove(piece.Board.GetPieceAt(point));
+    piece.MakeMove(true, point);
   }
 }

@@ -34,8 +34,8 @@ public class PieceSetup : MonoBehaviour {
 
         HidePlaceholders();
       } else {
-        if (Piece.PieceType == PieceTypes.Sphynx) StartCoroutine(CalculateLaser());
-        else ShowPlaceholders();
+        //if (Piece.PieceType == PieceTypes.Sphynx) StartCoroutine(CalculateLaser());
+        /*else*/ ShowPlaceholders();
       }
     } 
 
@@ -47,14 +47,15 @@ public class PieceSetup : MonoBehaviour {
     if (Piece.IsSelected 
       && Piece.PieceType == PieceTypes.Sphynx 
       && Input.GetButtonDown("Submit")) {
-      LaserPointer.FireLaser(transform.position, transform.forward);
-      LaserPointer.TargetChanged();
       StartCoroutine(CalculateLaser());
+      /*LaserPointer.FireLaser(transform.position, transform.forward);
+      LaserPointer.TargetChanged();
+      StartCoroutine(CalculateLaser());*/
     }
 
     if (Piece.IsSelected) {
-      if (Input.GetButtonDown("TurnLeft")) StartCoroutine(Rotate(-1));
-      else if (Input.GetButtonDown("TurnRight")) StartCoroutine(Rotate(1));
+      if (Input.GetButtonDown("TurnLeft")) Piece.Rotate(true, -1);
+      else if (Input.GetButtonDown("TurnRight")) Piece.Rotate(true, 1);
     }
   }
     
@@ -83,6 +84,11 @@ public class PieceSetup : MonoBehaviour {
     StartCoroutine(Move(BasePiece.ParsePosition(point), shouldSelect));
   }
 
+  public void OnRotated(Quaternion rotation) {
+    Piece.IsSelected = false;
+    StartCoroutine(Rotate(rotation));
+  }
+
   private IEnumerator Move(Vector3 position, bool shouldSelect) {
     HidePlaceholders();
     selectionLocked = true;
@@ -92,13 +98,24 @@ public class PieceSetup : MonoBehaviour {
       yield return null;
     }
 
-    Piece.IsSelected = shouldSelect;
+    Piece.IsSelected = false;
     selectionLocked = false;
 
-    if (!placeholdersActive && shouldSelect)
-      ShowPlaceholders(); 
-
     Debug.Log(Piece.Position.ToString() + Piece);
+  }
+
+  private IEnumerator Rotate(Quaternion rotation) {
+    HidePlaceholders();
+    selectionLocked = true;
+    Debug.Log ("rotating gameObject");
+
+    while (transform.rotation != rotation) {
+      transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, 5);
+      yield return null;
+    }
+
+    Piece.IsSelected = false;
+    selectionLocked = false;
   }
 
   private void ShowPlaceholders() {
@@ -111,7 +128,7 @@ public class PieceSetup : MonoBehaviour {
     HidePlaceholders();
 
     for (int i = 0; i < positions.Length; i++) {
-      movementPH.Add(Instantiate(placeholderGO, positions[i], Piece.GetRotation()) as GameObject);
+      movementPH.Add(Instantiate(placeholderGO, positions[i], Piece.Rotation) as GameObject);
       Movement m = movementPH[movementPH.Count - 1].GetComponent<Movement>();
       m.piece = Piece;
       m.point = points[i];
@@ -141,14 +158,5 @@ public class PieceSetup : MonoBehaviour {
 
     if (limit <= 0) yield break;
     LaserPointer.AddPosition(transform.position, transform.forward);
-  }
-
-  private IEnumerator Rotate(int rotation) {
-    Quaternion rot = Piece.Rotate(rotation);
-
-    while (transform.rotation != rot) {
-      transform.rotation = Quaternion.RotateTowards(transform.rotation, rot, 5);
-      yield return null;
-    }
   }
 }

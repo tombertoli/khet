@@ -3,22 +3,23 @@
 public interface IGamePiece {
   Board Board { get; set; }
   Point Position { get; }
-  int Rotation { get; }
+  Quaternion Rotation { get; }
   PieceTypes PieceType { get; }
   PieceColor Color { get; }
   bool IsSelected { get; set; }
 
   Point[] GetAvailablePositions();
-  int[] GetAvailableRotations();
+  Quaternion[] GetAvailableRotations();
   
   Vector3 GetPositionInWorld();
-  Quaternion GetRotation();
 
   bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
-  void MakeMove(IGamePiece piece);
+  void MakeMove(bool sentByLocal, Point point);
+  void MakeMove(bool sentByLocal, IGamePiece piece);
   void PositionChanged();
 
-  Quaternion Rotate(int rot);
+  void Rotate(bool sentByLocal, int rot);
+  void Rotate(bool sentByLocal, Quaternion rot);
 }
 
 public enum PieceTypes {

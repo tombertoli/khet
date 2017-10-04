@@ -1,17 +1,21 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
-public static class BoardTemplates { 
-  public static Board LoadCustom(BoardSetup setup, string filePath) {
-    string[] pieceFile = File.ReadAllLines(filePath + ".kbt");
+public static class BoardTemplates {
+  public static string classicText;
+  public static readonly string defPath = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\khet\Templates");
+
+  public static Board LoadCustom(BoardSetup setup, string file) {
+    string[] pieceFile = File.ReadAllLines(file);
     Point pieceFileSize = GetPieceFileSize(pieceFile);
 
     Board board             = new Board(setup, pieceFileSize.x, pieceFileSize.y);
-    IGamePiece[,] pieces     = new IGamePiece[pieceFileSize.x, pieceFileSize.y];
+    IGamePiece[,] pieces    = new IGamePiece[pieceFileSize.x, pieceFileSize.y];
     PieceColor[,] colors    = new PieceColor[pieceFileSize.x, pieceFileSize.y];
     Underline[,] underlines = new Underline[pieceFileSize.x, pieceFileSize.y];
-    int[,] rotations        = new int[pieceFileSize.x, pieceFileSize.y];
+    Quaternion[,] rotations = new Quaternion[pieceFileSize.x, pieceFileSize.y];
     
     for (int i = 0; i < pieceFile.Length; i++) {
       if (pieceFile[i].Equals("[Color]"))
@@ -33,10 +37,12 @@ public static class BoardTemplates {
   }
 
   public static Board LoadClassic(BoardSetup setup) {
-    return LoadCustom(setup, "./layouts/classic");
+    if (!File.Exists(defPath + @"\classic.kbt")) TemplateManager.CreateFiles();
+
+    return LoadCustom(setup, defPath + @"\classic.kbt");
   }
 
-  private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, int[,] rotations, ref IGamePiece[,] pieces) {
+  private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, Quaternion[,] rotations, ref IGamePiece[,] pieces) {
     int a = 0;
 
     for (int i = index; i < pieceFile.Length; i++) {
@@ -46,7 +52,7 @@ public static class BoardTemplates {
         char c = pieceFile[i][j];
         IGamePiece gp;
 
-        if (c == 'I')      gp = new Pharaoh(new Point(a, j), rotations[a, j], colors[a, j], null);
+        if      (c == 'I') gp = new Pharaoh(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'S') gp = new Sphynx(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'C') gp = new Scarab(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'A') gp = new Anubis(new Point(a, j), rotations[a, j], colors[a, j], null);
@@ -106,8 +112,8 @@ public static class BoardTemplates {
     return Mathf.Clamp(index + 1, 0, pieceFile.Length - 1);
   }
   
-  private static int SetRotations(string[] pieceFile, int index, ref int[,] rotations) {
-      int a = 0;
+  private static int SetRotations(string[] pieceFile, int index, ref Quaternion[,] rotations) {
+    int a = 0;
 
     for (int i = index; i < pieceFile.Length; i++) {
       if (pieceFile[i].Trim() == "~") return Mathf.Clamp(i + 1, 0, pieceFile.Length - 1);
@@ -118,7 +124,7 @@ public static class BoardTemplates {
         if (c == ' ') continue;
         int rotation = Convert.ToInt32(c);
 
-        rotations[a, j] = rotation;
+        rotations[a, j] = BasePiece.ParseRotation(rotation);
       }
 
       a++;
