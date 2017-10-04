@@ -23,4 +23,18 @@ public struct Point {
     if (left.x != right.x && left.y != right.y) return true;
     else return false;
   }
+
+  public override bool Equals(object obj) {
+    Point point;
+    
+    if (obj is Point) point = (Point)obj;
+    else return false;
+    
+    if (point == this) return true;
+    else return false;
+  }
+
+  public override int GetHashCode() {
+    return x.GetHashCode() + y.GetHashCode();
+  }
 }

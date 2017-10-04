@@ -6,29 +6,27 @@ using System.Collections.Generic;
 [RequireComponent (typeof(Renderer), typeof(Collider))]
 public class PieceSetup : MonoBehaviour {
   [SerializeField] private GameObject placeholderGO;
+
+  #pragma warning disable 0649
   [SerializeField] private Material silverMaterial, redMaterial;
+  #pragma warning restore 0649
 
   public IGamePiece Piece { get; set; }
   public bool willDestroyOnLaser { get; private set; }
 
   private Renderer r;
-  private Glow glow;
   private bool isAbove = false;
   private List<GameObject> movementPH = new List<GameObject>();
   private static bool placeholdersActive = false, selectionLocked = false;
 
-	void Start () {        
+	void Start() {        
     r = GetComponent<Renderer>();
-    glow = GetComponent<Glow>();
     
     if (Piece.Color == PieceColor.Red)         r.material = redMaterial;
     else if (Piece.Color == PieceColor.Silver) r.material = silverMaterial;
   }
 
-  void Update() { if (Piece.PieceType != PieceTypes.Sphynx) DoUpdate(); }
-  void LateUpdate() { if (Piece.PieceType == PieceTypes.Sphynx) DoUpdate(); }
-
-  void DoUpdate() {
+  void Update() {
     if (!selectionLocked && Piece.IsSelected && Input.GetButtonDown("Fire1")) {
       if (!isAbove && !Movement.mouseAbove) {
         SetSelection(false);
@@ -76,7 +74,6 @@ public class PieceSetup : MonoBehaviour {
 
   public void SetSelection(bool selection) {
     Piece.IsSelected = selection;
-    glow.SetOutline(selection);
   }
 
   private IEnumerator Move(PieceColor changeTurnTo, Vector3 position) {

@@ -3,7 +3,7 @@ using UnityEngine.Networking;
 using System.Collections;
 
 public class NetworkHandler : NetworkBehaviour {
-	[SerializeField] private string playerTag = "Player";
+	//8[SerializeField] private string playerTag = "Player";
 	private static NetworkHandler instance;
 	private bool sentByLocal = false;
 

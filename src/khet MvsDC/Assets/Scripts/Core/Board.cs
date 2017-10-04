@@ -47,7 +47,6 @@ public class Board {
 
   public void SwapPieces(bool sentByLocal, IGamePiece piece, IGamePiece target) {
     Point targetPoint = target.Position, piecePoint = piece.Position;
-    PieceColor moveToColor = target.Color;
     //Debug.Log(targetPoint);
         
     OccupyPoint(piece, targetPoint);

@@ -6,7 +6,7 @@ public class Glow : MonoBehaviour {
   [SerializeField] private string key, button = "Fire1", pieceTag = "Piece";
   [SerializeField] private float outlineWidth;
 
-  private PieceSetup setup;
+  private PieceColor pieceColor;
   private Renderer r;
   private bool permanent, over;
 
@@ -14,7 +14,7 @@ public class Glow : MonoBehaviour {
     TurnManager.TurnFinished += () => SetRange(false, GameObject.FindGameObjectsWithTag(pieceTag));
 
     r = GetComponent<Renderer>();
-    setup = GetComponent<PieceSetup>();
+    pieceColor = GetComponent<PieceSetup>().Piece.Color;
   }
 
   void Update() { 
@@ -28,11 +28,17 @@ public class Glow : MonoBehaviour {
   }
 
   void OnMouseEnter() { 
-    if (setup.Piece.Color == TurnManager.Turn && !permanent) SetOutline(true);
+    if (pieceColor == TurnManager.Turn && !permanent) SetOutline(true);
     over = true; 
   }
+
+  void OnMouseOver() {
+    if (over) return;
+    over = true;
+  }
+
   void OnMouseExit() { 
-    if (setup.Piece.Color == TurnManager.Turn && !permanent) SetOutline(false);
+    if (pieceColor == TurnManager.Turn && !permanent) SetOutline(false);
     over = false; 
   }
 
