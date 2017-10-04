@@ -40,10 +40,10 @@ public class Board {
       }
     }
   }
-
   
   public void SwapPieces(IGamePiece piece, IGamePiece target) {
     Point targetPoint = target.Position, piecePoint = piece.Position;
+    PieceColor moveToColor = target.Color;
     Debug.Log(targetPoint);
 
     OccupyPoint(piece, targetPoint);
@@ -52,8 +52,8 @@ public class Board {
     target.PositionChanged();
     piece.PositionChanged();
 
-    setup.MoveMade(piece, targetPoint);
-    setup.MoveMade(target, piecePoint);
+    setup.MoveMade(piece, moveToColor, targetPoint);
+    setup.MoveMade(target, moveToColor, piecePoint);
   }
 
   public void RemovePiece(IGamePiece piece) {

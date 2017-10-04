@@ -37,12 +37,12 @@ public class BoardSetup : MonoBehaviour {
     }
   }
 
-  public void MoveMade(IGamePiece piece, Point point) {
-    PieceSetup[] gos = GameObject.FindObjectsOfType<PieceSetup>();
+  public void MoveMade(IGamePiece piece, PieceColor color, Point point) {
+    PieceSetup[] gos = FindObjectsOfType<PieceSetup>();
 
     for (int i = 0; i < gos.Length; i++) {
       if (gos[i].Piece != piece) continue;
-      gos[i].OnPieceMoved(point);
+      gos[i].OnPieceMoved(color, point);
     }
   }
 }
