@@ -47,6 +47,7 @@ public class Board {
 
   public void SwapPieces(bool sentByLocal, IGamePiece piece, IGamePiece target) {
     Point targetPoint = target.Position, piecePoint = piece.Position;
+    PieceColor moveToColor = target.Color;
     Debug.Log(targetPoint);
         
     OccupyPoint(piece, targetPoint);
@@ -55,8 +56,8 @@ public class Board {
     target.PositionChanged();
     piece.PositionChanged();
 
-    setup.MoveMade(piece, targetPoint, true);
-    setup.MoveMade(target, piecePoint, false);
+    setup.MoveMade(piece, target.Color, targetPoint);
+    setup.MoveMade(target, target.Color, piecePoint);
 
     // NetworkHandler.reference.sentByLocal = true;
     if (sentByLocal) {

@@ -30,12 +30,7 @@ public class PieceSetup : MonoBehaviour {
     if (!selectionLocked && Piece.IsSelected && Input.GetButtonDown("Fire1")) {
       if (!isAbove && !Movement.mouseAbove) {
         Piece.IsSelected = false;
-        LaserPointer.TargetChanged();
-
         HidePlaceholders();
-      } else {
-        //if (Piece.PieceType == PieceTypes.Sphynx) StartCoroutine(CalculateLaser());
-        /*else*/ ShowPlaceholders();
       }
     } 
 
@@ -44,31 +39,21 @@ public class PieceSetup : MonoBehaviour {
       else if (!Piece.IsSelected && placeholdersActive) HidePlaceholders();
     }
 
-    if (Piece.IsSelected 
-      && Piece.PieceType == PieceTypes.Sphynx 
-      && Input.GetButtonDown("Submit")) {
-      StartCoroutine(CalculateLaser());
-      /*LaserPointer.FireLaser(transform.position, transform.forward);
-      LaserPointer.TargetChanged();
-      StartCoroutine(CalculateLaser());*/
-    }
-
     if (Piece.IsSelected) {
       if (Input.GetButtonDown("TurnLeft")) Piece.Rotate(true, -1);
       else if (Input.GetButtonDown("TurnRight")) Piece.Rotate(true, 1);
     }
   }
     
-  void OnMouseEnter() { if (!Movement.mouseAbove) isAbove = true; }
-  void OnMouseExit() { if (!Movement.mouseAbove) isAbove = false; }
+  void OnMouseEnter() { isAbove = true; }
+  void OnMouseExit() { isAbove = false; }
 
   void OnMouseOver() {
-    if (!selectionLocked && Input.GetButtonDown("Fire1")) {
+    if (!selectionLocked && Input.GetButtonDown("Fire1") && Piece.Color == TurnManager.turn) {
       Piece.IsSelected = !Piece.IsSelected;
 
       if (!Piece.IsSelected) {
         HidePlaceholders();
-        LaserPointer.TargetChanged();
       }
     }
   }
@@ -79,9 +64,9 @@ public class PieceSetup : MonoBehaviour {
     willDestroyOnLaser = Piece.HandleLaser(transform, ref temp, ref normal);
   }
 
-  public void OnPieceMoved(Point point, bool shouldSelect) {
+  public void OnPieceMoved(PieceColor color, Point point) {
     Piece.IsSelected = false;
-    StartCoroutine(Move(BasePiece.ParsePosition(point), shouldSelect));
+    StartCoroutine(Move(color, BasePiece.ParsePosition(point)));
   }
 
   public void OnRotated(Quaternion rotation) {
@@ -89,7 +74,7 @@ public class PieceSetup : MonoBehaviour {
     StartCoroutine(Rotate(rotation));
   }
 
-  private IEnumerator Move(Vector3 position, bool shouldSelect) {
+  private IEnumerator Move(PieceColor changeTurnTo, Vector3 position) {
     HidePlaceholders();
     selectionLocked = true;
 
@@ -98,6 +83,9 @@ public class PieceSetup : MonoBehaviour {
       yield return null;
     }
 
+    if (Piece.Color != changeTurnTo)
+      TurnManager.EndTurn();
+
     Piece.IsSelected = false;
     selectionLocked = false;
 
@@ -105,6 +93,8 @@ public class PieceSetup : MonoBehaviour {
   }
 
   private IEnumerator Rotate(Quaternion rotation) {
+    if (Piece.Color != TurnManager.turn) yield break;
+
     HidePlaceholders();
     selectionLocked = true;
     Debug.Log ("rotating gameObject");
@@ -113,6 +103,8 @@ public class PieceSetup : MonoBehaviour {
       transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, 5);
       yield return null;
     }
+
+    TurnManager.EndTurn();
 
     Piece.IsSelected = false;
     selectionLocked = false;

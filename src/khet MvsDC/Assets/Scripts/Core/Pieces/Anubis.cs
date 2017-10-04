@@ -13,7 +13,7 @@ public class Anubis : BasePiece {
   }
 
   public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
-    if (normal != transform.forward) return false;
+    if (normal == transform.forward) return false;
 
     Die();
     return true;
