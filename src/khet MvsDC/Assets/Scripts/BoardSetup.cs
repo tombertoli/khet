@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class BoardSetup : MonoBehaviour {
   [SerializeField] private GameObject go;
   [System.NonSerialized] public static Board b;
-
+  
 	void Awake () {
     b = BoardTemplates.LoadClassic(this);
     BasePiece.transPos = transform.position;

@@ -6,6 +6,11 @@ public class NetworkHandler : NetworkBehaviour {
 	public static NetworkHandler reference;
 	public bool sentByLocal = false;
 
+	public void OnDestroy() {
+		sentByLocal = true;
+		CmdPlayerLeft();
+	}
+
 	void Start() { 
 		reference = this;
 	}
@@ -27,12 +32,23 @@ public class NetworkHandler : NetworkBehaviour {
     Debug.Log("rotated " + piece.Rotation.eulerAngles);
 		
 		if (sentByLocal) {
-      Debug.Log("rotation sent by local");
 			sentByLocal = false;
 			return;
 		}
 
     piece.Rotate(false, rotation);
+	}
+
+	[ClientRpc]
+	private void RpcPlayerLeft() {
+		if (sentByLocal) {
+			sentByLocal = false;
+			return;
+		}
+
+		if (Network.connections.Length >= 2) return; // UI.PlayerLeave
+
+		// TODO: End Game
 	}
 
 	[Command]
@@ -43,5 +59,10 @@ public class NetworkHandler : NetworkBehaviour {
 	[Command]
 	public void CmdRotatePiece(Point position, Quaternion rotation) {
 		RpcOnPieceRotated(position, rotation);
+	}
+
+	[Command]
+	private void CmdPlayerLeft() {
+		RpcPlayerLeft();
 	}
 }

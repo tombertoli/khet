@@ -14,12 +14,11 @@ public class TemplateManager : MonoBehaviour {
 	public static void CreateFiles() {
 		string file = BoardTemplates.defPath + @"\classic.kbt";
 
-    if (!File.Exists(file)) { 
-      Directory.CreateDirectory(BoardTemplates.defPath);
+    if (File.Exists(file) && File.ReadAllLines(file) != new string[] { }) return; 
+		Directory.CreateDirectory(BoardTemplates.defPath);
 
-			using (FileStream s = File.Create(file))
-				using (StreamWriter sw = new StreamWriter(s))
-								sw.Write(reference.text.text);
-    }
+		using (FileStream s = File.Create(file))
+			using (StreamWriter sw = new StreamWriter(s))
+							sw.Write(reference.text.text);
 	}
 }
