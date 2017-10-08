@@ -3,45 +3,46 @@ using System.Collections;
 
 [RequireComponent (typeof(Collider), typeof(Renderer))]
 public class Glow : MonoBehaviour {
-  [SerializeField] private string key, button = "Fire1";
+  [SerializeField] private string key, button = "Fire1", pieceTag = "Piece";
   [SerializeField] private float outlineWidth;
+
   private PieceSetup setup;
   private Renderer r;
   private bool permanent, over;
 
   void Start() {
-    TurnManager.OnTurnFinished += () => {
-      ToggleOutline(false);
-      permanent = false;
-      setup.Piece.IsSelected = false;
-    };
+    TurnManager.TurnFinished += () => DeselectRange(GameObject.FindGameObjectsWithTag(pieceTag));
 
     r = GetComponent<Renderer>();
     setup = GetComponent<PieceSetup>();
   }
 
   void Update() {
-    if (setup.Piece.Color != TurnManager.turn) return;
+    if (setup.Piece.Color != TurnManager.GetTurn()) return;
 
-    if (over) {
-      if (Input.GetButtonDown(button))
-        permanent = !permanent;
+    if (Input.GetButtonDown(button))
+      permanent = over ? !permanent : false;
 
-      if (!permanent) {
-        ToggleOutline(true);
-      }
-    } else {
-      if (Input.GetButtonDown(button))
-        permanent = false;
-
-      if (!permanent) ToggleOutline(false);
-    }
+    if (!permanent) SetOutline(over ? true : false);
   }
 
   void OnMouseEnter() { over = true; }
   void OnMouseExit() { over = false; }
+
+  public static void DeselectRange(GameObject[] gos) {
+    for (int i = 0; i < gos.Length; i++) {
+      Glow glow = gos[i].GetComponent<Glow>();
+
+      if (glow == null) {
+        Debug.Log("nulleadisimo");
+        continue;
+      }
+
+      glow.SetOutline(false);
+    }
+  }
   
-  private void ToggleOutline(bool state) {
+  public void SetOutline(bool state) {
     r.material.SetFloat(key, state ? outlineWidth : 0f);
   }
 }

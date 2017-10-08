@@ -52,13 +52,34 @@ public static class BoardTemplates {
         char c = pieceFile[i][j];
         IGamePiece gp;
 
+        switch (c) {
+          case 'I':
+            gp = new Pharaoh(new Point(a, j), rotations[a, j], colors[a, j], null);
+            break;
+          case 'S':
+            gp = new Sphynx(new Point(a, j), rotations[a, j], colors[a, j], null);
+            break;
+          case 'C':
+            gp = new Scarab(new Point(a, j), rotations[a, j], colors[a, j], null);
+            break;
+          case 'A':
+            gp = new Anubis(new Point(a, j), rotations[a, j], colors[a, j], null);
+            break;
+          case 'P':
+            gp = new Pyramid(new Point(a, j), rotations[a, j], colors[a, j], null);
+            break;
+          default:
+            gp = new EmptyPoint(null, new Point(a, j));
+            break;
+        }
+        /*
         if      (c == 'I') gp = new Pharaoh(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'S') gp = new Sphynx(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'C') gp = new Scarab(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'A') gp = new Anubis(new Point(a, j), rotations[a, j], colors[a, j], null);
         else if (c == 'P') gp = new Pyramid(new Point(a, j), rotations[a, j], colors[a, j], null);
         else               gp = new EmptyPoint(null, new Point(a, j));
-
+        */
         pieces[a, j] = gp;
       }
 

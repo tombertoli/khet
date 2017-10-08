@@ -1,22 +1,40 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using System.Collections;
 
-// TODO: Rotacion y Lasers (probs mergear con turnos)
 public class NetworkHandler : NetworkBehaviour {
-	public static NetworkHandler reference;
-	public bool sentByLocal = false;
+	[SerializeField] private string playerTag = "Player";
+	private static NetworkHandler instance;
+	private bool sentByLocal = false;
 
-	public void OnDestroy() {
-		sentByLocal = true;
-		CmdPlayerLeft();
+/*
+	[SyncVar] 
+	public PieceColor teamColor = PieceColor.None;
+	private static PieceColor globalColor = PieceColor.Silver;
+	 */
+
+	/*void OnDestroy() {
+		//sentByLocal = true;
+		//NetworkManager.singleton.StopHost();
+		//CmdPlayerLeft(); TODO: Solucionar los problemas que causa esto
+	}*/
+
+	void Start() {		
+		instance = this;
+		/*
+		if (!isLocalPlayer) return;
+		
+		//if (teamColor != PieceColor.None) return;
+
+		teamColor = globalColor;		
+		Debug.Log(isLocalPlayer + " " + teamColor);
+		*/
 	}
 
-	void Start() { 
-		reference = this;
-	}
+	#region RPCs
 
 	[ClientRpc]
-	private void RpcOnPieceMoved(Point fromPosition, Point toPosition) {
+	private void RpcMovePiece(Point fromPosition, Point toPosition) {
 		if (sentByLocal) {
 			sentByLocal = false;
 			return;
@@ -27,9 +45,8 @@ public class NetworkHandler : NetworkBehaviour {
 	}
 
 	[ClientRpc]
-	private void RpcOnPieceRotated(Point position, Quaternion rotation) {
+	private void RpcRotatePiece(Point position, Quaternion rotation) {
 		IGamePiece piece = BoardSetup.b.GetPieceAt(position);
-    Debug.Log("rotated " + piece.Rotation.eulerAngles);
 		
 		if (sentByLocal) {
 			sentByLocal = false;
@@ -51,18 +68,38 @@ public class NetworkHandler : NetworkBehaviour {
 		// TODO: End Game
 	}
 
+	#endregion
+
+	#region CMDs
+
 	[Command]
-	public void CmdMovePiece(Point fromPosition, Point toPosition) {
-		RpcOnPieceMoved(fromPosition, toPosition);
+	private void CmdMovePiece(Point fromPosition, Point toPosition) {
+		RpcMovePiece(fromPosition, toPosition);
 	}
 
 	[Command]
-	public void CmdRotatePiece(Point position, Quaternion rotation) {
-		RpcOnPieceRotated(position, rotation);
+	private void CmdRotatePiece(Point position, Quaternion rotation) {
+		RpcRotatePiece(position, rotation);
 	}
 
 	[Command]
 	private void CmdPlayerLeft() {
 		RpcPlayerLeft();
 	}
+
+	#endregion
+
+	#region Static Methods
+
+	public static void MovePiece(bool sentByLocal, Point fromPosition, Point toPosition) {
+		instance.sentByLocal = sentByLocal;
+		instance.CmdMovePiece(fromPosition, toPosition);
+	}
+
+	public static void RotatePiece(bool sentByLocal, Point position, Quaternion rotation) {
+		instance.sentByLocal = sentByLocal;
+		instance.CmdRotatePiece(position, rotation);
+	}
+
+	#endregion
 }

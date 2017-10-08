@@ -53,8 +53,7 @@ public class BoardSetup : MonoBehaviour {
     for (int i = 0; i < gos.Length; i++) {
       if (gos[i].Piece != b.GetPieceAt(point)) continue;
 
-      gos[i].OnRotated(rotation);
-      Debug.Log(rotation.eulerAngles);
+      gos[i].OnPieceRotated(rotation);
     }
   }
 }

@@ -4,10 +4,10 @@ using System.Collections;
 
 public class TemplateManager : MonoBehaviour {
 	[SerializeField] private TextAsset text;
-	private static TemplateManager reference;
+	private static TemplateManager instance;
 	
 	void Awake() {
-		reference = this;
+		instance = this;
     CreateFiles();
 	}
 
@@ -17,8 +17,7 @@ public class TemplateManager : MonoBehaviour {
     if (File.Exists(file) && File.ReadAllLines(file) != new string[] { }) return; 
 		Directory.CreateDirectory(BoardTemplates.defPath);
 
-		using (FileStream s = File.Create(file))
-			using (StreamWriter sw = new StreamWriter(s))
-							sw.Write(reference.text.text);
+		using (StreamWriter sw = new StreamWriter(File.Create(file)))
+			sw.Write(instance.text.text);
 	}
 }

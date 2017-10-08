@@ -30,7 +30,7 @@ public class LaserPointer : MonoBehaviour {
     points.Add(endPoint);
 
     if (hitInfo.collider == null) return;
-    Debug.Log(hitInfo.collider.gameObject);
+    //Debug.Log(hitInfo.collider.gameObject);
 
     PieceSetup ps = hitInfo.collider.gameObject.GetComponent<PieceSetup>();
     ps.OnLaserHit(hitInfo.point, hitInfo.normal);
@@ -48,6 +48,8 @@ public class LaserPointer : MonoBehaviour {
         break;
       }
     }
+
+    TurnManager.EndWaitTurn();
   }
 	
   public static void FireLaser(Vector3 position, Vector3 direction) {

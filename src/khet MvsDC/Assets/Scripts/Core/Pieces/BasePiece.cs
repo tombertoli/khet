@@ -55,23 +55,19 @@ public abstract class BasePiece : IGamePiece {
   }
 
   public void Rotate(bool sentByLocal, Quaternion finalRotation) {
-	List<Quaternion> rotations = new List<Quaternion>(GetAvailableRotations());
-    //int inverse = InverseParseRotation(rot);
-
-	foreach(Quaternion i in rotations) Debug.Log(i.eulerAngles + " rotation");
-    Debug.Log("final rotation: " + finalRotation.eulerAngles);
+    List<Quaternion> rotations = new List<Quaternion>(GetAvailableRotations());
 
     if (!rotations.Contains(finalRotation)) {
-	  Debug.Log ("rotation not contained");
+      Debug.LogError("rotation not contained");
       return;
     }
-	
-	rotation = finalRotation;
-	Board.RotatePiece(sentByLocal, Position, Rotation);
+    
+    rotation = finalRotation;
+    Board.RotatePiece(sentByLocal, Position, Rotation);
   }
 
   public void Rotate(bool sentByLocal, int rot) {
-	Rotate (sentByLocal, Quaternion.Euler(0, rotation.eulerAngles.y + (rot * 90), 0));
+	  Rotate (sentByLocal, Quaternion.Euler(0, rotation.eulerAngles.y + (rot * 90), 0));
   }
   
   public void PositionChanged() {

@@ -12,12 +12,14 @@ public class PieceSetup : MonoBehaviour {
   public bool willDestroyOnLaser { get; private set; }
 
   private Renderer r;
+  private Glow glow;
   private bool isAbove = false;
   private List<GameObject> movementPH = new List<GameObject>();
   private static bool placeholdersActive = false, selectionLocked = false;
 
 	void Start () {        
-    r = GetComponent <Renderer>();
+    r = GetComponent<Renderer>();
+    glow = GetComponent<Glow>();
     
     if (Piece.Color == PieceColor.Red)         r.material = redMaterial;
     else if (Piece.Color == PieceColor.Silver) r.material = silverMaterial;
@@ -29,7 +31,7 @@ public class PieceSetup : MonoBehaviour {
   void DoUpdate() {
     if (!selectionLocked && Piece.IsSelected && Input.GetButtonDown("Fire1")) {
       if (!isAbove && !Movement.mouseAbove) {
-        Piece.IsSelected = false;
+        SetSelection(false);
         HidePlaceholders();
       }
     } 
@@ -49,12 +51,10 @@ public class PieceSetup : MonoBehaviour {
   void OnMouseExit() { isAbove = false; }
 
   void OnMouseOver() {
-    if (!selectionLocked && Input.GetButtonDown("Fire1") && Piece.Color == TurnManager.turn) {
-      Piece.IsSelected = !Piece.IsSelected;
+    if (!selectionLocked && Input.GetButtonDown("Fire1") && Piece.Color == TurnManager.GetTurn()) {
+      SetSelection(!Piece.IsSelected);
 
-      if (!Piece.IsSelected) {
-        HidePlaceholders();
-      }
+      if (!Piece.IsSelected) HidePlaceholders();
     }
   }
 
@@ -65,18 +65,26 @@ public class PieceSetup : MonoBehaviour {
   }
 
   public void OnPieceMoved(PieceColor color, Point point) {
-    Piece.IsSelected = false;
+    SetSelection(false);
     StartCoroutine(Move(color, BasePiece.ParsePosition(point)));
   }
 
-  public void OnRotated(Quaternion rotation) {
-    Piece.IsSelected = false;
+  public void OnPieceRotated(Quaternion rotation) {
+    SetSelection(false);
     StartCoroutine(Rotate(rotation));
+  }
+
+  public void SetSelection(bool selection) {
+    Piece.IsSelected = selection;
+    glow.SetOutline(selection);
   }
 
   private IEnumerator Move(PieceColor changeTurnTo, Vector3 position) {
     HidePlaceholders();
     selectionLocked = true;
+
+    if (Piece.Color != changeTurnTo)
+      TurnManager.WaitTurn();
 
     while (transform.position != position) {
       transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * 5);
@@ -86,18 +94,16 @@ public class PieceSetup : MonoBehaviour {
     if (Piece.Color != changeTurnTo)
       TurnManager.EndTurn();
 
-    Piece.IsSelected = false;
     selectionLocked = false;
-
-    Debug.Log(Piece.Position.ToString() + Piece);
   }
 
   private IEnumerator Rotate(Quaternion rotation) {
-    if (Piece.Color != TurnManager.turn) yield break;
+    if (Piece.Color != TurnManager.GetTurn()) yield break;
 
     HidePlaceholders();
     selectionLocked = true;
-    Debug.Log ("rotating gameObject");
+
+    TurnManager.WaitTurn();
 
     while (transform.rotation != rotation) {
       transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, 5);
@@ -105,8 +111,6 @@ public class PieceSetup : MonoBehaviour {
     }
 
     TurnManager.EndTurn();
-
-    Piece.IsSelected = false;
     selectionLocked = false;
   }
 
