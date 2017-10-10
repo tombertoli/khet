@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 [RequireComponent (typeof(Collider), typeof(Renderer))]
 public class Glow : MonoBehaviour {
@@ -27,9 +28,14 @@ public class Glow : MonoBehaviour {
     }
   }
 
-  void OnMouseEnter() { 
-    if (pieceColor == TurnManager.Turn && !permanent) SetOutline(true);
+  void OnMouseEnter() {
     over = true; 
+
+    if (permanent) return;
+    if (pieceColor != TurnManager.Turn) return;
+    if (pieceColor != NetworkHandler.Color) return;
+
+    SetOutline(true);
   }
 
   void OnMouseOver() {
@@ -38,8 +44,13 @@ public class Glow : MonoBehaviour {
   }
 
   void OnMouseExit() { 
-    if (pieceColor == TurnManager.Turn && !permanent) SetOutline(false);
     over = false; 
+
+    if (permanent) return;
+    if (pieceColor != TurnManager.Turn) return;
+    if (pieceColor != NetworkHandler.Color) return;
+
+    SetOutline(false);
   }
 
   public static void SetRange(bool setTo, GameObject[] gos) {

@@ -27,6 +27,8 @@ public class PieceSetup : MonoBehaviour {
   }
 
   void Update() {
+    if (Piece.Color != NetworkHandler.Color) return;
+
     if (!selectionLocked && Piece.IsSelected && Input.GetButtonDown("Fire1")) {
       if (!isAbove && !Movement.mouseAbove) {
         SetSelection(false);
@@ -39,10 +41,10 @@ public class PieceSetup : MonoBehaviour {
       else if (!Piece.IsSelected && placeholdersActive) HidePlaceholders();
     }
 
-    if (Piece.IsSelected) {
-      if (Input.GetButtonDown("TurnLeft")) Piece.Rotate(true, -1);
-      else if (Input.GetButtonDown("TurnRight")) Piece.Rotate(true, 1);
-    }
+    if (!Piece.IsSelected) return;
+
+    if (Input.GetButtonDown("TurnLeft")) Piece.Rotate(true, -1);
+    else if (Input.GetButtonDown("TurnRight")) Piece.Rotate(true, 1);
   }
     
   void OnMouseEnter() { isAbove = true; }

@@ -3,15 +3,14 @@ using UnityEngine.Networking;
 using System.Collections;
 
 public class NetworkHandler : NetworkBehaviour {
-	//8[SerializeField] private string playerTag = "Player";
+	public static PieceColor Color { get { return instance != null ? instance.color : PieceColor.None; } }
 	private static NetworkHandler instance;
-	private bool sentByLocal = false;
-
-/*
+	private static PieceColor[] colors = new[] { PieceColor.Silver, PieceColor.Red, PieceColor.None };
+	private static short index = 0;
+	
 	[SyncVar] 
-	public PieceColor teamColor = PieceColor.None;
-	private static PieceColor globalColor = PieceColor.Silver;
-	 */
+	public PieceColor color;
+	private bool sentByLocal = false;
 
 	/*void OnDestroy() {
 		//sentByLocal = true;
@@ -19,16 +18,15 @@ public class NetworkHandler : NetworkBehaviour {
 		//CmdPlayerLeft(); TODO: Solucionar los problemas que causa esto
 	}*/
 
-	void Start() {		
-		instance = this;
-		/*
-		if (!isLocalPlayer) return;
-		
-		//if (teamColor != PieceColor.None) return;
+	/*void Start() {	
+		instance = this;		
+	}*/
 
-		teamColor = globalColor;		
-		Debug.Log(isLocalPlayer + " " + teamColor);
-		*/
+	public override void OnStartLocalPlayer() {
+		if (!isLocalPlayer) return;
+
+		instance = this;
+		CmdPlayerReady();
 	}
 
 	#region RPCs
@@ -85,6 +83,12 @@ public class NetworkHandler : NetworkBehaviour {
 	[Command]
 	private void CmdPlayerLeft() {
 		RpcPlayerLeft();
+	}
+
+	[Command]
+	private void CmdPlayerReady() {
+		color = colors[Mathf.Clamp(index, 0, 2)];
+		index++;
 	}
 
 	#endregion
