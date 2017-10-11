@@ -62,6 +62,7 @@ public class Glow : MonoBehaviour {
 
   public static void SetRange(bool setTo, GameObject[] gos) {
     for (int i = 0; i < gos.Length; i++) {
+      if (!gos[i].CompareTag("Piece")) Debug.Log("Se hace el piola");
       Glow glow = gos[i].GetComponent<Glow>();
 
       if (glow == null) {

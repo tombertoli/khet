@@ -37,9 +37,21 @@ public static class BoardTemplates {
   }
 
   public static Board LoadClassic(BoardSetup setup) {
-    if (!File.Exists(defPath + @"\classic.kbt")) TemplateManager.CreateFiles();
+    TemplateManager.CheckFiles();
 
     return LoadCustom(setup, defPath + @"\classic.kbt");
+  }
+
+  public static Board LoadImhotep(BoardSetup setup) {
+    TemplateManager.CheckFiles();
+
+    return LoadCustom(setup, defPath + @"\imhotep.kbt");
+  }
+
+  public static Board LoadDynasty(BoardSetup setup) {
+    TemplateManager.CheckFiles();
+
+    return LoadCustom(setup, defPath + @"\dynasty.kbt");
   }
 
   private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, Quaternion[,] rotations, ref IGamePiece[,] pieces) {
@@ -72,14 +84,7 @@ public static class BoardTemplates {
             gp = new EmptyPoint(null, new Point(a, j));
             break;
         }
-        /*
-        if      (c == 'I') gp = new Pharaoh(new Point(a, j), rotations[a, j], colors[a, j], null);
-        else if (c == 'S') gp = new Sphynx(new Point(a, j), rotations[a, j], colors[a, j], null);
-        else if (c == 'C') gp = new Scarab(new Point(a, j), rotations[a, j], colors[a, j], null);
-        else if (c == 'A') gp = new Anubis(new Point(a, j), rotations[a, j], colors[a, j], null);
-        else if (c == 'P') gp = new Pyramid(new Point(a, j), rotations[a, j], colors[a, j], null);
-        else               gp = new EmptyPoint(null, new Point(a, j));
-        */
+
         pieces[a, j] = gp;
       }
 

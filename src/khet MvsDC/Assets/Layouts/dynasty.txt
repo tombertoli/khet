@@ -1,0 +1,44 @@
+(8, 10)
+[Underline]
+RS      RS
+R        S
+R        S
+R        S
+R        S
+R        S
+R        S
+RS      RS
+~
+
+[Color]
+R   RRR   
+     R    
+R   RRR   
+R R S S   
+   R R S S
+   SSS   S
+    S     
+   SSS   S
+~
+
+[Rotation]
+1   211   
+     1    
+0   213   
+1 2 3 1   
+   3 1 0 3
+   130   2
+    3     
+   330   3
+~
+
+[Pieces]
+S   PAP   
+     I    
+P   PAC   
+P C P P   
+   P P C P
+   CAP   P
+    I     
+   PAP   S
+~

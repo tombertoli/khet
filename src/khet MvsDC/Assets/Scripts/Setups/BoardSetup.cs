@@ -4,10 +4,10 @@ using System.Collections.Generic;
 
 public class BoardSetup : MonoBehaviour {
   [SerializeField] private GameObject go;
-  [System.NonSerialized] public static Board b;
+  public static Board b;
   
 	void Awake () {
-    b = BoardTemplates.LoadClassic(this);
+    b = BoardTemplates.LoadImhotep(this);
     BasePiece.transPos = transform.position;
     EmptyPoint.transPos = transform.position;
     
@@ -27,12 +27,11 @@ public class BoardSetup : MonoBehaviour {
       PieceSetup ps = instance.GetComponent<PieceSetup>();
       ps.Piece = gp;
 
-      if (gp.PieceType == PieceTypes.Sphynx) {
-        if (gp.Color == PieceColor.Red)
-          TurnManager.Red = ps.transform;
-        else
-          TurnManager.Silver = ps.transform;
-      }
+      if (gp.PieceType != PieceTypes.Sphynx) return;
+      if (gp.Color == PieceColor.Red)
+        TurnManager.Red = ps.transform;
+      else
+        TurnManager.Silver = ps.transform;
     }
   }
 
