@@ -65,7 +65,7 @@ public class Glow : MonoBehaviour {
       Glow glow = gos[i].GetComponent<Glow>();
 
       if (glow == null) {
-        Debug.Log("nulleadisimo");
+        Debug.Log("nulleadisimo; que carajo pasa?");
         continue;
       }
 

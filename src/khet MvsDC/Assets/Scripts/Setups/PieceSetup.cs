@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [RequireComponent (typeof(Renderer), typeof(Collider))]
 public class PieceSetup : MonoBehaviour {
   [SerializeField] private GameObject placeholderGO;
-  [SerializeField] private short multiplier = 5;
+  [SerializeField] private float multiplier = 5f;
 
   #pragma warning disable 0649
   [SerializeField] private Material silverMaterial, redMaterial;
@@ -44,7 +44,6 @@ public class PieceSetup : MonoBehaviour {
       }
     }
 
-    Debug.Log(Piece.Rotation.eulerAngles);
     if (Input.GetButtonDown("TurnLeft") && Contains(Piece.GetAvailableRotationsInInt(), -1))
       Piece.Rotate(true, -1);
     else if (Input.GetButtonDown("TurnRight") && Contains(Piece.GetAvailableRotationsInInt(), 1))
@@ -95,7 +94,7 @@ public class PieceSetup : MonoBehaviour {
       TurnManager.WaitTurn();
 
     while (transform.position != position) {
-      transform.position = Vector3.Lerp(transform.position, position, Time.time * multiplier);
+      transform.position = Vector3.Slerp(transform.position, position, Time.deltaTime * multiplier);
       yield return null;
     }
 
@@ -114,7 +113,7 @@ public class PieceSetup : MonoBehaviour {
     TurnManager.WaitTurn();
 
     while (transform.rotation != rotation) {
-      transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, 5);
+      transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, multiplier);
       yield return null;
     }
 

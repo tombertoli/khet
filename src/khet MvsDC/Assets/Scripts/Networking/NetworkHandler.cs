@@ -8,7 +8,6 @@ public class NetworkHandler : NetworkBehaviour {
 	private static PieceColor[] colors = new[] { PieceColor.Silver, PieceColor.Red, PieceColor.None };
 	private static short index = 0;
 	
-	[SerializeField]
 	[SyncVar] 
 	private PieceColor color;
 	private bool sentByLocal = false;
