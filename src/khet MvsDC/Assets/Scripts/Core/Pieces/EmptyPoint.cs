@@ -18,7 +18,8 @@ public class EmptyPoint : IGamePiece {
   }
 
   public Point[] GetAvailablePositions() { return null; }
-	public Quaternion[] GetAvailableRotations() { return new Quaternion[] { Quaternion.identity }; }
+	public Quaternion[] GetAvailableRotations() { return new[] { Quaternion.identity }; }
+  public int[] GetAvailableRotationsInInt() { return new[] { 0 }; }
 
   public bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) { 
     throw new System.NotImplementedException("An empty can't handle a laser");

@@ -21,11 +21,13 @@ public class Glow : MonoBehaviour {
   void Update() { 
     if (!Input.GetButtonDown(button)) return;
     
-    if (over) permanent = !permanent;
-    else { 
-      permanent = false;
-      SetOutline(false);
+    if (over) { 
+      permanent = !permanent;
+      return;
     }
+
+    permanent = false;
+    SetOutline(false);
   }
 
   void OnMouseEnter() {
@@ -39,8 +41,13 @@ public class Glow : MonoBehaviour {
   }
 
   void OnMouseOver() {
-    if (over) return;
-    over = true;
+    if (!over) over = true;
+
+    if (permanent) return;
+    if (pieceColor != TurnManager.Turn) return;
+    if (pieceColor != NetworkHandler.Color) return;
+
+    SetOutline(true);
   }
 
   void OnMouseExit() { 

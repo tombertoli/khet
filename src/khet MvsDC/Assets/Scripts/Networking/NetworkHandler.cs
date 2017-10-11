@@ -8,18 +8,15 @@ public class NetworkHandler : NetworkBehaviour {
 	private static PieceColor[] colors = new[] { PieceColor.Silver, PieceColor.Red, PieceColor.None };
 	private static short index = 0;
 	
+	[SerializeField]
 	[SyncVar] 
-	public PieceColor color;
+	private PieceColor color;
 	private bool sentByLocal = false;
 
 	/*void OnDestroy() {
 		//sentByLocal = true;
 		//NetworkManager.singleton.StopHost();
 		//CmdPlayerLeft(); TODO: Solucionar los problemas que causa esto
-	}*/
-
-	/*void Start() {	
-		instance = this;		
 	}*/
 
 	public override void OnStartLocalPlayer() {

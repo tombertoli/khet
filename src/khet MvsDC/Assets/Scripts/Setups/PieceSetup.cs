@@ -6,6 +6,7 @@ using System.Collections.Generic;
 [RequireComponent (typeof(Renderer), typeof(Collider))]
 public class PieceSetup : MonoBehaviour {
   [SerializeField] private GameObject placeholderGO;
+  [SerializeField] private short multiplier = 5;
 
   #pragma warning disable 0649
   [SerializeField] private Material silverMaterial, redMaterial;
@@ -29,34 +30,38 @@ public class PieceSetup : MonoBehaviour {
   void Update() {
     if (Piece.Color != NetworkHandler.Color) return;
 
-    if (!selectionLocked && Piece.IsSelected && Input.GetButtonDown("Fire1")) {
-      if (!isAbove && !Movement.mouseAbove) {
+    if (!Piece.IsSelected) {
+      if (Input.GetButtonDown("Fire1") && placeholdersActive) HidePlaceholders();
+      return;
+    }
+
+    if (Input.GetButtonDown("Fire1")) {
+      if (!placeholdersActive) ShowPlaceholders();
+
+      if (!selectionLocked && !isAbove && !Movement.mouseAbove) {
         SetSelection(false);
         HidePlaceholders();
       }
-    } 
-
-    if (Input.GetButtonDown("Fire1")) {
-      if (Piece.IsSelected && !placeholdersActive) ShowPlaceholders();
-      else if (!Piece.IsSelected && placeholdersActive) HidePlaceholders();
     }
 
-    if (!Piece.IsSelected) return;
-
-    if (Input.GetButtonDown("TurnLeft")) Piece.Rotate(true, -1);
-    else if (Input.GetButtonDown("TurnRight")) Piece.Rotate(true, 1);
+    Debug.Log(Piece.Rotation.eulerAngles);
+    if (Input.GetButtonDown("TurnLeft") && Contains(Piece.GetAvailableRotationsInInt(), -1))
+      Piece.Rotate(true, -1);
+    else if (Input.GetButtonDown("TurnRight") && Contains(Piece.GetAvailableRotationsInInt(), 1))
+      Piece.Rotate(true, 1);
   }
     
   void OnMouseEnter() { isAbove = true; }
   void OnMouseExit() { isAbove = false; }
 
   void OnMouseOver() {
-    if (!selectionLocked && Input.GetButtonDown("Fire1") && Piece.Color == TurnManager.Turn) {
-      SetSelection(!Piece.IsSelected);
+    if (selectionLocked || !Input.GetButtonDown("Fire1") || Piece.Color != TurnManager.Turn) return;
 
-      if (!Piece.IsSelected) HidePlaceholders();
-    }
+    SetSelection(!Piece.IsSelected);
+    if (!Piece.IsSelected) HidePlaceholders();
   }
+
+  #region Events
 
   public void LaserHit(Vector3 point, Vector3 normal) {
     Vector3 temp = transform.InverseTransformPoint(point);
@@ -78,6 +83,10 @@ public class PieceSetup : MonoBehaviour {
     Piece.IsSelected = selection;
   }
 
+  #endregion
+
+  #region Coroutines
+
   private IEnumerator Move(PieceColor changeTurnTo, Vector3 position) {
     HidePlaceholders();
     selectionLocked = true;
@@ -86,7 +95,7 @@ public class PieceSetup : MonoBehaviour {
       TurnManager.WaitTurn();
 
     while (transform.position != position) {
-      transform.position = Vector3.Lerp(transform.position, position, Time.deltaTime * 5);
+      transform.position = Vector3.Lerp(transform.position, position, Time.time * multiplier);
       yield return null;
     }
 
@@ -112,6 +121,10 @@ public class PieceSetup : MonoBehaviour {
     TurnManager.EndTurn();
     selectionLocked = false;
   }
+
+  #endregion
+
+  #region Utility
 
   private void ShowPlaceholders() {
     if (Piece.PieceType == PieceTypes.Sphynx) return;
@@ -144,14 +157,14 @@ public class PieceSetup : MonoBehaviour {
     placeholdersActive = false;
   }
 
-  private IEnumerator CalculateLaser() {
-    int limit = 20;
-    while (placeholdersActive && limit <= 0) {
-      limit--;
-      yield return null;
+  private bool Contains<T>(T[] array, T equal) where T : IComparable {
+    for (int i = 0; i < array.Length; i++) {
+      if (!array[i].Equals(equal)) continue;
+      return true;
     }
 
-    if (limit <= 0) yield break;
-    LaserPointer.AddPosition(transform.position, transform.forward);
+    return false;
   }
+
+  #endregion
 }

@@ -10,6 +10,7 @@ public interface IGamePiece {
 
   Point[] GetAvailablePositions();
   Quaternion[] GetAvailableRotations();
+  int[] GetAvailableRotationsInInt();
   
   Vector3 GetPositionInWorld();
 

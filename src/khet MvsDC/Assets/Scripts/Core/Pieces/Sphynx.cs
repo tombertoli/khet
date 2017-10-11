@@ -7,13 +7,23 @@ public class Sphynx : BasePiece {
 
   public override Point[] GetAvailablePositions() { return null; }
   public override Quaternion[] GetAvailableRotations() {
-    if (rotation == Quaternion.Euler(Vector3.zero))
-      return new Quaternion[] { Quaternion.Euler(0, rotation.eulerAngles.y + 90, 0) };
-    else if (rotation == Quaternion.Euler(0, 90, 0))
-      return new Quaternion[] { Quaternion.Euler(0, rotation.eulerAngles.y - 90, 0) };
+    if (rotation == Quaternion.Euler(Vector3.zero) || rotation == Quaternion.Euler(0, 180, 0))
+      return new[] { Quaternion.Euler(0, rotation.eulerAngles.y + 90, 0) };
+    else if (rotation == Quaternion.Euler(0, 90, 0) || rotation == Quaternion.Euler(0, 270, 0))
+      return new[] { Quaternion.Euler(0, rotation.eulerAngles.y - 90, 0) };
 
     Debug.LogError("Rotacion sphynx mal");
-    return new Quaternion[] { Quaternion.identity };
+    return new[] { Quaternion.identity };
+  }
+
+  public override int[] GetAvailableRotationsInInt() {
+    if (rotation == Quaternion.Euler(Vector3.zero) || rotation == Quaternion.Euler(0, 180, 0))
+      return new[] { 1 };
+    else if (rotation == Quaternion.Euler(0, 90, 0) || rotation == Quaternion.Euler(0, 270, 0))
+      return new[] { -1 };
+    
+    Debug.LogError("Rotacion sphynx mal");
+    return new[] { 0 };
   }
 
   public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {

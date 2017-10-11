@@ -34,6 +34,10 @@ public class Scarab : BasePiece {
     return new Quaternion[] { left, right };
   }
 
+  public override int[] GetAvailableRotationsInInt() {
+    return new[] { 1, -1 };
+  }
+
   public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
 	if (normal == -transform.forward || normal == transform.forward)
       normal = Quaternion.Euler(0, -90, 0) * normal;

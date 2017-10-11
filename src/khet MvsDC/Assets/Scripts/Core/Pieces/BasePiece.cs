@@ -43,6 +43,7 @@ public abstract class BasePiece : IGamePiece {
   }
 
   public abstract Quaternion[] GetAvailableRotations();
+  public abstract int[] GetAvailableRotationsInInt();
 
   public abstract bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
 
