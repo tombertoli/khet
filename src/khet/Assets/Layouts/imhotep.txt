@@ -1,0 +1,44 @@
+(8, 10)
+[Underline]
+RS      RS
+R        S
+R        S
+R        S
+R        S
+R        S
+R        S
+RS      RS
+~
+
+[Color]
+R   RRRR  
+          
+   S  R   
+RS  SR  RS
+RS  SR  RS
+   S  R   
+          
+  SSSS   S
+~
+
+[Rotation]
+1   1111  
+          
+   3  0   
+02  11  13
+13  33  02
+   2  1   
+          
+  3333   3
+~
+
+[Pieces]
+S   AIAC  
+          
+   P  P   
+PP  CC  PP
+PP  CC  PP
+   P  P   
+          
+  CAIA   S
+~
