@@ -7,11 +7,11 @@ public static class BoardTemplates {
   public static string classicText;
   public static readonly string defPath = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Documents\My Games\khet\Templates");
 
-  public static Board LoadCustom(BoardSetup setup, string file) {
+  public static Board LoadCustom(string file) {
     string[] pieceFile = File.ReadAllLines(file);
     Point pieceFileSize = GetPieceFileSize(pieceFile);
 
-    Board board             = new Board(setup, pieceFileSize.x, pieceFileSize.y);
+    Board board             = new Board(pieceFileSize.x, pieceFileSize.y);
     IGamePiece[,] pieces    = new IGamePiece[pieceFileSize.x, pieceFileSize.y];
     PieceColor[,] colors    = new PieceColor[pieceFileSize.x, pieceFileSize.y];
     Underline[,] underlines = new Underline[pieceFileSize.x, pieceFileSize.y];
@@ -36,22 +36,22 @@ public static class BoardTemplates {
     return board.AssignPieces(pieces, underlines);
   }
 
-  public static Board LoadClassic(BoardSetup setup) {
+  public static Board LoadClassic() {
     TemplateManager.CheckFiles();
 
-    return LoadCustom(setup, defPath + @"\classic.kbt");
+    return LoadCustom(defPath + @"\classic.kbt");
   }
 
-  public static Board LoadImhotep(BoardSetup setup) {
+  public static Board LoadImhotep() {
     TemplateManager.CheckFiles();
 
-    return LoadCustom(setup, defPath + @"\imhotep.kbt");
+    return LoadCustom(defPath + @"\imhotep.kbt");
   }
 
-  public static Board LoadDynasty(BoardSetup setup) {
+  public static Board LoadDynasty() {
     TemplateManager.CheckFiles();
 
-    return LoadCustom(setup, defPath + @"\dynasty.kbt");
+    return LoadCustom(defPath + @"\dynasty.kbt");
   }
 
   private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, Quaternion[,] rotations, ref IGamePiece[,] pieces) {

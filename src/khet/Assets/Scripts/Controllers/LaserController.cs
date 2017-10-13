@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System;
 
 [RequireComponent (typeof(LineRenderer))]
-public class LaserPointer : MonoBehaviour {
+public class LaserController : MonoBehaviour {
   [SerializeField] private static float seconds = 2;
   public static LineRenderer line;
 
-  private static LaserPointer reference;  
+  public delegate void LaserHit();
+  public static event LaserHit Hit;
+
+  private static LaserController reference;  
   private static List<Vector3> points = new List<Vector3>();
 
 	void Start () {
@@ -32,7 +35,7 @@ public class LaserPointer : MonoBehaviour {
     if (hitInfo.collider == null) return;
     //Debug.Log(hitInfo.collider.gameObject);
 
-    PieceSetup ps = hitInfo.collider.gameObject.GetComponent<PieceSetup>();
+    PieceController ps = hitInfo.collider.gameObject.GetComponent<PieceController>();
     ps.LaserHit(hitInfo.point, hitInfo.normal);
   }
 
@@ -40,19 +43,11 @@ public class LaserPointer : MonoBehaviour {
     yield return new WaitForSeconds(seconds);
     line.enabled = false;
 
-    PieceSetup[] pss = FindObjectsOfType<PieceSetup>();
-
-    for(int i = 0; i < pss.Length; i++) {
-      if (pss[i].willDestroyOnLaser) {
-        Destroy(pss[i].gameObject);
-        break;
-      }
-    }
-
-    TurnManager.EndWaitTurn();
+    if (Hit != null) Hit();
+    TurnManager.EndWait();
   }
 	
-  public static void FireLaser(Vector3 position, Vector3 direction) {
+  public static void Fire(Vector3 position, Vector3 direction) {
     if (line.enabled) return;
 
     TargetChanged();

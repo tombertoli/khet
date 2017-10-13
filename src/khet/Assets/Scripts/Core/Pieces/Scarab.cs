@@ -12,7 +12,7 @@ public class Scarab : BasePiece {
     foreach (IGamePiece gp in pieces) {
       if (gp == null) continue;
       
-      switch (gp.PieceType) {
+      switch (gp.Type) {
         case PieceTypes.Anubis:
         case PieceTypes.Pyramid:
         case PieceTypes.Empty:
@@ -38,15 +38,15 @@ public class Scarab : BasePiece {
     return new[] { 1, -1 };
   }
 
-  public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
-	if (normal == -transform.forward || normal == transform.forward)
+  public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
+	  if (normal == -transform.forward || normal == transform.forward)
       normal = Quaternion.Euler(0, -90, 0) * normal;
-	else if (normal == transform.right || normal == -transform.right)
+	  else if (normal == transform.right || normal == -transform.right)
       normal = Quaternion.Euler(0, 90, 0) * normal;
 
     point.x = point.z = 0;
 
-    LaserPointer.AddPosition(transform.TransformPoint(point), normal);
+    LaserController.AddPosition(transform.TransformPoint(point), normal);
     return false;
   }
 }

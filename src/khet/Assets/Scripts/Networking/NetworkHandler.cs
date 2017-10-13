@@ -4,6 +4,7 @@ using System.Collections;
 
 public class NetworkHandler : NetworkBehaviour {
 	public static PieceColor Color { get { return instance != null ? instance.color : PieceColor.None; } }
+
 	private static NetworkHandler instance;
 	private static PieceColor[] colors = new[] { PieceColor.Silver, PieceColor.Red, PieceColor.None };
 	private static short index = 0;
@@ -13,9 +14,10 @@ public class NetworkHandler : NetworkBehaviour {
 	private bool sentByLocal = false;
 
 	/*void OnDestroy() {
-		//sentByLocal = true;
-		//NetworkManager.singleton.StopHost();
-		//CmdPlayerLeft(); TODO: Solucionar los problemas que causa esto
+		if (Network.connections.Length >= 2) return;
+
+		sentByLocal = true;
+		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
 	}*/
 
 	public override void OnStartLocalPlayer() {
@@ -28,19 +30,19 @@ public class NetworkHandler : NetworkBehaviour {
 	#region RPCs
 
 	[ClientRpc]
-	private void RpcMovePiece(Point fromPosition, Point toPosition) {
+	private void RpcMovePiece(Point toPosition, Point fromPosition) {
 		if (sentByLocal) {
 			sentByLocal = false;
 			return;
 		}
 
-		IGamePiece piece = BoardSetup.b.GetPieceAt(fromPosition);
-		piece.MakeMove(false, toPosition);
+		IGamePiece piece = BoardController.b.GetPieceAt(fromPosition);
+		piece.Move(false, toPosition);
 	}
 
 	[ClientRpc]
 	private void RpcRotatePiece(Point position, Quaternion rotation) {
-		IGamePiece piece = BoardSetup.b.GetPieceAt(position);
+		IGamePiece piece = BoardController.b.GetPieceAt(position);
 		
 		if (sentByLocal) {
 			sentByLocal = false;
@@ -60,6 +62,17 @@ public class NetworkHandler : NetworkBehaviour {
 		if (Network.connections.Length >= 2) return; // UI.PlayerLeave
 
 		// TODO: End Game
+		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
+	}
+
+	[ClientRpc]
+	private void RpcEndGame(PieceColor won) {
+		if (sentByLocal) {
+			sentByLocal = false;
+			return;
+		}
+
+		Debug.Log(won + " won");
 	}
 
 	#endregion
@@ -87,6 +100,11 @@ public class NetworkHandler : NetworkBehaviour {
 		index++;
 	}
 
+	[Command]
+	private void CmdEndGame(PieceColor won) {
+		RpcEndGame(won);
+	}
+
 	#endregion
 
 	#region Static Methods
@@ -99,6 +117,10 @@ public class NetworkHandler : NetworkBehaviour {
 	public static void RotatePiece(bool sentByLocal, Point position, Quaternion rotation) {
 		instance.sentByLocal = sentByLocal;
 		instance.CmdRotatePiece(position, rotation);
+	}
+
+	public static void EndGame(PieceColor won) {
+		instance.CmdEndGame(won);
 	}
 
 	#endregion

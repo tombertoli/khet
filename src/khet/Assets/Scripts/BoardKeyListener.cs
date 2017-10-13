@@ -8,7 +8,7 @@ public class BoardKeyListener : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-    if (!started && (Input.GetKeyDown(turnBoardRight) || Input.GetKeyDown(turnBoardLeft)) && !LaserPointer.line.enabled) {
+    if (!started && (Input.GetKeyDown(turnBoardRight) || Input.GetKeyDown(turnBoardLeft)) && !LaserController.line.enabled) {
       started = true;
 
       float finalRot = Input.GetKeyDown(turnBoardRight) ? 90 : -90;

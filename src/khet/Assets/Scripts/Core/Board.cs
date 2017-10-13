@@ -10,10 +10,8 @@ public class Board {
   private int width, height;
   private IGamePiece[,] pieces;
   private Underline[,] underlines;
-  private BoardSetup setup;
 
-  public Board(BoardSetup setup, IGamePiece[,] board, Underline[,] underlines) {
-    this.setup = setup;
+  public Board(IGamePiece[,] board, Underline[,] underlines) {
     this.pieces = board;
     this.underlines = underlines;
     this.width = board.GetLength(0);
@@ -26,8 +24,7 @@ public class Board {
     }
   }
 
-  public Board(BoardSetup setup, int width, int height) {
-    this.setup = setup;
+  public Board(int width, int height) {
     this.width = width;
     this.height = height;
     pieces = new IGamePiece[width, height];
@@ -52,19 +49,10 @@ public class Board {
     OccupyPoint(piece, targetPoint);
     OccupyPoint(target, piecePoint);
 
-    target.PositionChanged();
-    piece.PositionChanged();
-
-    setup.MoveMade(piece, target.Color, targetPoint);
-    setup.MoveMade(target, target.Color, piecePoint);
+    piece.PositionChanged(target.Color, targetPoint);
+    target.PositionChanged(target.Color, piecePoint);
 
     if (sentByLocal) NetworkHandler.MovePiece(true, target.Position, piece.Position);
-  }
-
-  public void RotatePiece(bool sentByLocal, Point point, Quaternion rot) {
-    setup.RotationMade(point, rot);
-
-    if (sentByLocal) NetworkHandler.RotatePiece(true, point, rot);
   }
 
   public void RemovePiece(IGamePiece piece) {
@@ -82,7 +70,7 @@ public class Board {
           continue; 
         }
 
-        res[i + 1, j + 1] = GetPieceAt(new Point(point.x + i, point.y + j));
+        res[i + 1, j + 1] = GetPieceAt(point.x + i, point.y + j);
       }
     }
 
@@ -109,6 +97,10 @@ public class Board {
     }
 
     return new Point(-1, -1);
+  }
+
+  public Underline GetUnderline(int x, int y) {
+    return GetUnderline(new Point(x, y));
   }
 
   public Underline GetUnderline(Point point) {
