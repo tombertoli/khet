@@ -58,19 +58,11 @@ public abstract class BasePiece : IGamePiece {
     Board.SwapPieces(sentByLocal, this, piece);
   }
 
-  public void Rotate(bool sentByLocal, Quaternion finalRotation) {
-    // TODO: Verificar si funciona bien la rotacion sin esto!
-    /*List<Quaternion> rotations = new List<Quaternion>(GetAvailableRotations());
-
-    if (!rotations.Contains(finalRotation)) {
-      Debug.LogError("rotation not contained");
-      return;
-    }*/
-    
+  public void Rotate(bool sentByLocal, Quaternion finalRotation) {    
     rotation = finalRotation;
     Rotated(rotation);
 
-    if (sentByLocal) NetworkHandler.RotatePiece(true, Position, Rotation);
+    if (sentByLocal) NetworkController.RotatePiece(true, Position, Rotation);
   }
 
   public void Rotate(bool sentByLocal, int rot) {

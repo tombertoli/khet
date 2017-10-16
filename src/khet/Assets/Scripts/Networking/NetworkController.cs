@@ -2,10 +2,10 @@
 using UnityEngine.Networking;
 using System.Collections;
 
-public class NetworkHandler : NetworkBehaviour {
+public class NetworkController : NetworkBehaviour {
 	public static PieceColor Color { get { return instance != null ? instance.color : PieceColor.None; } }
 
-	private static NetworkHandler instance;
+	private static NetworkController instance;
 	private static PieceColor[] colors = new[] { PieceColor.Silver, PieceColor.Red, PieceColor.None };
 	private static short index = 0;
 	
@@ -13,12 +13,12 @@ public class NetworkHandler : NetworkBehaviour {
 	private PieceColor color;
 	private bool sentByLocal = false;
 
-	/*void OnDestroy() {
+	void OnDestroy() {
 		if (Network.connections.Length >= 2) return;
 
 		sentByLocal = true;
 		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
-	}*/
+	}
 
 	public override void OnStartLocalPlayer() {
 		if (!isLocalPlayer) return;
@@ -59,14 +59,15 @@ public class NetworkHandler : NetworkBehaviour {
 			return;
 		}
 
-		if (Network.connections.Length >= 2) return; // UI.PlayerLeave
+		if (Network.connections.Length >= 2) return; // TODO: UI.PlayerLeave
 
-		// TODO: End Game
 		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
 	}
 
 	[ClientRpc]
 	private void RpcEndGame(PieceColor won) {
+		if (!isLocalPlayer) return;
+
 		if (sentByLocal) {
 			sentByLocal = false;
 			return;
@@ -96,8 +97,8 @@ public class NetworkHandler : NetworkBehaviour {
 
 	[Command]
 	private void CmdPlayerReady() {
-		color = colors[Mathf.Clamp(index, 0, 2)];
-		index++;
+		index = (short)Mathf.Clamp(index++, 0, 2);
+		color = colors[index];		
 	}
 
 	[Command]

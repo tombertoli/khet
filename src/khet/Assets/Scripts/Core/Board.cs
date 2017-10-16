@@ -52,7 +52,7 @@ public class Board {
     piece.PositionChanged(target.Color, targetPoint);
     target.PositionChanged(target.Color, piecePoint);
 
-    if (sentByLocal) NetworkHandler.MovePiece(true, target.Position, piece.Position);
+    if (sentByLocal) NetworkController.MovePiece(true, target.Position, piece.Position);
   }
 
   public void RemovePiece(IGamePiece piece) {

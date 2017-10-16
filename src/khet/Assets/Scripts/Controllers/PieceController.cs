@@ -32,7 +32,7 @@ public class PieceController : MonoBehaviour {
   }
 
   void Update() {
-    if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkHandler.Color) return;
+    if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkController.Color) return;
 
     if (!Piece.IsSelected) {
       if (Input.GetButtonDown("Fire1") && placeholdersActive) HidePlaceholders();
@@ -77,7 +77,7 @@ public class PieceController : MonoBehaviour {
     LaserController.Hit -= Die;
 
     if (Piece.Type == PieceTypes.Pharaoh)
-      NetworkHandler.EndGame(Piece.Color == PieceColor.Red ? PieceColor.Silver : PieceColor.Red);
+      NetworkController.EndGame(Piece.Color == PieceColor.Red ? PieceColor.Silver : PieceColor.Red);
 
     Destroy(gameObject);
   }
