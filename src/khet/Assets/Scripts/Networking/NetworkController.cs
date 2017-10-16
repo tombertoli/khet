@@ -14,7 +14,7 @@ public class NetworkController : NetworkBehaviour {
 	private bool sentByLocal = false;
 
 	void OnDestroy() {
-		if (Network.connections.Length >= 2) return;
+		if (NetworkServer.connections.Count > 2 || NetworkServer.connections.Count < 1) return;
 
 		sentByLocal = true;
 		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
@@ -111,16 +111,22 @@ public class NetworkController : NetworkBehaviour {
 	#region Static Methods
 
 	public static void MovePiece(bool sentByLocal, Point fromPosition, Point toPosition) {
+		if (instance == null) return;
+		
 		instance.sentByLocal = sentByLocal;
 		instance.CmdMovePiece(fromPosition, toPosition);
 	}
 
 	public static void RotatePiece(bool sentByLocal, Point position, Quaternion rotation) {
+		if (instance == null) return;
+
 		instance.sentByLocal = sentByLocal;
 		instance.CmdRotatePiece(position, rotation);
 	}
 
 	public static void EndGame(PieceColor won) {
+		if (instance == null) return;
+
 		instance.CmdEndGame(won);
 	}
 
