@@ -21,7 +21,7 @@ public class PieceController : MonoBehaviour {
   private static bool placeholdersActive = false, selectionLocked = false;
 
 	void Start() {
-    //TurnManager.IsSinglePlayer = true;
+    TurnManager.IsSinglePlayer = true;
     Piece.Moved += MovePiece;
     Piece.Rotated += RotatePiece;
     
@@ -67,9 +67,7 @@ public class PieceController : MonoBehaviour {
   #region Events
 
   public void LaserHit(Vector3 point, Vector3 normal) {
-    Vector3 temp = transform.InverseTransformPoint(point);
-
-    if (Piece.WillDie(transform, ref temp, ref normal))
+    if (Piece.WillDie(transform.parent, ref point, ref normal))
       LaserController.Hit += Die;
   }
 
@@ -79,12 +77,15 @@ public class PieceController : MonoBehaviour {
     if (Piece.Type == PieceTypes.Pharaoh)
       NetworkController.EndGame(Piece.Color == PieceColor.Red ? PieceColor.Silver : PieceColor.Red);
 
-    Destroy(gameObject);
+    Destroy(transform.parent.gameObject);
   }
 
   private void MovePiece(PieceColor color, Point point) {
     SetSelection(false);
-    StartCoroutine(Move(color, BasePiece.ParsePosition(point)));
+
+    Vector3 temp = BasePiece.ParsePosition(transform.parent, point);
+    temp.y = transform.parent.position.y;
+    StartCoroutine(Move(color, temp));
   }
 
   private void RotatePiece(Quaternion rotation) {
@@ -106,8 +107,8 @@ public class PieceController : MonoBehaviour {
 
     if (Piece.Color != changeTurnTo) TurnManager.Wait();
 
-    while (transform.position != position) {
-      transform.position = Vector3.Slerp(transform.position, position, Time.deltaTime * multiplier);
+    while (transform.parent.position != position) {
+      transform.parent.position = Vector3.Slerp(transform.parent.position, position, Time.deltaTime * multiplier);
       yield return null;
     }
 
@@ -143,15 +144,15 @@ public class PieceController : MonoBehaviour {
     Point[] points = Piece.GetAvailablePositions();
     if (points == null) return;
 
-    Vector3[] positions = BasePiece.ParsePositions(points);
+    Vector3[] positions = BasePiece.ParsePositions(transform.parent, points);
     HidePlaceholders();
 
     for (int i = 0; i < positions.Length; i++) {
       movementPH.Add(Instantiate(placeholderGO, positions[i], Piece.Rotation) as GameObject);
-      Movement m = movementPH[movementPH.Count - 1].GetComponent<Movement>();
+      Movement m = movementPH[movementPH.Count - 1].GetComponentInChildren<Movement>();
       m.piece = Piece;
       m.point = points[i];
-      m.transform.parent = transform;
+      m.transform.parent.parent = transform;
     }
 
     placeholdersActive = true;

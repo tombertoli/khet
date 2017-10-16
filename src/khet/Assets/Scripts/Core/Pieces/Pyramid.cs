@@ -17,16 +17,32 @@ public class Pyramid : BasePiece {
   }
 
   public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
-    if (normal == -transform.right)
-      normal = Quaternion.Euler(0, 90, 0) * normal;
-    else if (normal == transform.forward)
-      normal = Quaternion.Euler(0, -90, 0) * normal;
-    else {
+    int norm = Mathf.RoundToInt(normal.x), 
+      left = Mathf.RoundToInt(-transform.right.x),
+      forward = Mathf.RoundToInt(transform.forward.x);
+
+    Debug.Log(normal);
+    Vector3 originalNormal = normal, originalPoint = point;
+
+    if (norm == left) {
+      normal = Quaternion.AngleAxis(90, -Vector3.up) * normal;
+      point = Quaternion.AngleAxis(90, -Vector3.up) * point;
+      point.z += originalPoint.x;
+      point.x += originalPoint.z;
+    } else if (norm == forward) {
+      normal = Quaternion.AngleAxis(-90, -Vector3.up) * normal;
+      point = Quaternion.AngleAxis(-90, -Vector3.up) * point;
+      point.z += originalPoint.x;
+      point.x += originalPoint.z;
+    } else {
       Die();
       return true;
     }
 
-    point.x = point.z = 0;
+    //point.x = point.z = 0;
+    normal.y = 0;
+    Debug.Log(normal);
+    Debug.Log(point);
 
     LaserController.AddPosition(transform.TransformPoint(point), normal);
     return false;

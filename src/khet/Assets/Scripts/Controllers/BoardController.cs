@@ -2,7 +2,7 @@
 
 public class BoardController : MonoBehaviour {
   #pragma warning disable 0649
-  [SerializeField] private GameObject piecePrefab, underlinePrefab;
+  [SerializeField] private GameObject scarab, pyramid, sphynx, pharaoh, anubis, piecePrefab, underlinePrefab;
   [SerializeField] private Transform pieceTransform, underlineTransform;
   #pragma warning restore 0649
 
@@ -11,8 +11,8 @@ public class BoardController : MonoBehaviour {
 	void Awake() {
     b = BoardTemplates.LoadClassic();
 
-    BasePiece.transPos = transform.position;
-    EmptyPoint.transPos = transform.position;
+    BasePiece.transPos = pieceTransform.position;
+    EmptyPoint.transPos = pieceTransform.position;
     
     for (int i = 0; i < b.Width; i++) {
       for (int j = 0; j < b.Height; j++) {
@@ -32,18 +32,36 @@ public class BoardController : MonoBehaviour {
                           pieceTransform.position.y,
                           piece.Position.y + pieceTransform.position.z);
     
-    GameObject pieceInstance = (GameObject)Instantiate(piecePrefab, position, piece.Rotation);
+    GameObject prefab = SelectPrefab(piece);
+    GameObject pieceInstance = (GameObject)Instantiate(prefab, position + prefab.transform.position, prefab.transform.rotation * piece.Rotation);
     pieceInstance.transform.parent = pieceTransform;
     
-    PieceController ps = pieceInstance.GetComponent<PieceController>();
+    PieceController ps = pieceInstance.GetComponentInChildren<PieceController>();
     ps.Piece = piece;
 
     if (piece.Type != PieceTypes.Sphynx) return;
     if (piece.Color == PieceColor.Red)
-      TurnManager.Red = ps.transform;
+      TurnManager.Red = ps.transform.parent;
     else
-      TurnManager.Silver = ps.transform;
+      TurnManager.Silver = ps.transform.parent;
   }
+
+  private GameObject SelectPrefab(IGamePiece piece) {
+    switch (piece.Type) {
+      case PieceTypes.Anubis:
+        return anubis;
+      case PieceTypes.Pharaoh:
+        return pharaoh;
+      case PieceTypes.Pyramid:
+        return pyramid;
+      case PieceTypes.Scarab:
+        return scarab;
+      case PieceTypes.Sphynx:
+        return sphynx;
+      default:
+        return piecePrefab;
+    }
+  } 
 
   private void SetUnderline(Underline underline, Point point) {      
     Vector3 position = new Vector3(

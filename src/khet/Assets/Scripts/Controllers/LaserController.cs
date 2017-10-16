@@ -33,7 +33,7 @@ public class LaserController : MonoBehaviour {
     points.Add(endPoint);
 
     if (hitInfo.collider == null) return;
-    //Debug.Log(hitInfo.collider.gameObject);
+    Debug.Log(hitInfo.collider.gameObject);
 
     PieceController ps = hitInfo.collider.gameObject.GetComponent<PieceController>();
     ps.LaserHit(hitInfo.point, hitInfo.normal);

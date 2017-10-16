@@ -86,19 +86,19 @@ public abstract class BasePiece : IGamePiece {
     );
   }
 
-  public static Vector3 ParsePosition(Point point) {
+  public static Vector3 ParsePosition(Transform transform, Point point) {
     return new Vector3(
       point.x + transPos.x,
-      transPos.y,
+      transform.position.y,
       point.y + transPos.z
     );
   }
 
-  public static Vector3[] ParsePositions(Point[] point) {
+  public static Vector3[] ParsePositions(Transform transform, Point[] point) {
     Vector3[] ret = new Vector3[point.Length];
 
     for(int i = 0; i < point.Length; i++) {
-      ret[i] = BasePiece.ParsePosition(point[i]);
+      ret[i] = BasePiece.ParsePosition(transform, point[i]);
     }
 
     return ret;

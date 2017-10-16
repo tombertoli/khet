@@ -39,6 +39,10 @@ public class Scarab : BasePiece {
   }
 
   public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
+    int norm = Mathf.RoundToInt(normal.x),
+      forward = Mathf.RoundToInt(transform.forward.x), back = forward,
+      right = Mathf.RoundToInt(transform.right.x), left = -right;
+      
 	  if (normal == -transform.forward || normal == transform.forward)
       normal = Quaternion.Euler(0, -90, 0) * normal;
 	  else if (normal == transform.right || normal == -transform.right)
