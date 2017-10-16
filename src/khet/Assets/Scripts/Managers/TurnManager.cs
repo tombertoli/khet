@@ -6,27 +6,29 @@ using System.Collections.Generic;
 public class TurnManager {
   public delegate void TurnEvent();
   public static event TurnEvent TurnFinished;
+
   public static Transform Red, Silver;
   public static PieceColor Turn { get { return waiting ? PieceColor.None : turn; } }
+  public static bool IsSinglePlayer { get; set; }
 
   private static PieceColor turn = PieceColor.Silver;
   private static bool waiting = false;
 
-  public static void WaitTurn() {
+  public static void Wait() {
     waiting = true;
   }
 
-  public static void EndWaitTurn() {
+  public static void EndWait() {
     waiting = false;
   }
 
-  public static void EndTurn () {
+  public static void End() {
     TurnFinished();
-
+    
     Transform temp = turn == PieceColor.Red ? Red : Silver;
     PieceColor tempColor = turn == PieceColor.Red ? PieceColor.Silver : PieceColor.Red;
 
-    LaserPointer.FireLaser(temp.position, temp.forward);
+    LaserController.Fire(temp.position, temp.forward);
     turn = tempColor;
   }
 }

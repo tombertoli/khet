@@ -15,7 +15,7 @@ public class Glow : MonoBehaviour {
     TurnManager.TurnFinished += () => SetRange(false, GameObject.FindGameObjectsWithTag(pieceTag));
 
     r = GetComponent<Renderer>();
-    pieceColor = GetComponent<PieceSetup>().Piece.Color;
+    pieceColor = GetComponent<PieceController>().Piece.Color;
   }
 
   void Update() { 
@@ -35,7 +35,7 @@ public class Glow : MonoBehaviour {
 
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
-    if (pieceColor != NetworkHandler.Color) return;
+    if (!TurnManager.IsSinglePlayer && pieceColor != NetworkHandler.Color) return;
 
     SetOutline(true);
   }
@@ -45,7 +45,7 @@ public class Glow : MonoBehaviour {
 
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
-    if (pieceColor != NetworkHandler.Color) return;
+    if (!TurnManager.IsSinglePlayer && pieceColor != NetworkHandler.Color) return;
 
     SetOutline(true);
   }
@@ -55,7 +55,7 @@ public class Glow : MonoBehaviour {
 
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
-    if (pieceColor != NetworkHandler.Color) return;
+    if (!TurnManager.IsSinglePlayer && pieceColor != NetworkHandler.Color) return;
 
     SetOutline(false);
   }

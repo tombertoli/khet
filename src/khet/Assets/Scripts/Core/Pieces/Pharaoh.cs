@@ -16,7 +16,7 @@ public class Pharaoh : BasePiece {
     return new int[] { 1, -1 };
   }
 
-  public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
+  public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
     Die();
     return true;
   }

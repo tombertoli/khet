@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 
 public class EmptyPoint : IGamePiece {
+  public event MoveEvent Moved;
+  public event RotationEvent Rotated;
+
   public Board Board { get; set; }
   public Point Position { get { return position; } }
   public Quaternion Rotation { get { return Quaternion.identity; } }
-  public PieceTypes PieceType { get { return PieceTypes.Empty; } }
+  public PieceTypes Type { get { return PieceTypes.Empty; } }
   public PieceColor Color { get { return PieceColor.None; } }
   public bool IsSelected { get { return false; } set { IsSelected = false; } }
   public static Vector3 transPos { get; set; }
@@ -21,7 +24,7 @@ public class EmptyPoint : IGamePiece {
 	public Quaternion[] GetAvailableRotations() { return new[] { Quaternion.identity }; }
   public int[] GetAvailableRotationsInInt() { return new[] { 0 }; }
 
-  public bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) { 
+  public bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) { 
     throw new System.NotImplementedException("An empty can't handle a laser");
   }
 
@@ -33,15 +36,15 @@ public class EmptyPoint : IGamePiece {
     );
   }
 
-  public void MakeMove(bool sentByLocal, Point point) {
-    Debug.LogError("Porque se llama MakeMove en una EmptyPiece?");
+  public void Move(bool sentByLocal, Point point) {
+    Debug.LogError("Porque se llama Move en una EmptyPiece?");
   }
 
-  public void MakeMove(bool sentByLocal, IGamePiece finalPosition) { 
-    Debug.LogError("Porque se llama MakeMove en una EmptyPiece?");
+  public void Move(bool sentByLocal, IGamePiece finalPosition) { 
+    Debug.LogError("Porque se llama Move en una EmptyPiece?");
   }
 
-  public void PositionChanged() { 
+  public void PositionChanged(PieceColor color, Point position) { 
     position = Board.GetPositionFrom(this);
   }
 
@@ -54,7 +57,7 @@ public class EmptyPoint : IGamePiece {
   }
 
   public override string ToString() {
-    return string.Format("[EmptyPoint{0}, Position={1}, Rotation={2}, PieceType={3}, Color={4}, IsSelected={5}]", Board, Position, Rotation, PieceType, Color, IsSelected);
+    return string.Format("[EmptyPoint{0}, Position={1}, Rotation={2}, PieceType={3}, Color={4}, IsSelected={5}]", Board, Position, Rotation, Type, Color, IsSelected);
   }
 }
 

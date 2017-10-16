@@ -16,7 +16,7 @@ public class Pyramid : BasePiece {
     return new[] { 1, -1 };
   }
 
-  public override bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal) {
+  public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
     if (normal == -transform.right)
       normal = Quaternion.Euler(0, 90, 0) * normal;
     else if (normal == transform.forward)
@@ -28,7 +28,7 @@ public class Pyramid : BasePiece {
 
     point.x = point.z = 0;
 
-    LaserPointer.AddPosition(transform.TransformPoint(point), normal);
+    LaserController.AddPosition(transform.TransformPoint(point), normal);
     return false;
   }
 }

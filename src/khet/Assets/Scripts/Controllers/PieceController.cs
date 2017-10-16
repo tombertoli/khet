@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent (typeof(Renderer), typeof(Collider))]
-public class PieceSetup : MonoBehaviour {
+public class PieceController : MonoBehaviour {
   [SerializeField] private GameObject placeholderGO;
   [SerializeField] private float multiplier = 5f;
 
@@ -13,14 +13,18 @@ public class PieceSetup : MonoBehaviour {
   #pragma warning restore 0649
 
   public IGamePiece Piece { get; set; }
-  public bool willDestroyOnLaser { get; private set; }
+  //public bool willDestroyOnLaser { get; private set; }
 
   private Renderer r;
   private bool isAbove = false;
   private List<GameObject> movementPH = new List<GameObject>();
   private static bool placeholdersActive = false, selectionLocked = false;
 
-	void Start() {        
+	void Start() {
+    //TurnManager.IsSinglePlayer = true;
+    Piece.Moved += MovePiece;
+    Piece.Rotated += RotatePiece;
+    
     r = GetComponent<Renderer>();
     
     if (Piece.Color == PieceColor.Red)         r.material = redMaterial;
@@ -28,7 +32,7 @@ public class PieceSetup : MonoBehaviour {
   }
 
   void Update() {
-    if (Piece.Color != NetworkHandler.Color) return;
+    if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkHandler.Color) return;
 
     if (!Piece.IsSelected) {
       if (Input.GetButtonDown("Fire1") && placeholdersActive) HidePlaceholders();
@@ -65,15 +69,25 @@ public class PieceSetup : MonoBehaviour {
   public void LaserHit(Vector3 point, Vector3 normal) {
     Vector3 temp = transform.InverseTransformPoint(point);
 
-    willDestroyOnLaser = Piece.HandleLaser(transform, ref temp, ref normal);
+    if (Piece.WillDie(transform, ref temp, ref normal))
+      LaserController.Hit += Die;
   }
 
-  public void PieceMoved(PieceColor color, Point point) {
+  private void Die() {
+    LaserController.Hit -= Die;
+
+    if (Piece.Type == PieceTypes.Pharaoh)
+      NetworkHandler.EndGame(Piece.Color == PieceColor.Red ? PieceColor.Silver : PieceColor.Red);
+
+    Destroy(gameObject);
+  }
+
+  private void MovePiece(PieceColor color, Point point) {
     SetSelection(false);
     StartCoroutine(Move(color, BasePiece.ParsePosition(point)));
   }
 
-  public void PieceRotated(Quaternion rotation) {
+  private void RotatePiece(Quaternion rotation) {
     SetSelection(false);
     StartCoroutine(Rotate(rotation));
   }
@@ -90,16 +104,14 @@ public class PieceSetup : MonoBehaviour {
     HidePlaceholders();
     selectionLocked = true;
 
-    if (Piece.Color != changeTurnTo)
-      TurnManager.WaitTurn();
+    if (Piece.Color != changeTurnTo) TurnManager.Wait();
 
     while (transform.position != position) {
       transform.position = Vector3.Slerp(transform.position, position, Time.deltaTime * multiplier);
       yield return null;
     }
 
-    if (Piece.Color != changeTurnTo)
-      TurnManager.EndTurn();
+    if (Piece.Color != changeTurnTo) TurnManager.End();
 
     selectionLocked = false;
   }
@@ -110,14 +122,14 @@ public class PieceSetup : MonoBehaviour {
     HidePlaceholders();
     selectionLocked = true;
 
-    TurnManager.WaitTurn();
+    TurnManager.Wait();
 
     while (transform.rotation != rotation) {
       transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, multiplier);
       yield return null;
     }
 
-    TurnManager.EndTurn();
+    TurnManager.End();
     selectionLocked = false;
   }
 
@@ -126,7 +138,7 @@ public class PieceSetup : MonoBehaviour {
   #region Utility
 
   private void ShowPlaceholders() {
-    if (Piece.PieceType == PieceTypes.Sphynx) return;
+    if (Piece.Type == PieceTypes.Sphynx) return;
 
     Point[] points = Piece.GetAvailablePositions();
     if (points == null) return;
@@ -146,7 +158,7 @@ public class PieceSetup : MonoBehaviour {
   }
 
   private void HidePlaceholders() {
-    if (Piece.PieceType == PieceTypes.Sphynx) return;
+    if (Piece.Type == PieceTypes.Sphynx) return;
 
     for(int i = 0; i < movementPH.Count; i++) {
       Destroy(movementPH[i]);

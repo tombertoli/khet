@@ -1,10 +1,14 @@
 ﻿using UnityEngine;
+using System;
 
 public interface IGamePiece {
+  event MoveEvent Moved;
+  event RotationEvent Rotated;
+
   Board Board { get; set; }
   Point Position { get; }
   Quaternion Rotation { get; }
-  PieceTypes PieceType { get; }
+  PieceTypes Type { get; }
   PieceColor Color { get; }
   bool IsSelected { get; set; }
 
@@ -14,14 +18,17 @@ public interface IGamePiece {
   
   Vector3 GetPositionInWorld();
 
-  bool HandleLaser(Transform transform, ref Vector3 point, ref Vector3 normal);
-  void MakeMove(bool sentByLocal, Point point);
-  void MakeMove(bool sentByLocal, IGamePiece piece);
-  void PositionChanged();
+  bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal);
+  void PositionChanged(PieceColor color, Point position);
 
+  void Move(bool sentByLocal, Point point);
+  void Move(bool sentByLocal, IGamePiece piece);
   void Rotate(bool sentByLocal, int rot);
   void Rotate(bool sentByLocal, Quaternion rot);
 }
+
+public delegate void MoveEvent(PieceColor color, Point point);
+public delegate void RotationEvent(Quaternion rotation);
 
 public enum PieceTypes {
   Empty, 
