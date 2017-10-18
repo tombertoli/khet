@@ -24,7 +24,7 @@ public class EmptyPoint : IGamePiece {
 	public Quaternion[] GetAvailableRotations() { return new[] { Quaternion.identity }; }
   public int[] GetAvailableRotationsInInt() { return new[] { 0 }; }
 
-  public bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) { 
+  public bool WillDie(Transform transform, Vector3 point, Vector3 normal) { 
     throw new System.NotImplementedException("An empty can't handle a laser");
   }
 

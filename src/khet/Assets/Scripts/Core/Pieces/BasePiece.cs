@@ -48,7 +48,7 @@ public abstract class BasePiece : IGamePiece {
   public abstract Quaternion[] GetAvailableRotations();
   public abstract int[] GetAvailableRotationsInInt();
 
-  public abstract bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal);
+  public abstract bool WillDie(Transform transform, Vector3 point, Vector3 normal);
 
   public void Move(bool sentByLocal, Point point) {
     Move(sentByLocal, Board.GetPieceAt(point));

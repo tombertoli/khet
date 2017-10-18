@@ -32,6 +32,7 @@ public class PieceController : MonoBehaviour {
   }
 
   void Update() {
+    Debug.DrawRay (transform.parent.TransformPoint(Vector3.zero), transform.parent.forward, Color.blue);
     if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkController.Color) return;
 
     if (!Piece.IsSelected) {
@@ -67,7 +68,7 @@ public class PieceController : MonoBehaviour {
   #region Events
 
   public void LaserHit(Vector3 point, Vector3 normal) {
-    if (Piece.WillDie(transform.parent, ref point, ref normal))
+    if (Piece.WillDie(transform.parent, point, normal))
       LaserController.Hit += Die;
   }
 

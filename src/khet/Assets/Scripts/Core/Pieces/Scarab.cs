@@ -38,17 +38,18 @@ public class Scarab : BasePiece {
     return new[] { 1, -1 };
   }
 
-  public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
-    int norm = Mathf.RoundToInt(normal.x),
-      forward = Mathf.RoundToInt(transform.forward.x), back = forward,
-      right = Mathf.RoundToInt(transform.right.x), left = -right;
+  public override bool WillDie(Transform transform, Vector3 point, Vector3 normal) {
+    point = transform.InverseTransformPoint(point);
       
-	  if (normal == -transform.forward || normal == transform.forward)
-      normal = Quaternion.Euler(0, -90, 0) * normal;
-	  else if (normal == transform.right || normal == -transform.right)
-      normal = Quaternion.Euler(0, 90, 0) * normal;
+    if (normal == -transform.forward || normal == transform.forward) {
+      normal = Quaternion.AngleAxis(-90, Vector3.up) * normal;
+      point = Quaternion.AngleAxis(-90, Vector3.up) * point;
+    } else if (normal == transform.right || normal == -transform.right) {
+      normal = Quaternion.AngleAxis(90, Vector3.up) * normal;
+      point = Quaternion.AngleAxis(90, Vector3.up) * point;
+    }
 
-    point.x = point.z = 0;
+    normal.y = 0;
 
     LaserController.AddPosition(transform.TransformPoint(point), normal);
     return false;

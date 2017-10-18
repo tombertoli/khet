@@ -14,11 +14,11 @@ public class LaserController : MonoBehaviour {
   private static LaserController reference;  
   private static List<Vector3> points = new List<Vector3>();
 
-	void Start () {
+  void Start () {
     line = GetComponent<LineRenderer>();
     line.enabled = false;
     reference = this;
-	}
+  }
   
   public static void AddPosition(Vector3 position, Vector3 direction) {
     if (line.enabled) return;

@@ -16,35 +16,25 @@ public class Pyramid : BasePiece {
     return new[] { 1, -1 };
   }
 
-  public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
+  public override bool WillDie(Transform transform, Vector3 point, Vector3 normal) {
+    point = transform.InverseTransformPoint(point);
+
     int norm = Mathf.RoundToInt(normal.x), 
-      left = Mathf.RoundToInt(-transform.right.x),
-      forward = Mathf.RoundToInt(transform.forward.x);
+    right = Mathf.RoundToInt(transform.right.x),
+    forward = Mathf.RoundToInt(transform.forward.x);
 
-    Debug.Log(normal);
-    Vector3 originalNormal = normal, originalPoint = point;
-
-    if (norm == left) {
-      normal = Quaternion.AngleAxis(90, -Vector3.up) * normal;
-      point = Quaternion.AngleAxis(90, -Vector3.up) * point;
-      point.z += originalPoint.x;
-      point.x += originalPoint.z;
+    if (norm == right) {
+      normal = Quaternion.AngleAxis(-90, Vector3.up) * normal;
+      point = Quaternion.AngleAxis(-90, Vector3.up) * point;
     } else if (norm == forward) {
-      normal = Quaternion.AngleAxis(-90, -Vector3.up) * normal;
-      point = Quaternion.AngleAxis(-90, -Vector3.up) * point;
-      point.z += originalPoint.x;
-      point.x += originalPoint.z;
+      normal = Quaternion.AngleAxis(90, Vector3.up) * normal;
+      point = Quaternion.AngleAxis(90, Vector3.up) * point;
     } else {
       Die();
       return true;
     }
 
-    //point.x = point.z = 0;
     normal.y = 0;
-	point.y = originalPoint.y;
-    Debug.Log(normal);
-    Debug.Log(point);
-	Debug.Log (transform.TransformPoint (point));
 
     LaserController.AddPosition(transform.TransformPoint(point), normal);
     return false;
