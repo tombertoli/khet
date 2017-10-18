@@ -41,8 +41,10 @@ public class Pyramid : BasePiece {
 
     //point.x = point.z = 0;
     normal.y = 0;
+	point.y = originalPoint.y;
     Debug.Log(normal);
     Debug.Log(point);
+	Debug.Log (transform.TransformPoint (point));
 
     LaserController.AddPosition(transform.TransformPoint(point), normal);
     return false;
