@@ -13,7 +13,7 @@ public class PieceController : MonoBehaviour {
 
   public IGamePiece Piece { get; set; }
 
-  private Renderer r;
+  private static List<ReflectionProbe> rps = new List<ReflectionProbe>();
   private PlaceholderManager placeholderManager;
   private bool isAbove = false;
   private static bool selectionLocked = false;
@@ -23,10 +23,18 @@ public class PieceController : MonoBehaviour {
     Piece.Moved += MovePiece;
     Piece.Rotated += RotatePiece;
     
-    r = GetComponent<Renderer>();
     placeholderManager = transform.parent.GetComponent<PlaceholderManager>();
+
+    ReflectionProbe rp = transform.parent.GetComponentInChildren<ReflectionProbe>();
+
+    if (rp != null) {
+      rps.Add(rp);
+      rp.RenderProbe();
+    }
+
+    Renderer r = GetComponent<Renderer>();
     
-    if (Piece.Color == PieceColor.Red)         r.material = redMaterial;
+    if      (Piece.Color == PieceColor.Red)    r.material = redMaterial;
     else if (Piece.Color == PieceColor.Silver) r.material = silverMaterial;
   }
 
@@ -111,6 +119,9 @@ public class PieceController : MonoBehaviour {
 
     while (transform.parent.position != position) {
       transform.parent.position = Vector3.Slerp(transform.parent.position, position, Time.deltaTime * multiplier);
+      
+      UpdateProbes();
+
       yield return null;
     }
 
@@ -129,6 +140,9 @@ public class PieceController : MonoBehaviour {
 
     while (transform.parent.rotation != rotation) {
       transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, multiplier);
+
+      UpdateProbes();
+
       yield return null;
     }
 
@@ -140,6 +154,11 @@ public class PieceController : MonoBehaviour {
 
   #region Utility
   
+  public static void UpdateProbes() {
+    for (int i = 0; i < rps.Count; i++)
+      rps[i].RenderProbe();
+  }
+
   private bool Contains<T>(T[] array, T equal) where T : IComparable {
     for (int i = 0; i < array.Length; i++) {
       if (!array[i].Equals(equal)) continue;

@@ -48,6 +48,8 @@ public static void AddPosition(Vector3 position, Vector3 direction) {
     yield return new WaitForSeconds(seconds);
     line.enabled = false;
 
+    PieceController.UpdateProbes();
+
     if (Hit != null) Hit();
     TurnManager.EndWait();
   }
@@ -60,6 +62,8 @@ public static void AddPosition(Vector3 position, Vector3 direction) {
     line.SetVertexCount(points.Count);
     line.SetPositions(points.ToArray());
     line.enabled = true;
+
+    PieceController.UpdateProbes();
 
     reference.StartCoroutine(TurnOff());
   }

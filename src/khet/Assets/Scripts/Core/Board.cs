@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public class Board {
   public int Width { get { return width; } }
   public int Height { get { return height; } }
-  public IGamePiece[,] Pieces { get { return pieces; } }
   public Underline[,] Underlines { get { return Underlines; } }
 
   private int width, height;
@@ -44,13 +43,13 @@ public class Board {
 
   public void SwapPieces(bool sentByLocal, Point originPoint, IGamePiece target) {
     Point targetPoint = target.Position;
-        
+    
     OccupyPoint(pieces[originPoint.x, originPoint.y], targetPoint);
     OccupyPoint(target, originPoint);
 
     target.PositionChanged(target.Color, originPoint);
 
-    if (sentByLocal) NetworkController.MovePiece(true, target.Position, GetPieceAt(originPoint).Position);
+    if (sentByLocal) NetworkController.MovePiece(true, targetPoint, originPoint);
   }
 
   public void RemovePiece(IGamePiece piece) {
