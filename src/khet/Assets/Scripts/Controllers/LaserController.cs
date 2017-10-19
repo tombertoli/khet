@@ -20,7 +20,7 @@ public class LaserController : MonoBehaviour {
     reference = this;
   }
   
-  public static void AddPosition(Vector3 position, Vector3 direction) {
+public static void AddPosition(Vector3 position, Vector3 direction) {
     if (line.enabled) return;
 
     Ray ray = new Ray(position, direction);
@@ -33,10 +33,15 @@ public class LaserController : MonoBehaviour {
     points.Add(endPoint);
 
     if (hitInfo.collider == null) return;
-    Debug.Log(hitInfo.collider.gameObject);
 
     PieceController ps = hitInfo.collider.gameObject.GetComponent<PieceController>();
     ps.LaserHit(hitInfo.point, hitInfo.normal);
+  }
+
+  public static void AddPositionDirty(Vector3 position) {
+    if (line.enabled) return;
+
+    points.Add(position);
   }
 
   private static IEnumerator TurnOff() {

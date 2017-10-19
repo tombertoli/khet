@@ -39,20 +39,18 @@ public class Board {
   }
 
   public void SwapPieces(bool sentByLocal, Point piece, Point target) {
-    SwapPieces(sentByLocal, GetPieceAt(piece), GetPieceAt(target));
+    SwapPieces(sentByLocal, piece, GetPieceAt(target));
   }
 
-  public void SwapPieces(bool sentByLocal, IGamePiece piece, IGamePiece target) {
-    Point targetPoint = target.Position, piecePoint = piece.Position;
-    //Debug.Log(targetPoint);
+  public void SwapPieces(bool sentByLocal, Point originPoint, IGamePiece target) {
+    Point targetPoint = target.Position;
         
-    OccupyPoint(piece, targetPoint);
-    OccupyPoint(target, piecePoint);
+    OccupyPoint(pieces[originPoint.x, originPoint.y], targetPoint);
+    OccupyPoint(target, originPoint);
 
-    piece.PositionChanged(target.Color, targetPoint);
-    target.PositionChanged(target.Color, piecePoint);
+    target.PositionChanged(target.Color, originPoint);
 
-    if (sentByLocal) NetworkController.MovePiece(true, target.Position, piece.Position);
+    if (sentByLocal) NetworkController.MovePiece(true, target.Position, GetPieceAt(originPoint).Position);
   }
 
   public void RemovePiece(IGamePiece piece) {
@@ -77,7 +75,7 @@ public class Board {
     return res;
   }
 
-  public void SetPieceAt(IGamePiece piece) {
+  public void SetPiece(IGamePiece piece) {
     pieces[piece.Position.x, piece.Position.y] = piece;
   }
 
@@ -89,15 +87,18 @@ public class Board {
     return pieces[point.x, point.y];
   }
 
-  public Point GetPositionFrom(IGamePiece piece) {
+  /*public Point GetPositionFrom(IGamePiece piece) {
     for (int i = 0; i < pieces.GetLength(0); i++) {
       for (int j = 0; j < pieces.GetLength(1); j++) {
-        if (pieces[i, j] == piece) return new Point(i, j);
+        if (pieces[i, j] == piece) {
+          Debug.Log(pieces[i, j]);
+          return new Point(i, j);                 
+        }
       }
     }
 
     return new Point(-1, -1);
-  }
+  }*/
 
   public Underline GetUnderline(int x, int y) {
     return GetUnderline(new Point(x, y));
@@ -130,7 +131,7 @@ public class Board {
   }
 
   private void DisoccupyPoint(Point position) {
-    pieces[position.x, position.y] = new EmptyPoint(this, position.x, position.y);
+    OccupyPoint(new EmptyPoint(this, position.x, position.y), position);
   }
 
   public override string ToString() {

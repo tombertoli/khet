@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 [RequireComponent (typeof(Renderer), typeof(Collider))]
 public class PieceController : MonoBehaviour {
-  [SerializeField] private GameObject placeholderGO;
   [SerializeField] private float multiplier = 5f;
 
   #pragma warning disable 0649
@@ -13,39 +12,38 @@ public class PieceController : MonoBehaviour {
   #pragma warning restore 0649
 
   public IGamePiece Piece { get; set; }
-  //public bool willDestroyOnLaser { get; private set; }
 
   private Renderer r;
+  private PlaceholderManager placeholderManager;
   private bool isAbove = false;
-  private List<GameObject> movementPH = new List<GameObject>();
-  private static bool placeholdersActive = false, selectionLocked = false;
+  private static bool selectionLocked = false;
 
 	void Start() {
-    TurnManager.IsSinglePlayer = true;
+    //TurnManager.IsSinglePlayer = true;
     Piece.Moved += MovePiece;
     Piece.Rotated += RotatePiece;
     
     r = GetComponent<Renderer>();
+    placeholderManager = transform.parent.GetComponent<PlaceholderManager>();
     
     if (Piece.Color == PieceColor.Red)         r.material = redMaterial;
     else if (Piece.Color == PieceColor.Silver) r.material = silverMaterial;
   }
 
   void Update() {
-    Debug.DrawRay (transform.parent.TransformPoint(Vector3.zero), transform.parent.forward, Color.blue);
     if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkController.Color) return;
 
     if (!Piece.IsSelected) {
-      if (Input.GetButtonDown("Fire1") && placeholdersActive) HidePlaceholders();
+      if (Input.GetButtonDown("Fire1") && PlaceholderManager.Active) placeholderManager.HidePlaceholders();
       return;
     }
 
     if (Input.GetButtonDown("Fire1")) {
-      if (!placeholdersActive) ShowPlaceholders();
+      if (!PlaceholderManager.Active) placeholderManager.ShowPlaceholders();
 
       if (!selectionLocked && !isAbove && !Movement.mouseAbove) {
         SetSelection(false);
-        HidePlaceholders();
+        placeholderManager.HidePlaceholders();
       }
     }
 
@@ -62,14 +60,17 @@ public class PieceController : MonoBehaviour {
     if (selectionLocked || !Input.GetButtonDown("Fire1") || Piece.Color != TurnManager.Turn) return;
 
     SetSelection(!Piece.IsSelected);
-    if (!Piece.IsSelected) HidePlaceholders();
+    if (!Piece.IsSelected) placeholderManager.HidePlaceholders();
   }
 
   #region Events
 
   public void LaserHit(Vector3 point, Vector3 normal) {
-    if (Piece.WillDie(transform.parent, point, normal))
-      LaserController.Hit += Die;
+    point = transform.parent.InverseTransformPoint(point);
+
+    if (!Piece.WillDie(transform.parent, ref point, ref normal)) return;
+    
+    LaserController.Hit += Die;
   }
 
   private void Die() {
@@ -103,7 +104,7 @@ public class PieceController : MonoBehaviour {
   #region Coroutines
 
   private IEnumerator Move(PieceColor changeTurnTo, Vector3 position) {
-    HidePlaceholders();
+    placeholderManager.HidePlaceholders();
     selectionLocked = true;
 
     if (Piece.Color != changeTurnTo) TurnManager.Wait();
@@ -121,13 +122,13 @@ public class PieceController : MonoBehaviour {
   private IEnumerator Rotate(Quaternion rotation) {
     if (Piece.Color != TurnManager.Turn) yield break;
 
-    HidePlaceholders();
+    placeholderManager.HidePlaceholders();
     selectionLocked = true;
 
     TurnManager.Wait();
 
-    while (transform.rotation != rotation) {
-      transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, multiplier);
+    while (transform.parent.rotation != rotation) {
+      transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, multiplier);
       yield return null;
     }
 
@@ -138,38 +139,7 @@ public class PieceController : MonoBehaviour {
   #endregion
 
   #region Utility
-
-  private void ShowPlaceholders() {
-    if (Piece.Type == PieceTypes.Sphynx) return;
-
-    Point[] points = Piece.GetAvailablePositions();
-    if (points == null) return;
-
-    Vector3[] positions = BasePiece.ParsePositions(transform.parent, points);
-    HidePlaceholders();
-
-    for (int i = 0; i < positions.Length; i++) {
-      movementPH.Add(Instantiate(placeholderGO, positions[i], Piece.Rotation) as GameObject);
-      Movement m = movementPH[movementPH.Count - 1].GetComponentInChildren<Movement>();
-      m.piece = Piece;
-      m.point = points[i];
-      m.transform.parent.parent = transform;
-    }
-
-    placeholdersActive = true;
-  }
-
-  private void HidePlaceholders() {
-    if (Piece.Type == PieceTypes.Sphynx) return;
-
-    for(int i = 0; i < movementPH.Count; i++) {
-      Destroy(movementPH[i]);
-    }
-
-    movementPH.Clear();
-    placeholdersActive = false;
-  }
-
+  
   private bool Contains<T>(T[] array, T equal) where T : IComparable {
     for (int i = 0; i < array.Length; i++) {
       if (!array[i].Equals(equal)) continue;

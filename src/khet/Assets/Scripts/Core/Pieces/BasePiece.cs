@@ -47,15 +47,18 @@ public abstract class BasePiece : IGamePiece {
 
   public abstract Quaternion[] GetAvailableRotations();
   public abstract int[] GetAvailableRotationsInInt();
-
-  public abstract bool WillDie(Transform transform, Vector3 point, Vector3 normal);
+  public abstract bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal);
 
   public void Move(bool sentByLocal, Point point) {
     Move(sentByLocal, Board.GetPieceAt(point));
   }
 
   public void Move(bool sentByLocal, IGamePiece piece) {
-    Board.SwapPieces(sentByLocal, this, piece);
+    Point original = position;
+
+    position = piece.Position;
+    Board.SwapPieces(sentByLocal, original, piece);
+    Moved(piece.Color, position);
   }
 
   public void Rotate(bool sentByLocal, Quaternion finalRotation) {    
@@ -70,7 +73,7 @@ public abstract class BasePiece : IGamePiece {
   }
   
   public void PositionChanged(PieceColor color, Point position) {
-    position = Board.GetPositionFrom(this);
+    this.position = position;
     Moved(color, position);
   }
 

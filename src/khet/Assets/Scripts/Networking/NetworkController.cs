@@ -35,6 +35,8 @@ public class NetworkController : NetworkBehaviour {
 			sentByLocal = false;
 			return;
 		}
+		
+		Debug.Log("Move piece");
 
 		IGamePiece piece = BoardController.b.GetPieceAt(fromPosition);
 		piece.Move(false, toPosition);
@@ -98,7 +100,7 @@ public class NetworkController : NetworkBehaviour {
 	[Command]
 	private void CmdPlayerReady() {
 		index = (short)Mathf.Clamp(index++, 0, 2);
-		color = colors[index];		
+		color = colors[index];
 	}
 
 	[Command]

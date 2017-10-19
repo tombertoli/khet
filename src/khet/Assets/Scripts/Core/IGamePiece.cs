@@ -18,7 +18,7 @@ public interface IGamePiece {
   
   Vector3 GetPositionInWorld();
 
-  bool WillDie(Transform transform, Vector3 point, Vector3 normal);
+  bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal);
   void PositionChanged(PieceColor color, Point position);
 
   void Move(bool sentByLocal, Point point);
