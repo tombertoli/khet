@@ -38,14 +38,23 @@ public class Scarab : BasePiece {
     return new[] { 1, -1 };
   }
 
-  public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
-	  if (normal == -transform.forward || normal == transform.forward)
-      normal = Quaternion.Euler(0, -90, 0) * normal;
-	  else if (normal == transform.right || normal == -transform.right)
-      normal = Quaternion.Euler(0, 90, 0) * normal;
+  public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {      
+    Vector3 temp = point;
 
-    point.x = point.z = 0;
+    if (normal == -transform.forward || normal == transform.forward) {
+      normal = Quaternion.AngleAxis(-90, Vector3.up) * normal;
+      point = Quaternion.AngleAxis(-90, Vector3.up) * point;
 
+      temp.z = 0;
+    } else if (normal == transform.right || normal == -transform.right) {
+      normal = Quaternion.AngleAxis(90, Vector3.up) * normal;
+      point = Quaternion.AngleAxis(90, Vector3.up) * point;
+
+      temp.x = 0;
+    }
+
+    normal.y = 0;
+    LaserController.AddPositionDirty(transform.TransformPoint(temp));
     LaserController.AddPosition(transform.TransformPoint(point), normal);
     return false;
   }

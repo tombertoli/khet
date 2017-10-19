@@ -27,6 +27,7 @@ public class Sphynx : BasePiece {
   }
 
   public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
+    LaserController.AddPositionDirty(transform.TransformPoint(Vector3.zero));
     return false; 
   }
 }

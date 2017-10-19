@@ -10,7 +10,7 @@ public class NetworkController : NetworkBehaviour {
 	private static short index = 0;
 	
 	[SyncVar] 
-	private PieceColor color;
+	public PieceColor color;
 	private bool sentByLocal = false;
 
 	void OnDestroy() {
@@ -35,7 +35,7 @@ public class NetworkController : NetworkBehaviour {
 			sentByLocal = false;
 			return;
 		}
-
+		
 		IGamePiece piece = BoardController.b.GetPieceAt(fromPosition);
 		piece.Move(false, toPosition);
 	}
@@ -97,8 +97,8 @@ public class NetworkController : NetworkBehaviour {
 
 	[Command]
 	private void CmdPlayerReady() {
-		index = (short)Mathf.Clamp(index++, 0, 2);
-		color = colors[index];		
+		color = colors[Mathf.Clamp(index, 0, 2)];
+		index++;
 	}
 
 	[Command]

@@ -12,7 +12,7 @@ public class Glow : MonoBehaviour {
   private bool permanent, over;
 
   void Start() {
-    TurnManager.TurnFinished += () => SetRange(false, GameObject.FindGameObjectsWithTag(pieceTag));
+    TurnManager.TurnFinished += () => SetRange(false, GameObject.FindObjectsOfType<Glow>());
 
     r = GetComponent<Renderer>();
     pieceColor = GetComponent<PieceController>().Piece.Color;
@@ -60,17 +60,16 @@ public class Glow : MonoBehaviour {
     SetOutline(false);
   }
 
-  public static void SetRange(bool setTo, GameObject[] gos) {
+  public static void SetRange(bool setTo, Glow[] gos) {
     for (int i = 0; i < gos.Length; i++) {
-      if (!gos[i].CompareTag("Piece")) Debug.Log("Se hace el piola");
-      Glow glow = gos[i].GetComponent<Glow>();
+      //Glow glow = gos[i].GetComponentInChildren<Glow>();
 
-      if (glow == null) {
+      /*if (glow == null) {
         Debug.Log("nulleadisimo; que carajo pasa?");
         continue;
-      }
+      }*/
 
-      glow.SetOutline(setTo);
+      gos[i].SetOutline(setTo);
     }
   }
   

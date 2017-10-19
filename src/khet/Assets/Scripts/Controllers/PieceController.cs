@@ -5,7 +5,6 @@ using System.Collections.Generic;
 
 [RequireComponent (typeof(Renderer), typeof(Collider))]
 public class PieceController : MonoBehaviour {
-  [SerializeField] private GameObject placeholderGO;
   [SerializeField] private float multiplier = 5f;
 
   #pragma warning disable 0649
@@ -13,21 +12,29 @@ public class PieceController : MonoBehaviour {
   #pragma warning restore 0649
 
   public IGamePiece Piece { get; set; }
-  //public bool willDestroyOnLaser { get; private set; }
 
-  private Renderer r;
+  private static List<ReflectionProbe> rps = new List<ReflectionProbe>();
+  private PlaceholderManager placeholderManager;
   private bool isAbove = false;
-  private List<GameObject> movementPH = new List<GameObject>();
-  private static bool placeholdersActive = false, selectionLocked = false;
+  private static bool selectionLocked = false;
 
 	void Start() {
     //TurnManager.IsSinglePlayer = true;
     Piece.Moved += MovePiece;
     Piece.Rotated += RotatePiece;
     
-    r = GetComponent<Renderer>();
+    placeholderManager = transform.parent.GetComponent<PlaceholderManager>();
+
+    ReflectionProbe rp = transform.parent.GetComponentInChildren<ReflectionProbe>();
+
+    if (rp != null) {
+      rps.Add(rp);
+      rp.RenderProbe();
+    }
+
+    Renderer r = GetComponent<Renderer>();
     
-    if (Piece.Color == PieceColor.Red)         r.material = redMaterial;
+    if      (Piece.Color == PieceColor.Red)    r.material = redMaterial;
     else if (Piece.Color == PieceColor.Silver) r.material = silverMaterial;
   }
 
@@ -35,16 +42,16 @@ public class PieceController : MonoBehaviour {
     if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkController.Color) return;
 
     if (!Piece.IsSelected) {
-      if (Input.GetButtonDown("Fire1") && placeholdersActive) HidePlaceholders();
+      if (Input.GetButtonDown("Fire1") && PlaceholderManager.Active) placeholderManager.HidePlaceholders();
       return;
     }
 
     if (Input.GetButtonDown("Fire1")) {
-      if (!placeholdersActive) ShowPlaceholders();
+      if (!PlaceholderManager.Active) placeholderManager.ShowPlaceholders();
 
       if (!selectionLocked && !isAbove && !Movement.mouseAbove) {
         SetSelection(false);
-        HidePlaceholders();
+        placeholderManager.HidePlaceholders();
       }
     }
 
@@ -61,16 +68,17 @@ public class PieceController : MonoBehaviour {
     if (selectionLocked || !Input.GetButtonDown("Fire1") || Piece.Color != TurnManager.Turn) return;
 
     SetSelection(!Piece.IsSelected);
-    if (!Piece.IsSelected) HidePlaceholders();
+    if (!Piece.IsSelected) placeholderManager.HidePlaceholders();
   }
 
   #region Events
 
   public void LaserHit(Vector3 point, Vector3 normal) {
-    Vector3 temp = transform.InverseTransformPoint(point);
+    point = transform.parent.InverseTransformPoint(point);
 
-    if (Piece.WillDie(transform, ref temp, ref normal))
-      LaserController.Hit += Die;
+    if (!Piece.WillDie(transform.parent, ref point, ref normal)) return;
+    
+    LaserController.Hit += Die;
   }
 
   private void Die() {
@@ -79,12 +87,15 @@ public class PieceController : MonoBehaviour {
     if (Piece.Type == PieceTypes.Pharaoh)
       NetworkController.EndGame(Piece.Color == PieceColor.Red ? PieceColor.Silver : PieceColor.Red);
 
-    Destroy(gameObject);
+    Destroy(transform.parent.gameObject);
   }
 
   private void MovePiece(PieceColor color, Point point) {
     SetSelection(false);
-    StartCoroutine(Move(color, BasePiece.ParsePosition(point)));
+
+    Vector3 temp = BasePiece.ParsePosition(transform.parent, point);
+    temp.y = transform.parent.position.y;
+    StartCoroutine(Move(color, temp));
   }
 
   private void RotatePiece(Quaternion rotation) {
@@ -101,13 +112,16 @@ public class PieceController : MonoBehaviour {
   #region Coroutines
 
   private IEnumerator Move(PieceColor changeTurnTo, Vector3 position) {
-    HidePlaceholders();
+    placeholderManager.HidePlaceholders();
     selectionLocked = true;
 
     if (Piece.Color != changeTurnTo) TurnManager.Wait();
 
-    while (transform.position != position) {
-      transform.position = Vector3.Slerp(transform.position, position, Time.deltaTime * multiplier);
+    while (transform.parent.position != position) {
+      transform.parent.position = Vector3.Slerp(transform.parent.position, position, Time.deltaTime * multiplier);
+      
+      UpdateProbes();
+
       yield return null;
     }
 
@@ -119,13 +133,16 @@ public class PieceController : MonoBehaviour {
   private IEnumerator Rotate(Quaternion rotation) {
     if (Piece.Color != TurnManager.Turn) yield break;
 
-    HidePlaceholders();
+    placeholderManager.HidePlaceholders();
     selectionLocked = true;
 
     TurnManager.Wait();
 
-    while (transform.rotation != rotation) {
-      transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, multiplier);
+    while (transform.parent.rotation != rotation) {
+      transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, multiplier);
+
+      UpdateProbes();
+
       yield return null;
     }
 
@@ -136,36 +153,10 @@ public class PieceController : MonoBehaviour {
   #endregion
 
   #region Utility
-
-  private void ShowPlaceholders() {
-    if (Piece.Type == PieceTypes.Sphynx) return;
-
-    Point[] points = Piece.GetAvailablePositions();
-    if (points == null) return;
-
-    Vector3[] positions = BasePiece.ParsePositions(points);
-    HidePlaceholders();
-
-    for (int i = 0; i < positions.Length; i++) {
-      movementPH.Add(Instantiate(placeholderGO, positions[i], Piece.Rotation) as GameObject);
-      Movement m = movementPH[movementPH.Count - 1].GetComponent<Movement>();
-      m.piece = Piece;
-      m.point = points[i];
-      m.transform.parent = transform;
-    }
-
-    placeholdersActive = true;
-  }
-
-  private void HidePlaceholders() {
-    if (Piece.Type == PieceTypes.Sphynx) return;
-
-    for(int i = 0; i < movementPH.Count; i++) {
-      Destroy(movementPH[i]);
-    }
-
-    movementPH.Clear();
-    placeholdersActive = false;
+  
+  public static void UpdateProbes() {
+    for (int i = 0; i < rps.Count; i++)
+      rps[i].RenderProbe();
   }
 
   private bool Contains<T>(T[] array, T equal) where T : IComparable {

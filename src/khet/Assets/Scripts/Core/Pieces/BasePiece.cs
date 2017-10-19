@@ -47,7 +47,6 @@ public abstract class BasePiece : IGamePiece {
 
   public abstract Quaternion[] GetAvailableRotations();
   public abstract int[] GetAvailableRotationsInInt();
-
   public abstract bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal);
 
   public void Move(bool sentByLocal, Point point) {
@@ -55,7 +54,11 @@ public abstract class BasePiece : IGamePiece {
   }
 
   public void Move(bool sentByLocal, IGamePiece piece) {
-    Board.SwapPieces(sentByLocal, this, piece);
+    Point original = position;
+
+    position = piece.Position;
+    Board.SwapPieces(sentByLocal, original, piece);
+    Moved(piece.Color, position);
   }
 
   public void Rotate(bool sentByLocal, Quaternion finalRotation) {    
@@ -70,7 +73,7 @@ public abstract class BasePiece : IGamePiece {
   }
   
   public void PositionChanged(PieceColor color, Point position) {
-    position = Board.GetPositionFrom(this);
+    this.position = position;
     Moved(color, position);
   }
 
@@ -86,19 +89,19 @@ public abstract class BasePiece : IGamePiece {
     );
   }
 
-  public static Vector3 ParsePosition(Point point) {
+  public static Vector3 ParsePosition(Transform transform, Point point) {
     return new Vector3(
       point.x + transPos.x,
-      transPos.y,
+      transform.position.y,
       point.y + transPos.z
     );
   }
 
-  public static Vector3[] ParsePositions(Point[] point) {
+  public static Vector3[] ParsePositions(Transform transform, Point[] point) {
     Vector3[] ret = new Vector3[point.Length];
 
     for(int i = 0; i < point.Length; i++) {
-      ret[i] = BasePiece.ParsePosition(point[i]);
+      ret[i] = BasePiece.ParsePosition(transform, point[i]);
     }
 
     return ret;

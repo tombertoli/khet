@@ -17,8 +17,8 @@ public class TemplateManager : MonoBehaviour {
 	private static bool CheckIntegrity(TextAsset asset) {
 		string path = BoardTemplates.defPath + string.Format(@"\{0}.kbt", asset.name);
 
-		if (File.Exists(path) && File.ReadAllLines(path) != new string[] { }) return false;
-		return true;
+		if (File.Exists(path) && File.ReadAllLines(path) != new string[] { }) return true;
+		return false;
 	}
 
 	public static void CreateFile(TextAsset asset) {

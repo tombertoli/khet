@@ -45,7 +45,7 @@ public class EmptyPoint : IGamePiece {
   }
 
   public void PositionChanged(PieceColor color, Point position) { 
-    position = Board.GetPositionFrom(this);
+    this.position = position;
   }
 
   public void Rotate(bool sentByLocal, int rot) {
