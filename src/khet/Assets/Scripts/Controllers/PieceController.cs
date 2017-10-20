@@ -19,7 +19,6 @@ public class PieceController : MonoBehaviour {
   private static bool selectionLocked = false;
 
 	void Start() {
-    //TurnManager.IsSinglePlayer = true;
     Piece.Moved += MovePiece;
     Piece.Rotated += RotatePiece;
     
@@ -76,7 +75,7 @@ public class PieceController : MonoBehaviour {
   public void LaserHit(Vector3 point, Vector3 normal) {
     point = transform.parent.InverseTransformPoint(point);
 
-    if (!Piece.WillDie(transform.parent, ref point, ref normal)) return;
+    if (!Piece.WillDie(transform.parent, point, normal)) return;
     
     LaserController.Hit += Die;
   }
@@ -155,8 +154,10 @@ public class PieceController : MonoBehaviour {
   #region Utility
   
   public static void UpdateProbes() {
-    for (int i = 0; i < rps.Count; i++)
-      rps[i].RenderProbe();
+    for (int i = 0; i < rps.Count; i++) {
+      if (rps[i] != null) rps[i].RenderProbe();
+      else rps.Remove(rps[i]);
+    }
   }
 
   private bool Contains<T>(T[] array, T equal) where T : IComparable {

@@ -31,5 +31,9 @@ public class TurnManager {
     LaserController.Fire(temp.position, temp.forward);
     turn = tempColor;
   }
+
+  public static void Reset() {
+    turn = PieceColor.Silver;
+  }
 }
 

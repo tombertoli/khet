@@ -38,7 +38,7 @@ public class Scarab : BasePiece {
     return new[] { 1, -1 };
   }
 
-  public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {      
+  public override bool WillDie(Transform transform, Vector3 point, Vector3 normal) {      
     Vector3 temp = point;
 
     if (normal == -transform.forward || normal == transform.forward) {

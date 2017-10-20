@@ -16,7 +16,7 @@ public class Pharaoh : BasePiece {
     return new int[] { 1, -1 };
   }
 
-  public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
+  public override bool WillDie(Transform transform, Vector3 point, Vector3 normal) {
     LaserController.AddPositionDirty(transform.TransformPoint(Vector3.zero));
 
     Die();

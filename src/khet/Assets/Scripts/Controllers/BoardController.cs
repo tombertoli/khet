@@ -9,6 +9,7 @@ public class BoardController : MonoBehaviour {
   public static Board b;
   
 	void Awake() {
+    TurnManager.Reset();
     b = BoardTemplates.LoadClassic();
 
     BasePiece.transPos = pieceTransform.position;

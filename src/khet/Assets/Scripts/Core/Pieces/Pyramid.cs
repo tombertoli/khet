@@ -16,21 +16,21 @@ public class Pyramid : BasePiece {
     return new[] { 1, -1 };
   }
 
-  public override bool WillDie(Transform transform, ref Vector3 point, ref Vector3 normal) {
-    int norm    = Mathf.RoundToInt(normal.x), 
-        right   = Mathf.RoundToInt(transform.right.x),
-        forward = Mathf.RoundToInt(transform.forward.x);
+  public override bool WillDie(Transform transform, Vector3 point, Vector3 normal) {
+    int normx    = Mathf.RoundToInt(normal.x),            normz    = Mathf.RoundToInt(normal.z),
+        rightx   = Mathf.RoundToInt(-transform.right.x),  rightz   = Mathf.RoundToInt(-transform.right.z),
+        forwardx = Mathf.RoundToInt(transform.forward.x), forwardz = Mathf.RoundToInt(transform.forward.z);
 
     Vector3 temp = point;
 
-    if (norm == right) {
-      normal = Quaternion.AngleAxis(-90, Vector3.up) * normal;
-      point = Quaternion.AngleAxis(-90, Vector3.up) * point;
-
-      temp.x = 0;
-    } else if (norm == forward) {
+    if (normx == rightx && normz == rightz) {
       normal = Quaternion.AngleAxis(90, Vector3.up) * normal;
       point = Quaternion.AngleAxis(90, Vector3.up) * point;
+
+      temp.x = 0;
+    } else if (normx == forwardx && normz == forwardz) {
+      normal = Quaternion.AngleAxis(-90, Vector3.up) * normal;
+      point = Quaternion.AngleAxis(-90, Vector3.up) * point;
 
       temp.z = 0;
     } else {
