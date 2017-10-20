@@ -40,18 +40,16 @@ public class PieceController : MonoBehaviour {
   void Update() {
     if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkController.Color) return;
 
-    if (!Piece.IsSelected) {
-      if (Input.GetButtonDown("Fire1") && PlaceholderManager.Active) placeholderManager.HidePlaceholders();
+    if (placeholderManager != null && !Piece.IsSelected) {
+      if (Input.GetButtonDown("Fire1") && PlaceholderManager.Active) SetSelection(false);
       return;
     }
 
     if (Input.GetButtonDown("Fire1")) {
-      if (!PlaceholderManager.Active) placeholderManager.ShowPlaceholders();
+      if (placeholderManager != null && !PlaceholderManager.Active) SetSelection(true);
 
-      if (!selectionLocked && !isAbove && !Movement.mouseAbove) {
+      if (!selectionLocked && !isAbove && !Movement.mouseAbove)
         SetSelection(false);
-        placeholderManager.HidePlaceholders();
-      }
     }
 
     if (Input.GetButtonDown("TurnLeft") && Contains(Piece.GetAvailableRotationsInInt(), -1))
@@ -67,7 +65,10 @@ public class PieceController : MonoBehaviour {
     if (selectionLocked || !Input.GetButtonDown("Fire1") || Piece.Color != TurnManager.Turn) return;
 
     SetSelection(!Piece.IsSelected);
-    if (!Piece.IsSelected) placeholderManager.HidePlaceholders();
+    if (placeholderManager == null) return;
+
+    if (!Piece.IsSelected) SetSelection(false);
+    else SetSelection(true);
   }
 
   #region Events
@@ -90,20 +91,20 @@ public class PieceController : MonoBehaviour {
   }
 
   private void MovePiece(PieceColor color, Point point) {
-    SetSelection(false);
-
     Vector3 temp = BasePiece.ParsePosition(transform.parent, point);
     temp.y = transform.parent.position.y;
     StartCoroutine(Move(color, temp));
   }
 
   private void RotatePiece(Quaternion rotation) {
-    SetSelection(false);
     StartCoroutine(Rotate(rotation));
   }
 
   public void SetSelection(bool selection) {
     Piece.IsSelected = selection;
+    
+    if (placeholderManager == null) return;
+    placeholderManager.SetPlaceholders(selection);
   }
 
   #endregion
@@ -111,13 +112,13 @@ public class PieceController : MonoBehaviour {
   #region Coroutines
 
   private IEnumerator Move(PieceColor changeTurnTo, Vector3 position) {
-    placeholderManager.HidePlaceholders();
+    SetSelection(false);
     selectionLocked = true;
 
     if (Piece.Color != changeTurnTo) TurnManager.Wait();
 
     while (transform.parent.position != position) {
-      transform.parent.position = Vector3.Slerp(transform.parent.position, position, Time.deltaTime * multiplier);
+      transform.parent.position = Vector3.Lerp(transform.parent.position, position, Time.deltaTime * multiplier);
       
       UpdateProbes();
 
@@ -132,7 +133,7 @@ public class PieceController : MonoBehaviour {
   private IEnumerator Rotate(Quaternion rotation) {
     if (Piece.Color != TurnManager.Turn) yield break;
 
-    placeholderManager.HidePlaceholders();
+    SetSelection(false);
     selectionLocked = true;
 
     TurnManager.Wait();

@@ -13,7 +13,12 @@ public class PlaceholderManager : MonoBehaviour {
 		piece = transform.GetComponentInChildren<PieceController>().Piece;
 	}
 
-	public void ShowPlaceholders() {
+  public void SetPlaceholders(bool state) {
+    if (state) ShowPlaceholders();
+    else HidePlaceholders();
+  }
+
+	private void ShowPlaceholders() {
     if (piece.Type == PieceTypes.Sphynx) return;
 
     Point[] points = piece.GetAvailablePositions();
@@ -34,7 +39,7 @@ public class PlaceholderManager : MonoBehaviour {
     Active = true;
   }
 
-  public void HidePlaceholders() {
+  private void HidePlaceholders() {
     if (piece.Type == PieceTypes.Sphynx || placeholders.Count <= 0) return;
 
     for(int i = 0; i < placeholders.Count; i++)
