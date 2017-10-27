@@ -11,7 +11,8 @@ public class PieceController : MonoBehaviour {
   [SerializeField] private Material silverMaterial, redMaterial;
   #pragma warning restore 0649
 
-  public IGamePiece Piece { get; set; }
+  public IGamePiece Piece { get { return piece; } set { piece = piece == null ? value : piece; } }
+  private IGamePiece piece;
 
   private static List<ReflectionProbe> rps = new List<ReflectionProbe>();
   private PlaceholderManager placeholderManager;
