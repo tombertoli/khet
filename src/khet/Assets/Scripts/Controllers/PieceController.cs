@@ -41,17 +41,11 @@ public class PieceController : MonoBehaviour {
   void Update() {
     if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkController.Color) return;
 
-    if (placeholderManager != null && !Piece.IsSelected) {
-      if (Input.GetButtonDown("Fire1") && PlaceholderManager.Active) SetSelection(false);
-      return;
-    }
+    if (placeholderManager != null && !Piece.IsSelected && Input.GetButtonDown("Fire1") && PlaceholderManager.Active) 
+      SetSelection(false);
 
-    if (Input.GetButtonDown("Fire1")) {
-      if (placeholderManager != null && !PlaceholderManager.Active) SetSelection(true);
-
-      if (!selectionLocked && !isAbove && !Movement.mouseAbove)
-        SetSelection(false);
-    }
+    if (Input.GetButtonDown("Fire1") && !selectionLocked && !isAbove && !Movement.mouseAbove)
+      SetSelection(false);
 
     if (Input.GetButtonDown("TurnLeft") && Contains(Piece.GetAvailableRotationsInInt(), -1))
       Piece.Rotate(true, -1);
@@ -63,13 +57,11 @@ public class PieceController : MonoBehaviour {
   void OnMouseExit() { isAbove = false; }
 
   void OnMouseOver() {
+    if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkController.Color) return;
     if (selectionLocked || !Input.GetButtonDown("Fire1") || Piece.Color != TurnManager.Turn) return;
 
-    SetSelection(!Piece.IsSelected);
     if (placeholderManager == null) return;
-
-    if (!Piece.IsSelected) SetSelection(false);
-    else SetSelection(true);
+    SetSelection(!Piece.IsSelected);
   }
 
   #region Events

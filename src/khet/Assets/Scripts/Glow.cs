@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 [RequireComponent (typeof(Collider), typeof(Renderer))]
 public class Glow : MonoBehaviour {
-  [SerializeField] private string key, button = "Fire1", pieceTag = "Piece";
+  [SerializeField] private string key, button = "Fire1";
   [SerializeField] private float outlineWidth;
 
   private PieceColor pieceColor;
