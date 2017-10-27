@@ -4,7 +4,10 @@ using System.Collections;
 
 public class OpcionesManager : MonoBehaviour
 {
+  #pragma warning disable 0649
 	[SerializeField] private int onlineIndex, offlineIndex;
+  #pragma warning restore 0649
+  
   private bool musica, sonido, botones;
 
   public void Awake()
@@ -14,26 +17,17 @@ public class OpcionesManager : MonoBehaviour
 
   public void CallMusica(bool opcionSeleccionada)
   {
-    if (musica)
-      musica = false;
-    else
-      musica = true;
+    musica = !musica;
   }
 
   public void CallSonido(bool opcionSeleccionada)
   {
-    if (sonido)
-      sonido = false;
-    else
-      sonido = true;
+    sonido = !sonido;
   }
 
   public void CallBotones(bool opcionSeleccionada)
   {
-    if (botones)
-      botones = false;
-    else
-      botones = true;
+    botones = !botones;
   }
 
   public void CallJugar(bool online)

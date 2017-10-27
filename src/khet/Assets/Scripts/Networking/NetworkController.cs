@@ -98,7 +98,6 @@ public class NetworkController : NetworkBehaviour {
 	[Command]
 	private void CmdPlayerReady() {		
 		color = colors[Mathf.Clamp(index, 0, 2)];
-		Debug.Log(index + " Color: " + color);
 		index++;
 	}
 

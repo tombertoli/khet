@@ -8,6 +8,11 @@ public class TemplateManager : MonoBehaviour {
 	private static TemplateManager instance;
 	
 	void Awake() {
+		if (GameObject.FindObjectsOfType<TemplateManager>().Length > 1) {
+			Destroy(gameObject);
+			return;
+		}
+
 		DontDestroyOnLoad(this);
 		instance = this;
 

@@ -16,6 +16,6 @@ public class volver : MonoBehaviour {
 
 	public void Clickea1000()
 	{
-		SceneManager.LoadScene ("xd");
+		SceneManager.LoadScene ("MainMenu");
 	}
 }
