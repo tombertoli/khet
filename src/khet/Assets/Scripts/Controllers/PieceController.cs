@@ -74,7 +74,7 @@ public class PieceController : MonoBehaviour {
     LaserController.Hit -= Die;
 
     if (Piece.Type == PieceTypes.Pharaoh)
-      NetworkController.EndGame(Piece.Color == PieceColor.Red ? PieceColor.Silver : PieceColor.Red);
+      EndGame(Piece.Color == PieceColor.Red ? PieceColor.Silver : PieceColor.Red);
 
     Destroy(transform.parent.gameObject);
   }
@@ -158,6 +158,15 @@ public class PieceController : MonoBehaviour {
     }
 
     return false;
+  }
+  
+  private void EndGame(PieceColor won) {
+    if (GameObject.FindObjectsOfType<NetworkController>().Length > 0) {
+      NetworkController.EndGame(won);
+      return;
+    }
+
+    StateController.EndGame(won);
   }
 
   #endregion

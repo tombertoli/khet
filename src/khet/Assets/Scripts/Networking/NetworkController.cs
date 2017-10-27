@@ -74,6 +74,7 @@ public class NetworkController : NetworkBehaviour {
 			return;
 		}
 
+		TextManager.EndGame(won);
 		Debug.Log(won + " won");
 	}
 
