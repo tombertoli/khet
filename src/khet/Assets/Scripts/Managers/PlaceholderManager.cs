@@ -6,7 +6,7 @@ public class PlaceholderManager : MonoBehaviour {
 
 	public static bool Active { get; private set; }
 
-	private IGamePiece piece;
+	private IPiece piece;
 	private List<GameObject> placeholders = new List<GameObject> ();
 
 	void Start () {

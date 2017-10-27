@@ -11,8 +11,8 @@ public class PieceController : MonoBehaviour {
   [SerializeField] private Material silverMaterial, redMaterial;
   #pragma warning restore 0649
 
-  public IGamePiece Piece { get { return piece; } set { piece = piece == null ? value : piece; } }
-  private IGamePiece piece;
+  public IPiece Piece { get { return piece; } set { piece = piece == null ? value : piece; } }
+  private IPiece piece;
 
   private static List<ReflectionProbe> rps = new List<ReflectionProbe>();
   private PlaceholderManager placeholderManager;
@@ -79,10 +79,10 @@ public class PieceController : MonoBehaviour {
     Destroy(transform.parent.gameObject);
   }
 
-  private void MovePiece(PieceColor color, Point point) {
+  private void MovePiece(PieceColor color, IPiece swappedWith, Point point) {
     Vector3 temp = BasePiece.ParsePosition(transform.parent, point);
     temp.y = transform.parent.position.y;
-    StartCoroutine(Move(color, temp));
+    StartCoroutine(Move(color, swappedWith, temp));
   }
 
   private void RotatePiece(Quaternion rotation) {
@@ -100,11 +100,11 @@ public class PieceController : MonoBehaviour {
 
   #region Coroutines
 
-  private IEnumerator Move(PieceColor changeTurnTo, Vector3 position) {
+  private IEnumerator Move(PieceColor changeTurnTo, IPiece swappedWith, Vector3 position) {
     SetSelection(false);
     selectionLocked = true;
 
-    if (Piece.Color != changeTurnTo) TurnManager.Wait();
+    TurnManager.Wait();
 
     while (transform.parent.position != position) {
       transform.parent.position = Vector3.Lerp(transform.parent.position, position, Time.deltaTime * multiplier);
@@ -114,9 +114,10 @@ public class PieceController : MonoBehaviour {
       yield return null;
     }
 
-    if (Piece.Color != changeTurnTo) TurnManager.End();
-
     selectionLocked = false;
+
+    if (Piece.Type == PieceTypes.Scarab && swappedWith.Type != PieceTypes.Empty) yield break;
+    TurnManager.End();
   }
 
   private IEnumerator Rotate(Quaternion rotation) {

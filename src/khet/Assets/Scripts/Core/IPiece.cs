@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 
-public interface IGamePiece {
+public interface IPiece {
   event MoveEvent Moved;
   event RotationEvent Rotated;
 
@@ -19,15 +19,15 @@ public interface IGamePiece {
   Vector3 GetPositionInWorld();
 
   bool WillDie(Transform transform, Vector3 point, Vector3 normal);
-  void PositionChanged(PieceColor color, Point position);
+  void PositionChanged(PieceColor color, IPiece swappedWith, Point position);
 
   void Move(bool sentByLocal, Point point);
-  void Move(bool sentByLocal, IGamePiece piece);
+  void Move(bool sentByLocal, IPiece piece);
   void Rotate(bool sentByLocal, int rot);
   void Rotate(bool sentByLocal, Quaternion rot);
 }
 
-public delegate void MoveEvent(PieceColor color, Point point);
+public delegate void MoveEvent(PieceColor color, IPiece swappedWith, Point point);
 public delegate void RotationEvent(Quaternion rotation);
 
 public enum PieceTypes {

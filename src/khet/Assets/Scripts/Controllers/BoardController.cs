@@ -23,7 +23,7 @@ public class BoardController : MonoBehaviour {
     }    
   }
 
-  private void SetPiece(IGamePiece piece) {
+  private void SetPiece(IPiece piece) {
     if (piece.Type == PieceTypes.Empty) return;
     
     if (piece == null) throw new UnityException("Invalid board");
@@ -47,7 +47,7 @@ public class BoardController : MonoBehaviour {
       TurnManager.Silver = ps.transform.parent;
   }
 
-  private GameObject SelectPrefab(IGamePiece piece) {
+  private GameObject SelectPrefab(IPiece piece) {
     switch (piece.Type) {
       case PieceTypes.Anubis:
         return anubis;

@@ -36,13 +36,13 @@ public class NetworkController : NetworkBehaviour {
 			return;
 		}
 		
-		IGamePiece piece = BoardController.CurrentBoard.GetPieceAt(fromPosition);
+		IPiece piece = BoardController.CurrentBoard.GetPieceAt(fromPosition);
 		piece.Move(false, toPosition);
 	}
 
 	[ClientRpc]
 	private void RpcRotatePiece(Point position, Quaternion rotation) {
-		IGamePiece piece = BoardController.CurrentBoard.GetPieceAt(position);
+		IPiece piece = BoardController.CurrentBoard.GetPieceAt(position);
 		
 		if (sentByLocal) {
 			sentByLocal = false;
