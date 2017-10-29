@@ -35,7 +35,7 @@ public class Glow : MonoBehaviour {
 
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
-    if (!TurnManager.IsSinglePlayer && pieceColor != NetworkController.Color) return;
+    if (!TurnManager.IsLocalGame && pieceColor != NetworkController.Color) return;
 
     SetOutline(true);
   }
@@ -45,7 +45,7 @@ public class Glow : MonoBehaviour {
 
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
-    if (!TurnManager.IsSinglePlayer && pieceColor != NetworkController.Color) return;
+    if (!TurnManager.IsLocalGame && pieceColor != NetworkController.Color) return;
 
     SetOutline(true);
   }
@@ -55,7 +55,7 @@ public class Glow : MonoBehaviour {
 
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
-    if (!TurnManager.IsSinglePlayer && pieceColor != NetworkController.Color) return;
+    if (!TurnManager.IsLocalGame && pieceColor != NetworkController.Color) return;
 
     SetOutline(false);
   }

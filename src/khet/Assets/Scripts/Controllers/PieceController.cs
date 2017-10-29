@@ -39,10 +39,7 @@ public class PieceController : MonoBehaviour {
   }
 
   void Update() {
-    if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkController.Color) return;
-
-    if (placeholderManager != null && !Piece.IsSelected && Input.GetButtonDown("Fire1") && PlaceholderManager.Active) 
-      SetSelection(false);
+    if (!Piece.IsSelected || (!TurnManager.IsLocalGame && Piece.Color != NetworkController.Color)) return;
 
     if (Input.GetButtonDown("Fire1") && !selectionLocked && !isAbove && !Movement.mouseAbove)
       SetSelection(false);
@@ -57,10 +54,9 @@ public class PieceController : MonoBehaviour {
   void OnMouseExit() { isAbove = false; }
 
   void OnMouseOver() {
-    if (!TurnManager.IsSinglePlayer && Piece.Color != NetworkController.Color) return;
+    if (!TurnManager.IsLocalGame && Piece.Color != NetworkController.Color) return;
     if (selectionLocked || !Input.GetButtonDown("Fire1") || Piece.Color != TurnManager.Turn) return;
 
-    if (placeholderManager == null) return;
     SetSelection(!Piece.IsSelected);
   }
 

@@ -6,7 +6,6 @@ public class BoardKeyListener : MonoBehaviour {
   [SerializeField] private float turnDelta = 5;
   private bool started;
 
-	// Update is called once per frame
 	void Update () {
     if (!started && (Input.GetKeyDown(turnBoardRight) || Input.GetKeyDown(turnBoardLeft)) && !LaserController.line.enabled) {
       started = true;

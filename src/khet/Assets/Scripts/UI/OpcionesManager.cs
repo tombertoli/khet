@@ -32,7 +32,7 @@ public class OpcionesManager : MonoBehaviour
 
   public void CallJugar(bool online)
   {
-		TurnManager.IsSinglePlayer = !online;
+		TurnManager.IsLocalGame = !online;
 		SceneManager.LoadScene(online ? onlineIndex : offlineIndex);
   }
 }
