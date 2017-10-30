@@ -6,10 +6,10 @@ public class Scarab : BasePiece {
     : base(position, rotation, color, board, PieceTypes.Scarab) { } 
   
   public override Point[] GetAvailablePositions() { 
-    IGamePiece[,] pieces = Board.GetAdjacent(this);
+    IPiece[,] pieces = Board.GetAdjacent(this);
     List<Point> ret = new List<Point>();
 
-    foreach (IGamePiece gp in pieces) {
+    foreach (IPiece gp in pieces) {
       if (gp == null) continue;
       
       switch (gp.Type) {

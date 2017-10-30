@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class Movement : MonoBehaviour {
-  public IGamePiece piece;
+  public IPiece piece;
   public Point point;
   public static bool mouseAbove;
 

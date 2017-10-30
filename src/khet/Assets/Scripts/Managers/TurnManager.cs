@@ -9,7 +9,7 @@ public class TurnManager {
 
   public static Transform Red, Silver;
   public static PieceColor Turn { get { return waiting ? PieceColor.None : turn; } }
-  public static bool IsSinglePlayer { get; set; }
+  public static bool IsLocalGame { get; set; }
 
   private static PieceColor turn = PieceColor.Silver;
   private static bool waiting = false;

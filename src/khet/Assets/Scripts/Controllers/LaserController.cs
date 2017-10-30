@@ -1,26 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System;
 
-[RequireComponent (typeof(LineRenderer))]
+[RequireComponent(typeof(LineRenderer))]
 public class LaserController : MonoBehaviour {
-  [SerializeField] private static float seconds = 2;
+  [SerializeField] private static float waitTimeInSeconds = 2;
   public static LineRenderer line;
 
   public delegate void LaserHit();
   public static event LaserHit Hit;
 
-  private static LaserController reference;  
+  private static LaserController instance;
   private static List<Vector3> points = new List<Vector3>();
 
-  void Start () {
+  void Start() {
     line = GetComponent<LineRenderer>();
     line.enabled = false;
-    reference = this;
+    instance = this;
   }
-  
-public static void AddPosition(Vector3 position, Vector3 direction) {
+
+  public static void AddPosition(Vector3 position, Vector3 direction) {
     if (line.enabled) return;
 
     Ray ray = new Ray(position, direction);
@@ -45,7 +44,7 @@ public static void AddPosition(Vector3 position, Vector3 direction) {
   }
 
   private static IEnumerator TurnOff() {
-    yield return new WaitForSeconds(seconds);
+    yield return new WaitForSeconds(waitTimeInSeconds);
     line.enabled = false;
 
     PieceController.UpdateProbes();
@@ -53,7 +52,7 @@ public static void AddPosition(Vector3 position, Vector3 direction) {
     if (Hit != null) Hit();
     TurnManager.EndWait();
   }
-	
+
   public static void Fire(Vector3 position, Vector3 direction) {
     if (line.enabled) return;
 
@@ -65,12 +64,13 @@ public static void AddPosition(Vector3 position, Vector3 direction) {
 
     PieceController.UpdateProbes();
 
-    reference.StartCoroutine(TurnOff());
+    instance.StartCoroutine(TurnOff());
   }
 
   private static void TargetChanged() {
-    if (line.enabled) {
-      reference.StartCoroutine(WaitForOff());
+    if (line.enabled)
+    {
+      instance.StartCoroutine(WaitForOff());
       return;
     }
 

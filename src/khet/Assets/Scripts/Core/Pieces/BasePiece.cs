@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 
-public abstract class BasePiece : IGamePiece {
+public abstract class BasePiece : IPiece {
   public static Vector3 transPos { get; set; }
 
   public event MoveEvent Moved;
@@ -28,12 +28,12 @@ public abstract class BasePiece : IGamePiece {
   }
 
   public virtual Point[] GetAvailablePositions() {
-    IGamePiece[,] pieces = Board.GetAdjacent(this);
+    IPiece[,] pieces = Board.GetAdjacent(this);
     List<Point> ret = new List<Point>();
 
     for (int i = 0; i < pieces.GetLength(0); i++) {
       for(int j = 0; j < pieces.GetLength(1); j++) {
-        IGamePiece gp = pieces[i, j];
+        IPiece gp = pieces[i, j];
         if (gp == null) continue;
 
         if (gp.Type == PieceTypes.Empty) {
@@ -53,12 +53,12 @@ public abstract class BasePiece : IGamePiece {
     Move(sentByLocal, Board.GetPieceAt(point));
   }
 
-  public void Move(bool sentByLocal, IGamePiece piece) {
+  public void Move(bool sentByLocal, IPiece piece) {
     Point original = position;
 
     position = piece.Position;
     Board.SwapPieces(sentByLocal, original, piece);
-    Moved(piece.Color, position);
+    Moved(piece.Color, piece, position);
   }
 
   public void Rotate(bool sentByLocal, Quaternion finalRotation) {    
@@ -72,9 +72,9 @@ public abstract class BasePiece : IGamePiece {
 	  Rotate(sentByLocal, Quaternion.Euler(0, rotation.eulerAngles.y + (rot * 90), 0));
   }
   
-  public void PositionChanged(PieceColor color, Point position) {
+  public void PositionChanged(PieceColor color, IPiece swappedWith, Point position) {
     this.position = position;
-    Moved(color, position);
+    Moved(color, swappedWith, position);
   }
 
   protected void Die() {

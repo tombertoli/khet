@@ -6,24 +6,24 @@ public class BoardController : MonoBehaviour {
   [SerializeField] private Transform pieceTransform, underlineTransform;
   #pragma warning restore 0649
 
-  public static Board b;
+  public static Board CurrentBoard { get; private set; }
   
-	void Awake() {
+	void Start() {
     TurnManager.Reset();
-    b = BoardTemplates.LoadClassic();
+    CurrentBoard = BoardTemplates.LoadClassic();
 
     BasePiece.transPos = pieceTransform.position;
     EmptyPoint.transPos = pieceTransform.position;
     
-    for (int i = 0; i < b.Width; i++) {
-      for (int j = 0; j < b.Height; j++) {
-        SetPiece(b.GetPieceAt(i, j));
-        SetUnderline(b.GetUnderline(i, j), new Point(i, j));
+    for (int i = 0; i < CurrentBoard.Width; i++) {
+      for (int j = 0; j < CurrentBoard.Height; j++) {
+        SetPiece(CurrentBoard.GetPieceAt(i, j));
+        SetUnderline(CurrentBoard.GetUnderline(i, j), new Point(i, j));
       }
     }    
   }
 
-  private void SetPiece(IGamePiece piece) {
+  private void SetPiece(IPiece piece) {
     if (piece.Type == PieceTypes.Empty) return;
     
     if (piece == null) throw new UnityException("Invalid board");
@@ -47,7 +47,7 @@ public class BoardController : MonoBehaviour {
       TurnManager.Silver = ps.transform.parent;
   }
 
-  private GameObject SelectPrefab(IGamePiece piece) {
+  private GameObject SelectPrefab(IPiece piece) {
     switch (piece.Type) {
       case PieceTypes.Anubis:
         return anubis;

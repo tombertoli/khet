@@ -8,13 +8,18 @@ public class TemplateManager : MonoBehaviour {
 	private static TemplateManager instance;
 	
 	void Awake() {
+		if (GameObject.FindObjectsOfType<TemplateManager>().Length > 1) {
+			Destroy(gameObject);
+			return;
+		}
+
 		DontDestroyOnLoad(this);
 		instance = this;
 
 		CheckFiles();
 	}
 
-	private static bool CheckIntegrity(TextAsset asset) {
+	private static bool CheckFileIntegrity(TextAsset asset) {
 		string path = BoardTemplates.defPath + string.Format(@"\{0}.kbt", asset.name);
 
 		if (File.Exists(path) && File.ReadAllLines(path) != new string[] { }) return true;
@@ -31,8 +36,7 @@ public class TemplateManager : MonoBehaviour {
 	public static void CheckFiles() {
 		if (!Directory.Exists(BoardTemplates.defPath)) Directory.CreateDirectory(BoardTemplates.defPath);
 
-		for (int i = 0; i < instance.files.Length; i++) {
-			if (!CheckIntegrity(instance.files[i])) CreateFile(instance.files[i]);
-		}
+		for (int i = 0; i < instance.files.Length; i++)
+			if (!CheckFileIntegrity(instance.files[i])) CreateFile(instance.files[i]);
 	}
 }

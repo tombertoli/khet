@@ -7,16 +7,16 @@ public class Board {
   public Underline[,] Underlines { get { return Underlines; } }
 
   private int width, height;
-  private IGamePiece[,] pieces;
+  private IPiece[,] pieces;
   private Underline[,] underlines;
 
-  public Board(IGamePiece[,] board, Underline[,] underlines) {
+  public Board(IPiece[,] board, Underline[,] underlines) {
     this.pieces = board;
     this.underlines = underlines;
     this.width = board.GetLength(0);
     this.height = board.GetLength(1);
 
-    foreach (IGamePiece gp in this.pieces) {
+    foreach (IPiece gp in this.pieces) {
       if (gp == null) throw new UnityException("Incomplete board");
 
       gp.Board = this;
@@ -26,7 +26,7 @@ public class Board {
   public Board(int width, int height) {
     this.width = width;
     this.height = height;
-    pieces = new IGamePiece[width, height];
+    pieces = new IPiece[width, height];
     underlines = new Underline[width, height];
 
     for (int i = 0; i < pieces.GetLength(0); i++) {
@@ -41,23 +41,23 @@ public class Board {
     SwapPieces(sentByLocal, piece, GetPieceAt(target));
   }
 
-  public void SwapPieces(bool sentByLocal, Point originPoint, IGamePiece target) {
+  public void SwapPieces(bool sentByLocal, Point originPoint, IPiece target) {
     Point targetPoint = target.Position;
     
     OccupyPoint(pieces[originPoint.x, originPoint.y], targetPoint);
     OccupyPoint(target, originPoint);
 
-    target.PositionChanged(target.Color, originPoint);
+    target.PositionChanged(target.Color, GetPieceAt(originPoint), originPoint);
 
     if (sentByLocal) NetworkController.MovePiece(true, targetPoint, originPoint);
   }
 
-  public void RemovePiece(IGamePiece piece) {
+  public void RemovePiece(IPiece piece) {
     DisoccupyPoint(piece.Position);
   }
 
-  public IGamePiece[,] GetAdjacent(IGamePiece piece) {
-    IGamePiece[,] res = new IGamePiece[3, 3];
+  public IPiece[,] GetAdjacent(IPiece piece) {
+    IPiece[,] res = new IPiece[3, 3];
     Point point = piece.Position;
 
     for (int i = -1; i < 2; i++) {
@@ -74,15 +74,15 @@ public class Board {
     return res;
   }
 
-  public void SetPiece(IGamePiece piece) {
+  public void SetPiece(IPiece piece) {
     pieces[piece.Position.x, piece.Position.y] = piece;
   }
 
-  public IGamePiece GetPieceAt(int x, int y) {
+  public IPiece GetPieceAt(int x, int y) {
     return GetPieceAt(new Point(x, y));
   }
 
-  public IGamePiece GetPieceAt(Point point) {
+  public IPiece GetPieceAt(Point point) {
     return pieces[point.x, point.y];
   }
 
@@ -107,7 +107,7 @@ public class Board {
     return underlines[point.x, point.y];
   }
 
-  public bool UnderlineEqualsColor(IGamePiece piece, Point position) {
+  public bool UnderlineEqualsColor(IPiece piece, Point position) {
     if ((underlines[position.x, position.y] == Underline.RedHorus   && piece.Color == PieceColor.Red)
      || (underlines[position.x, position.y] == Underline.SilverAnkh && piece.Color == PieceColor.Silver)
      || (underlines[position.x, position.y] == Underline.Blank)) return true;
@@ -115,17 +115,17 @@ public class Board {
     return false;
   }
 
-  public Board AssignPieces(IGamePiece[,] pieces, Underline[,] underline) {
+  public Board AssignPieces(IPiece[,] pieces, Underline[,] underline) {
     this.pieces = pieces;
     underlines = underline;
 
-    foreach (IGamePiece p in pieces)
+    foreach (IPiece p in pieces)
       p.Board = this;
     
     return this;
   }
 
-  private void OccupyPoint(IGamePiece piece, Point position) {
+  private void OccupyPoint(IPiece piece, Point position) {
     pieces[position.x, position.y] = piece;
   }
 

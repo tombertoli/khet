@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class EmptyPoint : IGamePiece {
+public class EmptyPoint : IPiece {
   public event MoveEvent Moved;
   public event RotationEvent Rotated;
 
@@ -40,11 +40,11 @@ public class EmptyPoint : IGamePiece {
     Debug.LogError("Porque se llama Move en una EmptyPiece?");
   }
 
-  public void Move(bool sentByLocal, IGamePiece finalPosition) { 
+  public void Move(bool sentByLocal, IPiece finalPosition) { 
     Debug.LogError("Porque se llama Move en una EmptyPiece?");
   }
 
-  public void PositionChanged(PieceColor color, Point position) { 
+  public void PositionChanged(PieceColor color, IPiece swappedWith, Point position) { 
     this.position = position;
   }
 

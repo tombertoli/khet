@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 [RequireComponent (typeof(Collider), typeof(Renderer))]
 public class Glow : MonoBehaviour {
-  [SerializeField] private string key, button = "Fire1", pieceTag = "Piece";
+  [SerializeField] private string key, button = "Fire1";
   [SerializeField] private float outlineWidth;
 
   private PieceColor pieceColor;
@@ -35,7 +35,7 @@ public class Glow : MonoBehaviour {
 
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
-    if (!TurnManager.IsSinglePlayer && pieceColor != NetworkController.Color) return;
+    if (!TurnManager.IsLocalGame && pieceColor != NetworkController.Color) return;
 
     SetOutline(true);
   }
@@ -45,7 +45,7 @@ public class Glow : MonoBehaviour {
 
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
-    if (!TurnManager.IsSinglePlayer && pieceColor != NetworkController.Color) return;
+    if (!TurnManager.IsLocalGame && pieceColor != NetworkController.Color) return;
 
     SetOutline(true);
   }
@@ -55,7 +55,7 @@ public class Glow : MonoBehaviour {
 
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
-    if (!TurnManager.IsSinglePlayer && pieceColor != NetworkController.Color) return;
+    if (!TurnManager.IsLocalGame && pieceColor != NetworkController.Color) return;
 
     SetOutline(false);
   }

@@ -12,7 +12,7 @@ public static class BoardTemplates {
     Point pieceFileSize = GetPieceFileSize(pieceFile);
 
     Board board             = new Board(pieceFileSize.x, pieceFileSize.y);
-    IGamePiece[,] pieces    = new IGamePiece[pieceFileSize.x, pieceFileSize.y];
+    IPiece[,] pieces    = new IPiece[pieceFileSize.x, pieceFileSize.y];
     PieceColor[,] colors    = new PieceColor[pieceFileSize.x, pieceFileSize.y];
     Underline[,] underlines = new Underline[pieceFileSize.x, pieceFileSize.y];
     Quaternion[,] rotations = new Quaternion[pieceFileSize.x, pieceFileSize.y];
@@ -54,7 +54,7 @@ public static class BoardTemplates {
     return LoadCustom(defPath + @"\dynasty.kbt");
   }
 
-  private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, Quaternion[,] rotations, ref IGamePiece[,] pieces) {
+  private static int SetPieces(string[] pieceFile, int index, PieceColor[,] colors, Quaternion[,] rotations, ref IPiece[,] pieces) {
     int a = 0;
 
     for (int i = index; i < pieceFile.Length; i++) {
@@ -62,7 +62,7 @@ public static class BoardTemplates {
 
       for (int j = 0; j < pieceFile[i].Length; j++) {
         char c = pieceFile[i][j];
-        IGamePiece gp;
+        IPiece gp;
 
         switch (c) {
           case 'I':

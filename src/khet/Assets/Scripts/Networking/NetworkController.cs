@@ -36,13 +36,13 @@ public class NetworkController : NetworkBehaviour {
 			return;
 		}
 		
-		IGamePiece piece = BoardController.b.GetPieceAt(fromPosition);
+		IPiece piece = BoardController.CurrentBoard.GetPieceAt(fromPosition);
 		piece.Move(false, toPosition);
 	}
 
 	[ClientRpc]
 	private void RpcRotatePiece(Point position, Quaternion rotation) {
-		IGamePiece piece = BoardController.b.GetPieceAt(position);
+		IPiece piece = BoardController.CurrentBoard.GetPieceAt(position);
 		
 		if (sentByLocal) {
 			sentByLocal = false;
@@ -59,8 +59,9 @@ public class NetworkController : NetworkBehaviour {
 			return;
 		}
 
-		if (Network.connections.Length >= 2) return; // TODO: UI.PlayerLeave
-
+		if (Network.connections.Length >= 2) return; 
+		
+		// TODO: UI.PlayerLeave
 		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
 	}
 
@@ -96,7 +97,7 @@ public class NetworkController : NetworkBehaviour {
 	}
 
 	[Command]
-	private void CmdPlayerReady() {
+	private void CmdPlayerReady() {		
 		color = colors[Mathf.Clamp(index, 0, 2)];
 		index++;
 	}
