@@ -19,4 +19,10 @@ public class Controles : MonoBehaviour {
 			i = true;
 		}
 	}
+
+	public void EmpezoFalse()
+	{
+		i = false;
+		gameObject.GetComponentInChildren<Text> ().text = "Controles en Pantalla: OFF";
+	}
 }

@@ -19,4 +19,10 @@ public class Musica : MonoBehaviour
 			i = true;
 		}
 	}
+
+	public void EmpezoFalse()
+	{
+		i = false;
+		gameObject.GetComponentInChildren<Text> ().text = "Musica: OFF";
+	}
 }

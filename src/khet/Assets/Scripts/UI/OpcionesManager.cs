@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
+using UnityEngine.UI;
 
 public class OpcionesManager : MonoBehaviour
 {
@@ -8,31 +9,45 @@ public class OpcionesManager : MonoBehaviour
 	[SerializeField] private int onlineIndex, offlineIndex;
   #pragma warning restore 0649
   
-  private bool musica, sonido, botones;
+	private static bool musica = true, sonido = true, controles = true;
+	public Button bmusica, bsonido, bcontroles;
+  
+	public void Awake()
+	{
+		Debug.Log ("Musica = " + musica);
+		Debug.Log ("Sonido = " + sonido);
+		Debug.Log ("Controles = " + controles);
 
-  public void Awake()
-  {
-    DontDestroyOnLoad(gameObject);
-  }
+		DontDestroyOnLoad (gameObject);
+		if (!musica) {
+			bmusica.GetComponent<Musica> ().EmpezoFalse ();	
+		}
+		if (!sonido) {
+			bsonido.GetComponent<Sonido> ().EmpezoFalse ();	
+		}		
+		if (!controles) {
+			bcontroles.GetComponent<Controles> ().EmpezoFalse ();	
+		}
+	}
+  
+	public void CallMusica(bool opcionSeleccionada)
+	{
+		musica = !musica;
+	}
 
-  public void CallMusica(bool opcionSeleccionada)
-  {
-    musica = !musica;
-  }
+    public void CallSonido(bool opcionSeleccionada)
+	{
+		sonido = !sonido;
+	}
 
-  public void CallSonido(bool opcionSeleccionada)
-  {
-    sonido = !sonido;
-  }
+    public void CallControles(bool opcionSeleccionada)
+	{
+		controles = !controles;
+	}
 
-  public void CallBotones(bool opcionSeleccionada)
-  {
-    botones = !botones;
-  }
-
-  public void CallJugar(bool online)
-  {
+    public void CallJugar(bool online)
+	{
 		TurnManager.IsLocalGame = !online;
-		SceneManager.LoadScene(online ? onlineIndex : offlineIndex);
-  }
+		SceneManager.LoadScene (online ? onlineIndex : offlineIndex);
+	}
 }

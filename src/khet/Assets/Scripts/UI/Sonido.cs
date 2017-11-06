@@ -15,4 +15,10 @@ public class Sonido : MonoBehaviour {
 			i = true;
 		}
 	}
+
+	public void EmpezoFalse()
+	{
+		i = false;
+		gameObject.GetComponentInChildren<Text> ().text = "Sonido: OFF";
+	}
 }
