@@ -10,7 +10,6 @@ public class Movement : MonoBehaviour {
   void OnDestroy() { OnMouseExit(); }
 
   void OnMouseOver() {
-    Debug.Log("Over");
     if (!Input.GetButtonDown("Fire1")) return;
     piece.Move(true, point);
   }
