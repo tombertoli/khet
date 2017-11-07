@@ -1,9 +1,12 @@
-﻿	using UnityEngine;
-	using System.Collections;
-	using System.Collections.Generic;
-	using UnityEngine.UI;
-public class Jugar : MonoBehaviour
-{
+﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine.Audio;
+
+public class Jugar : MonoBehaviour {
+  [SerializeField] private AudioClip movingClip;
+  private AudioSource audioSource;
 
   RectTransform rectTransform;
   Vector2 startingPosition = new Vector2(0.411f, 0.5693408f);
@@ -20,6 +23,8 @@ public class Jugar : MonoBehaviour
   void Start()
   {
     rectTransform = gameObject.GetComponent<RectTransform>();
+    audioSource = Camera.main.GetComponent<AudioSource>();
+
     local.SetActive(false);
     lan.SetActive(false);
   }
@@ -80,6 +85,9 @@ public class Jugar : MonoBehaviour
 
   IEnumerator Mover()
   {
+    audioSource.clip = movingClip;
+    audioSource.Play();
+
     while (currentTime <= timeOfTravel)
     {
       currentTime += Time.deltaTime;
@@ -88,6 +96,10 @@ public class Jugar : MonoBehaviour
       rectTransform.anchorMin = Vector3.Lerp(startingPosition, endPosition, normalizedValue);
       yield return null;
     }
+
+    audioSource.Stop();
+
+    
 
     if (clickeoBotonDeJugar)
     {

@@ -9,6 +9,7 @@ public class PieceController : MonoBehaviour {
 
   #pragma warning disable 0649
   [SerializeField] private Material silverMaterial, redMaterial;
+  [SerializeField] private AudioClip movingClip;
   #pragma warning restore 0649
 
   public IPiece Piece { get { return piece; } set { piece = piece == null ? value : piece; } }
@@ -106,6 +107,11 @@ public class PieceController : MonoBehaviour {
 
     TurnManager.Wait();
 
+    AudioSource source = Camera.main.GetComponent<AudioSource>();
+    source.clip = movingClip;
+    source.time = RandomPercent(source.clip, (f) => f - (Time.deltaTime * multiplier));
+    source.Play();
+
     while (transform.parent.position != position) {
       transform.parent.position = Vector3.Lerp(transform.parent.position, position, Time.deltaTime * multiplier);
       
@@ -113,6 +119,8 @@ public class PieceController : MonoBehaviour {
 
       yield return null;
     }
+
+    source.Stop();
 
     selectionLocked = false;
 
@@ -128,6 +136,11 @@ public class PieceController : MonoBehaviour {
 
     TurnManager.Wait();
 
+    AudioSource source = Camera.main.GetComponent<AudioSource>();
+    source.clip = movingClip;
+    source.time = RandomPercent(source.clip, (f) => f - (Time.deltaTime * multiplier));
+    source.Play();
+
     while (transform.parent.rotation != rotation) {
       transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, multiplier);
 
@@ -135,6 +148,8 @@ public class PieceController : MonoBehaviour {
 
       yield return null;
     }
+
+    source.Stop();
 
     TurnManager.End();
     selectionLocked = false;
@@ -167,6 +182,11 @@ public class PieceController : MonoBehaviour {
     }
 
     StateController.EndGame(won);
+  }
+
+  private delegate float InputFunc(float f);
+  private float RandomPercent(AudioClip clip, InputFunc formula) {
+    return UnityEngine.Random.Range(0, formula(clip.length)) / clip.length;
   }
 
   #endregion
