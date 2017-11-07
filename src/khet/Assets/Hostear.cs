@@ -55,7 +55,6 @@ public class Hostear : MonoBehaviour {
 		ip.SetActive (false);
 		gameObject.SetActive (false);
 	}
-	}
 
 	IEnumerator FadeIn()
 	{
