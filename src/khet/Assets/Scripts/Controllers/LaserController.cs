@@ -39,21 +39,13 @@ public class LaserController : MonoBehaviour {
     PieceController ps = hitInfo.collider.gameObject.GetComponent<PieceController>();
 
     float hitY = (endPoint).y;
-    Debug.Log(endPoint);
-    Debug.Log(hitY);
 
     endPoint = ps.transform.TransformPoint(0, 0, 0);
     endPoint.y = hitY;
-    Debug.Log(endPoint);
+
     points.Add(endPoint);
 
     ps.LaserHit(hitInfo.point, hitInfo.normal);
-  }
-
-  public static void AddPositionDirty(Vector3 position) {
-    if (line.enabled) return;
-
-    //points.Add(position);
   }
 
   private static IEnumerator TurnOff() {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class PieceController : MonoBehaviour {
   [SerializeField] 
   [Range (0, 1)]
-  private float multiplier = .25f;
+  private float multiplier = .15f;
 
   #pragma warning disable 0649
   [SerializeField] private Material silverMaterial, redMaterial;
@@ -144,7 +144,7 @@ public class PieceController : MonoBehaviour {
     source.Play();
 
     while (transform.parent.rotation != rotation) {
-      transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, multiplier);
+      transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, multiplier * 10);
 
       //UpdateProbes();
 

@@ -39,7 +39,6 @@ public class Pyramid : BasePiece {
     }   
     
     normal.y = 0;
-    LaserController.AddPositionDirty(transform.TransformPoint(temp));
     LaserController.AddPosition(transform.TransformPoint(point), normal);   
     return false;
   }

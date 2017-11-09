@@ -5,19 +5,18 @@ using UnityEngine.UI;
 
 public class fades : MonoBehaviour
 {
+    [SerializeField] HUDController controller;
 
     float timeOfTravelColor, currentTimeColor, normalizedValueColor;
-    public GameObject host, jugar, eliminarJugador, jugadores, jugarText, eliminarJugadorText, jugadoresText;
+    public GameObject host, jugar, jugadores, jugarText, jugadoresText;
     public GameObject conectar, ip, conectarText, ipText, hostearText;
 
     public void CallFadeIn()
     {
         jugar.SetActive(true);
-        eliminarJugador.SetActive(true);
         jugadores.SetActive(true);
 
         StartCoroutine(FadeOut());
-
     }
 
     IEnumerator FadeOut()
@@ -68,14 +67,12 @@ public class fades : MonoBehaviour
         normalizedValueColor = 0;
 
         Image jugarBg = jugar.GetComponentInChildren<Image>();
-        Image eliminarJugadorBg = eliminarJugador.GetComponentInChildren<Image>();
         Color targetBg = jugarBg.color;
         Color targetBg2 = jugadores.GetComponent<RawImage>().color;
         targetBg.a = 1;
         targetBg2.a = 1;
 
         Text jugarTx = jugarText.GetComponent<Text>();
-        Text eliminarJugadorTx = eliminarJugadorText.GetComponent<Text>();
         Text jugadoresTx = jugadoresText.GetComponent<Text>();
         Color targetTx = jugarTx.color;
         targetTx.a = 1;
@@ -86,11 +83,9 @@ public class fades : MonoBehaviour
             normalizedValueColor = currentTimeColor / timeOfTravelColor;
 
             jugarBg.color = Color.Lerp(jugarBg.color, targetBg, normalizedValueColor);
-            eliminarJugadorBg.color = Color.Lerp(eliminarJugadorBg.color, targetBg, normalizedValueColor);
             jugadores.GetComponent<RawImage>().color = Color.Lerp(jugadores.GetComponent<RawImage>().color, targetBg2, normalizedValueColor);
 
             jugarTx.color = Color.Lerp(jugarTx.color, targetTx, normalizedValueColor);
-            eliminarJugadorTx.color = Color.Lerp(eliminarJugadorTx.color, targetTx, normalizedValueColor);
             jugadoresTx.color = Color.Lerp(jugadoresTx.color, targetTx, normalizedValueColor);
             yield return null;
         }

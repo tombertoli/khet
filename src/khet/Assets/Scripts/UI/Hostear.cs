@@ -89,8 +89,5 @@ public class Hostear : MonoBehaviour {
 			jugadoresTx.color = Color.Lerp(jugadoresTx.color, targetTx, normalizedValueColor);
 			yield return null;
 		}
-
-		//puedeFadearOut = true;
-		//Debug.Log("Termino Fade-In Jugar");
 	}
 }
