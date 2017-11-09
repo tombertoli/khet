@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Hostear : MonoBehaviour {
 
+<<<<<<< HEAD:src/khet/Assets/Scripts/UI/Hostear.cs
 	float timeOfTravelColor, currentTimeColor, normalizedValueColor;
 	public GameObject jugar, eliminarJugador, jugadores, jugarText, eliminarJugadorText, jugadoresText;
 	public GameObject conectar, ip, conectarText, ipText, hostearText;
