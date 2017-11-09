@@ -7,7 +7,7 @@ using System.Collections.Generic;
 public class PieceController : MonoBehaviour {
   [SerializeField] 
   [Range (0, 1)]
-  private float multiplier = .5f;
+  private float multiplier = .25f;
 
   #pragma warning disable 0649
   [SerializeField] private Material silverMaterial, redMaterial;
