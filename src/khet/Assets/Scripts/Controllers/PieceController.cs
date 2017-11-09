@@ -5,7 +5,9 @@ using System.Collections.Generic;
 
 [RequireComponent (typeof(Renderer), typeof(Collider))]
 public class PieceController : MonoBehaviour {
-  [SerializeField] private float multiplier = 5f;
+  [SerializeField] 
+  [Range (0, 1)]
+  private float multiplier = .5f;
 
   #pragma warning disable 0649
   [SerializeField] private Material silverMaterial, redMaterial;
@@ -109,11 +111,11 @@ public class PieceController : MonoBehaviour {
 
     AudioSource source = Camera.main.GetComponent<AudioSource>();
     source.clip = movingClip;
-    source.time = RandomPercent(source.clip, (f) => f - (Time.deltaTime * multiplier));
+    source.time = RandomPercent(source.clip, (f) => f - multiplier);
     source.Play();
 
     while (transform.parent.position != position) {
-      transform.parent.position = Vector3.Lerp(transform.parent.position, position, Time.deltaTime * multiplier);
+      transform.parent.position = Vector3.Lerp(transform.parent.position, position, multiplier);
       
       UpdateProbes();
 
@@ -138,13 +140,13 @@ public class PieceController : MonoBehaviour {
 
     AudioSource source = Camera.main.GetComponent<AudioSource>();
     source.clip = movingClip;
-    source.time = RandomPercent(source.clip, (f) => f - (Time.deltaTime * multiplier));
+    source.time = RandomPercent(source.clip, (f) => f - (multiplier) / 10);
     source.Play();
 
     while (transform.parent.rotation != rotation) {
       transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, multiplier);
 
-      UpdateProbes();
+      //UpdateProbes();
 
       yield return null;
     }
