@@ -2,25 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(LineRenderer))]
 public class LaserController : MonoBehaviour {
   [SerializeField] private static float waitTimeInSeconds = 2;
-  public static LineRenderer line;
+  public static bool fire = false;
 
   public delegate void LaserHit();
   public static event LaserHit Hit;
 
   private static LaserController instance;
-  private static List<Vector3> points = new List<Vector3>();
+  public static List<Vector3> points = new List<Vector3>();
 
   void Start() {
-    line = GetComponent<LineRenderer>();
-    line.enabled = false;
     instance = this;
   }
 
   public static void AddPosition(Vector3 position, Vector3 direction) {
-    if (line.enabled) return;
+    if (fire) return;
 
     Ray ray = new Ray(position, direction);
     RaycastHit hitInfo;
@@ -29,7 +26,6 @@ public class LaserController : MonoBehaviour {
     points.Add(ray.origin);
 
     Vector3 endPoint = hitInfo.point == Vector3.zero ? ray.GetPoint(50) : hitInfo.point;
-    //points.Add(endPoint);
 
     if (hitInfo.collider == null) { 
       points.Add(endPoint);
@@ -38,7 +34,7 @@ public class LaserController : MonoBehaviour {
 
     PieceController ps = hitInfo.collider.gameObject.GetComponent<PieceController>();
 
-    float hitY = (endPoint).y;
+    float hitY = endPoint.y;
 
     endPoint = ps.transform.TransformPoint(0, 0, 0);
     endPoint.y = hitY;
@@ -50,7 +46,7 @@ public class LaserController : MonoBehaviour {
 
   private static IEnumerator TurnOff() {
     yield return new WaitForSeconds(waitTimeInSeconds);
-    line.enabled = false;
+    fire = false;
 
     PieceController.UpdateProbes();
 
@@ -59,13 +55,11 @@ public class LaserController : MonoBehaviour {
   }
 
   public static void Fire(Vector3 position, Vector3 direction) {
-    if (line.enabled) return;
+    if (fire) return;
 
     TargetChanged();
     AddPosition(position, direction);
-    line.SetVertexCount(points.Count);
-    line.SetPositions(points.ToArray());
-    line.enabled = true;
+    fire = true;
 
     PieceController.UpdateProbes();
 
@@ -73,20 +67,17 @@ public class LaserController : MonoBehaviour {
   }
 
   private static void TargetChanged() {
-    if (line.enabled)
-    {
+    if (fire) {
       instance.StartCoroutine(WaitForOff());
       return;
     }
 
     points.Clear();
-    line.SetVertexCount(points.Count);
-    line.SetPositions(points.ToArray());
   }
 
   private static IEnumerator WaitForOff() {
-    while (line.enabled) yield return null;
+    while (fire) yield return null;
 
     TargetChanged();
-  }
+  }  
 }
