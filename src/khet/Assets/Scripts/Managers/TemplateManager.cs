@@ -46,6 +46,5 @@ public class TemplateManager : MonoBehaviour {
 	public static void SetBoard(string board) {
 		CurrentLoadedBoard = BoardTemplates.LoadCustom(board);
 
-		string[] files = Directory.GetFiles(BoardTemplates.defPath, "*.kbt");
 	}
 }
