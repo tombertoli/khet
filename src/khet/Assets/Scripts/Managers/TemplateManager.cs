@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class TemplateManager : MonoBehaviour {
 	[SerializeField] private TextAsset[] files;
+
+	public static Board CurrentLoadedBoard { get; private set; }
 	private static TemplateManager instance;
 	
 	void Awake() {
@@ -34,9 +36,16 @@ public class TemplateManager : MonoBehaviour {
 	}
 
 	public static void CheckFiles() {
+		if (instance == null) return;
 		if (!Directory.Exists(BoardTemplates.defPath)) Directory.CreateDirectory(BoardTemplates.defPath);
 
 		for (int i = 0; i < instance.files.Length; i++)
 			if (!CheckFileIntegrity(instance.files[i])) CreateFile(instance.files[i]);
+	}
+
+	public static void SetBoard(string board) {
+		CurrentLoadedBoard = BoardTemplates.LoadCustom(board);
+
+		string[] files = Directory.GetFiles(BoardTemplates.defPath, "*.kbt");
 	}
 }

@@ -11,7 +11,7 @@ public class BoardController : MonoBehaviour {
   
 	void Start() {
     TurnManager.Reset();
-    CurrentBoard = BoardTemplates.LoadClassic();
+    CurrentBoard = TemplateManager.CurrentLoadedBoard; //BoardTemplates.LoadClassic();
 
     silverDead = transform.FindChild("SilverDead");
     redDead = transform.FindChild("RedDead");
