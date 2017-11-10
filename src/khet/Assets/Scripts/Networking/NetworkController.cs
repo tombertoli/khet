@@ -85,7 +85,7 @@ public class NetworkController : NetworkBehaviour {
 
   [ClientRpc]
   private void RpcSetAllReady() {
-    allPlayersConnected = true;
+    instance.allPlayersConnected = true;
   }
 
 	#endregion
@@ -112,7 +112,6 @@ public class NetworkController : NetworkBehaviour {
     color = colors[Mathf.Clamp(index, 0, 2)];
     index++;
 
-    Debug.Log (NetworkServer.connections.Count);
     if (NetworkServer.connections.Count == 2)
       RpcSetAllReady();
 	}

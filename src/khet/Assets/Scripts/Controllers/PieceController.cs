@@ -6,8 +6,8 @@ using System.Collections.Generic;
 [RequireComponent (typeof(Renderer), typeof(Collider))]
 public class PieceController : MonoBehaviour {
   [SerializeField] 
-  [Range (.01f, .5f)]
-  private float multiplier = .15f;
+  [Range (1, 10)]
+  private float multiplier = 5;
 
   #pragma warning disable 0649
   [SerializeField] private Material silverMaterial, redMaterial;
@@ -115,7 +115,7 @@ public class PieceController : MonoBehaviour {
     source.Play();
 
     while (transform.parent.position != position) {
-      transform.parent.position = Vector3.Lerp(transform.parent.position, position, multiplier);
+      transform.parent.position = Vector3.Lerp(transform.parent.position, position, multiplier * Time.deltaTime);
       
       UpdateProbes();
 
@@ -144,7 +144,7 @@ public class PieceController : MonoBehaviour {
     source.Play();
 
     while (transform.parent.rotation != rotation) {
-      transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, multiplier * 10);
+      transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, multiplier * Time.deltaTime);
 
       //UpdateProbes();
 
