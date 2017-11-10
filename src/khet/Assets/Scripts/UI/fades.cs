@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class fades : MonoBehaviour
 {
-    [SerializeField] HUDController controller;
+    [SerializeField] ConnectionController controller;
 
     float timeOfTravelColor, currentTimeColor, normalizedValueColor;
     public GameObject host, jugar, jugadores, jugarText, jugadoresText;

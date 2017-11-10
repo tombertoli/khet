@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class LaserController : MonoBehaviour {
-  [SerializeField] private static float waitTimeInSeconds = 2;
-  public static bool fire = false;
+  [SerializeField] private Material material;
+
+  private static float waitTimeInSeconds = 2;
+  public static bool firing = false;
 
   public delegate void LaserHit();
   public static event LaserHit Hit;
@@ -17,7 +19,7 @@ public class LaserController : MonoBehaviour {
   }
 
   public static void AddPosition(Vector3 position, Vector3 direction) {
-    if (fire) return;
+    if (firing) return;
 
     Ray ray = new Ray(position, direction);
     RaycastHit hitInfo;
@@ -46,7 +48,8 @@ public class LaserController : MonoBehaviour {
 
   private static IEnumerator TurnOff() {
     yield return new WaitForSeconds(waitTimeInSeconds);
-    fire = false;
+    PostRender.DrawOnPostRender -= instance.DrawLines;
+    firing = false;
 
     PieceController.UpdateProbes();
 
@@ -55,11 +58,12 @@ public class LaserController : MonoBehaviour {
   }
 
   public static void Fire(Vector3 position, Vector3 direction) {
-    if (fire) return;
+    if (firing) return;
 
     TargetChanged();
     AddPosition(position, direction);
-    fire = true;
+    PostRender.DrawOnPostRender += instance.DrawLines;
+    firing = true;
 
     PieceController.UpdateProbes();
 
@@ -67,7 +71,7 @@ public class LaserController : MonoBehaviour {
   }
 
   private static void TargetChanged() {
-    if (fire) {
+    if (firing) {
       instance.StartCoroutine(WaitForOff());
       return;
     }
@@ -76,8 +80,19 @@ public class LaserController : MonoBehaviour {
   }
 
   private static IEnumerator WaitForOff() {
-    while (fire) yield return null;
+    while (firing) yield return null;
 
     TargetChanged();
   }  
+
+  private void DrawLines() {
+    for (int i = 0; i < LaserController.points.Count - 1; i++) {      
+      GL.Begin(GL.LINES);      
+      material.SetPass(0);
+      GL.Color(material.color);
+      GL.Vertex(LaserController.points[i]);
+      GL.Vertex(LaserController.points[i + 1]);
+      GL.End();
+    }
+  }
 }

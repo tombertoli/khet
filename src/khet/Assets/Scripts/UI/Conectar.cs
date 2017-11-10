@@ -5,10 +5,10 @@ using System.Collections;
 
 public class Conectar : MonoBehaviour {
 	[SerializeField] private Text text;
-	[SerializeField] private HUDController controller;
+	[SerializeField] private ConnectionController controller;
 
 	public void OnClick() {
-		if (!IsValidIP(text.text)) {
+    if (!IsValidIP(text.text) && text.text != "localhost") {
 			Debug.Log("invalid ip");
 			return;
 		}

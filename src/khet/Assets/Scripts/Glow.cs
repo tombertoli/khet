@@ -19,6 +19,7 @@ public class Glow : MonoBehaviour {
   }
 
   void Update() { 
+    if (!NetworkController.AllPlayersConnected) return;
     if (!Input.GetButtonDown(button)) return;
     
     if (over) { 
@@ -36,6 +37,7 @@ public class Glow : MonoBehaviour {
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
     if (!TurnManager.IsLocalGame && pieceColor != NetworkController.Color) return;
+    if (!NetworkController.AllPlayersConnected) return;
 
     SetOutline(true);
   }
@@ -46,6 +48,7 @@ public class Glow : MonoBehaviour {
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
     if (!TurnManager.IsLocalGame && pieceColor != NetworkController.Color) return;
+    if (!NetworkController.AllPlayersConnected) return;
 
     SetOutline(true);
   }
@@ -56,6 +59,7 @@ public class Glow : MonoBehaviour {
     if (permanent) return;
     if (pieceColor != TurnManager.Turn) return;
     if (!TurnManager.IsLocalGame && pieceColor != NetworkController.Color) return;
+    if (!NetworkController.AllPlayersConnected) return;
 
     SetOutline(false);
   }

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 [RequireComponent (typeof(Renderer), typeof(Collider))]
 public class PieceController : MonoBehaviour {
   [SerializeField] 
-  [Range (0, 1)]
+  [Range (.01f, .5f)]
   private float multiplier = .15f;
 
   #pragma warning disable 0649
@@ -42,7 +42,7 @@ public class PieceController : MonoBehaviour {
   }
 
   void Update() {
-    if (!Piece.IsSelected || (!TurnManager.IsLocalGame && Piece.Color != NetworkController.Color)) return;
+    if (!Piece.IsSelected || (!TurnManager.IsLocalGame && Piece.Color != NetworkController.Color) || !NetworkController.AllPlayersConnected) return;
 
     if (Input.GetButtonDown("Fire1") && !selectionLocked && !isAbove && !Movement.mouseAbove)
       SetSelection(false);
@@ -58,7 +58,7 @@ public class PieceController : MonoBehaviour {
 
   void OnMouseOver() {
     if (!TurnManager.IsLocalGame && Piece.Color != NetworkController.Color) return;
-    if (selectionLocked || !Input.GetButtonDown("Fire1") || Piece.Color != TurnManager.Turn) return;
+    if (selectionLocked || !Input.GetButtonDown("Fire1") || Piece.Color != TurnManager.Turn || !NetworkController.AllPlayersConnected) return;
 
     SetSelection(!Piece.IsSelected);
   }

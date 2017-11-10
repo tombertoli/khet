@@ -7,7 +7,7 @@ public class BoardKeyListener : MonoBehaviour {
   private bool started;
 
 	void Update () {
-    if (!started && (Input.GetKeyDown(turnBoardRight) || Input.GetKeyDown(turnBoardLeft)) && !LaserController.fire) {
+    if (!started && (Input.GetKeyDown(turnBoardRight) || Input.GetKeyDown(turnBoardLeft)) && !LaserController.firing) {
       started = true;
 
       float finalRot = Input.GetKeyDown(turnBoardRight) ? 90 : -90;

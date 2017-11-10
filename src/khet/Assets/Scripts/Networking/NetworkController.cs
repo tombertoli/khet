@@ -4,13 +4,18 @@ using System.Collections;
 
 public class NetworkController : NetworkBehaviour {
 	public static PieceColor Color { get { return instance != null ? instance.color : PieceColor.None; } }
+  public static bool AllPlayersConnected { get { return instance != null ? instance.allPlayersConnected : true; } }
 
 	private static NetworkController instance;
 	private static PieceColor[] colors = new[] { PieceColor.Silver, PieceColor.Red, PieceColor.None };
 	private static short index = 0;
 	
 	[SyncVar] 
-	public PieceColor color;
+	private PieceColor color;
+
+  [SyncVar]
+  private bool allPlayersConnected = false;
+
 	private bool sentByLocal = false;
 
 	void OnDestroy() {
@@ -78,6 +83,11 @@ public class NetworkController : NetworkBehaviour {
 		Debug.Log(won + " won");
 	}
 
+  [ClientRpc]
+  private void RpcSetAllReady() {
+    allPlayersConnected = true;
+  }
+
 	#endregion
 
 	#region CMDs
@@ -99,8 +109,12 @@ public class NetworkController : NetworkBehaviour {
 
 	[Command]
 	private void CmdPlayerReady() {		
-		color = colors[Mathf.Clamp(index, 0, 2)];
-		index++;
+    color = colors[Mathf.Clamp(index, 0, 2)];
+    index++;
+
+    Debug.Log (NetworkServer.connections.Count);
+    if (NetworkServer.connections.Count == 2)
+      RpcSetAllReady();
 	}
 
 	[Command]
