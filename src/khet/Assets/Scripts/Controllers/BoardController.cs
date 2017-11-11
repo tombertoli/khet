@@ -7,10 +7,14 @@ public class BoardController : MonoBehaviour {
   #pragma warning restore 0649
 
   public static Board CurrentBoard { get; private set; }
+  public static Transform silverDead, redDead;
   
 	void Start() {
     TurnManager.Reset();
     CurrentBoard = BoardTemplates.LoadClassic();
+
+    silverDead = transform.FindChild("SilverDead");
+    redDead = transform.FindChild("RedDead");
 
     BasePiece.transPos = pieceTransform.position;
     EmptyPoint.transPos = pieceTransform.position;

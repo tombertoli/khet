@@ -7,7 +7,13 @@ using System.Collections.Generic;
 public class PieceController : MonoBehaviour {
   [SerializeField] 
   [Range (1, 10)]
-  private float multiplier = 5;
+  private float movingMultiplier = 5;
+
+  [SerializeField]
+  [Range (10, 50)]
+  private float rotationMultiplier = 25;
+
+  [SerializeField] private Vector3 deadDistance = Vector3.zero;
 
   #pragma warning disable 0649
   [SerializeField] private Material silverMaterial, redMaterial;
@@ -21,6 +27,7 @@ public class PieceController : MonoBehaviour {
   private PlaceholderManager placeholderManager;
   private bool isAbove = false;
   private static bool selectionLocked = false;
+  private static int deadSilverAmount = 0, deadRedAmount = 0;
 
 	void Start() {
     Piece.Moved += MovePiece;
@@ -79,7 +86,21 @@ public class PieceController : MonoBehaviour {
     if (Piece.Type == PieceTypes.Pharaoh)
       EndGame(Piece.Color == PieceColor.Red ? PieceColor.Silver : PieceColor.Red);
 
-    Destroy(transform.parent.gameObject);
+    //Destroy(transform.parent.gameObject);
+    Vector3 deadPosition = Piece.Color == PieceColor.Silver ? BoardController.silverDead.position : BoardController.redDead.position;
+
+    if (Piece.Color == PieceColor.Silver)
+         deadPosition += -deadDistance * deadSilverAmount;
+    else deadPosition +=  deadDistance * deadRedAmount;
+
+    transform.parent.position = deadPosition;
+    rps.Remove(transform.parent.GetComponentInChildren<ReflectionProbe>());
+    
+    if (Piece.Color == PieceColor.Silver) deadSilverAmount++;
+    else deadRedAmount++;
+
+    Destroy(GetComponent<Glow>());
+    Destroy(this);
   }
 
   private void MovePiece(PieceColor color, IPiece swappedWith, Point point) {
@@ -111,14 +132,13 @@ public class PieceController : MonoBehaviour {
 
     AudioSource source = Camera.main.GetComponent<AudioSource>();
     source.clip = movingClip;
-    source.time = RandomPercent(source.clip, (f) => f - multiplier);
+    source.time = RandomPercent(source.clip, (f) => f - movingMultiplier);
     source.Play();
 
     while (transform.parent.position != position) {
-      transform.parent.position = Vector3.Lerp(transform.parent.position, position, multiplier * Time.deltaTime);
+      transform.parent.position = Vector3.Lerp(transform.parent.position, position, movingMultiplier * Time.deltaTime);
       
       UpdateProbes();
-
       yield return null;
     }
 
@@ -140,14 +160,13 @@ public class PieceController : MonoBehaviour {
 
     AudioSource source = Camera.main.GetComponent<AudioSource>();
     source.clip = movingClip;
-    source.time = RandomPercent(source.clip, (f) => f - (multiplier) / 10);
+    source.time = RandomPercent(source.clip, (f) => f - rotationMultiplier / 100);
     source.Play();
 
     while (transform.parent.rotation != rotation) {
-      transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, multiplier * Time.deltaTime);
+      transform.parent.rotation = Quaternion.RotateTowards(transform.parent.rotation, rotation, rotationMultiplier * Time.deltaTime);
 
-      //UpdateProbes();
-
+      UpdateProbes();
       yield return null;
     }
 
