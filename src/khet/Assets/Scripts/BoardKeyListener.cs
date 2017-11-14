@@ -10,7 +10,7 @@ public class BoardKeyListener : MonoBehaviour {
     if (!started && (Input.GetKeyDown(turnBoardRight) || Input.GetKeyDown(turnBoardLeft)) && !LaserController.IsFiring) {
       started = true;
 
-      float finalRot = Input.GetKeyDown(turnBoardRight) ? 90 : -90;
+      float finalRot = Input.GetKeyDown(turnBoardRight) ? -90 : 90;
       RotateCam(finalRot, turnDelta);
     }
   }

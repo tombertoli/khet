@@ -25,13 +25,9 @@ public class Pyramid : BasePiece {
 
     if (normx == rightx && normz == rightz) {
       normal = Quaternion.AngleAxis(90, Vector3.up) * normal;
-      point = Quaternion.AngleAxis(90, Vector3.up) * point;
-
       temp.x = 0;
     } else if (normx == forwardx && normz == forwardz) {
       normal = Quaternion.AngleAxis(-90, Vector3.up) * normal;
-      point = Quaternion.AngleAxis(-90, Vector3.up) * point;
-
       temp.z = 0;
     } else {
       Die();
@@ -39,7 +35,7 @@ public class Pyramid : BasePiece {
     }   
     
     normal.y = 0;
-    LaserController.AddPosition(transform.TransformPoint(point), normal);   
+    LaserController.AddPosition(transform.TransformPoint(Vector3.zero), normal);
     return false;
   }
 }
