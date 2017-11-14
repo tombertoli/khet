@@ -9,48 +9,48 @@ public class PlaceholderManager : MonoBehaviour {
 	private IPiece piece;
 	private List<GameObject> placeholders = new List<GameObject> ();
 
-	void Start () {
+	void Start() {
 		piece = transform.GetComponentInChildren<PieceController> ().Piece;
 	}
 
-	public void SetPlaceholders (bool state) {
+	public void SetPlaceholders(bool state) {
 	  if (state)
-	    ShowPlaceholders ();
+	    ShowPlaceholders();
 	  else
-	    HidePlaceholders ();
+	    HidePlaceholders();
 	}
 
-	private void ShowPlaceholders () {
+	private void ShowPlaceholders() {
 		if (piece.Type == PieceTypes.Sphynx)
 			return;
 
-		Point[] points = piece.GetAvailablePositions ();
+		Point[] points = piece.GetAvailablePositions();
 		if (points == null)
 			return;
 
-		Vector3[] positions = BasePiece.ParsePositions (transform, points);
-		HidePlaceholders ();
+		Vector3[] positions = BasePiece.ParsePositions(transform, points);
+		HidePlaceholders();
 
 		for (int i = 0; i < positions.Length; i++) {
-			placeholders.Add (Instantiate (prefab, positions [i], piece.Rotation) as GameObject);
+			placeholders.Add(Instantiate(prefab, positions [i], piece.Rotation) as GameObject);
 
-			Movement m = placeholders [placeholders.Count - 1].GetComponentInChildren<Movement> ();
+			Movement m = placeholders[placeholders.Count - 1].GetComponentInChildren<Movement>();
 			m.piece = piece;
 			m.point = points [i];
-			m.transform.parent.parent = transform.FindChild ("Piece");
+			m.transform.parent.parent = transform.FindChild("Piece");
 		}
 
 		Active = true;
 	}
 
-	private void HidePlaceholders () {
+	private void HidePlaceholders() {
 		if (piece.Type == PieceTypes.Sphynx || placeholders.Count <= 0)
 			return;
 
 		for (int i = 0; i < placeholders.Count; i++)
-			Destroy (placeholders [i]);
+			Destroy(placeholders[i]);
 
-		placeholders.Clear ();
+		placeholders.Clear();
 		Active = false;
 	}
 }
