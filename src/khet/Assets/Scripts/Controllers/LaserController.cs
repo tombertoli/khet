@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-//[RequireComponent(typeof(LineRenderer))]
 public class LaserController : MonoBehaviour {
   private static float waitTimeInSeconds = 2;
   
@@ -30,7 +29,6 @@ public class LaserController : MonoBehaviour {
 
   void Start() {
     instance = this;
-    IsFiring = false;
   }
 
   public static void AddPosition(Vector3 position, Vector3 direction) {

@@ -35,7 +35,7 @@ public class Pyramid : BasePiece {
     }   
     
     normal.y = 0;
-    LaserController.AddPosition(transform.TransformPoint(Vector3.zero), normal);
+    LaserController.AddPosition(transform.TransformPoint(0, point.y, 0), normal);
     return false;
   }
 }
