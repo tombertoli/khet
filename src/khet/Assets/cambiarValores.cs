@@ -5,6 +5,7 @@ using System.IO;
 using UnityEngine.UI;
 
 public class cambiarValores : MonoBehaviour {
+	[SerializeField] private Text text;
 
 	// Use this for initialization
 	void Start () {
@@ -20,10 +21,15 @@ public class cambiarValores : MonoBehaviour {
 			files [i] = files [i].Substring (1, files [i].Length - 5);
 		}
 		dp.AddOptions (new List<string> (files));
+		TemplateManager.SetBoard (text.text);
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	public void SetBoard() {
+		TemplateManager.SetBoard(text.text);
 	}
 }

@@ -45,6 +45,6 @@ public class TemplateManager : MonoBehaviour {
 
 	public static void SetBoard(string board) {
 		CurrentLoadedBoard = BoardTemplates.LoadCustom(board);
-
+		Debug.Log ("Loaded: " + board);
 	}
 }
