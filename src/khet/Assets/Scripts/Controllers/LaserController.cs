@@ -2,24 +2,33 @@
 using System.Collections;
 using System.Collections.Generic;
 
+//[RequireComponent(typeof(LineRenderer))]
 public class LaserController : MonoBehaviour {
-  [SerializeField] private Material material;
-
-  private static float waitTimeInSeconds = 2;
-  public static bool firing = false;
+  [SerializeField] private static float waitTimeInSeconds = 2;
+  public static bool IsFiring { 
+    get { return IsFiring; }
+    private set { 
+        for (int i = 0; i < lines.Count; i++)
+          lines[i].enabled = false;
+     }
+  }
+  //public static LineRenderer line;
 
   public delegate void LaserHit();
   public static event LaserHit Hit;
 
   private static LaserController instance;
-  public static List<Vector3> points = new List<Vector3>();
+  private static List<Vector3> points = new List<Vector3>();
+  private static List<LineRenderer> lines = new List<LineRenderer>();
 
   void Start() {
+    //line = GetComponent<LineRenderer>();
+    //line.enabled = false;
     instance = this;
   }
 
   public static void AddPosition(Vector3 position, Vector3 direction) {
-    if (firing) return;
+    if (IsFiring) return;
 
     Ray ray = new Ray(position, direction);
     RaycastHit hitInfo;
@@ -48,8 +57,7 @@ public class LaserController : MonoBehaviour {
 
   private static IEnumerator TurnOff() {
     yield return new WaitForSeconds(waitTimeInSeconds);
-    PostRender.DrawOnPostRender -= instance.DrawLines;
-    firing = false;
+    IsFiring = false;
 
     PieceController.UpdateProbes();
 
@@ -58,12 +66,13 @@ public class LaserController : MonoBehaviour {
   }
 
   public static void Fire(Vector3 position, Vector3 direction) {
-    if (firing) return;
+    if (IsFiring) return;
 
     TargetChanged();
     AddPosition(position, direction);
-    PostRender.DrawOnPostRender += instance.DrawLines;
-    firing = true;
+    //line.SetVertexCount(points.Count);
+    //line.SetPositions(points.ToArray());
+    IsFiring = true;
 
     PieceController.UpdateProbes();
 
@@ -71,28 +80,19 @@ public class LaserController : MonoBehaviour {
   }
 
   private static void TargetChanged() {
-    if (firing) {
+    if (IsFiring) {
       instance.StartCoroutine(WaitForOff());
       return;
     }
 
     points.Clear();
+    //line.SetVertexCount(points.Count);
+    //line.SetPositions(points.ToArray());
   }
 
   private static IEnumerator WaitForOff() {
-    while (firing) yield return null;
+    while (IsFiring) yield return null;
 
     TargetChanged();
-  }  
-
-  private void DrawLines() {
-    for (int i = 0; i < LaserController.points.Count - 1; i++) {      
-      GL.Begin(GL.LINES);      
-      material.SetPass(0);
-      GL.Color(material.color);
-      GL.Vertex(LaserController.points[i]);
-      GL.Vertex(LaserController.points[i + 1]);
-      GL.End();
-    }
   }
 }
