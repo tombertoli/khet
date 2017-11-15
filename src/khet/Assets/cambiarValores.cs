@@ -21,7 +21,7 @@ public class cambiarValores : MonoBehaviour {
 			files [i] = files [i].Substring (1, files [i].Length - 5);
 		}
 		dp.AddOptions (new List<string> (files));
-		TemplateManager.SetBoard (text.text);
+		TemplateManager.SetBoard (text.text);	
 	}
 	
 	// Update is called once per frame
