@@ -29,7 +29,6 @@ public class LaserController : MonoBehaviour {
 
   void Start() {
     instance = this;
-    IsFiring = false;
   }
 
   public static void AddPosition(Vector3 position, Vector3 direction) {
