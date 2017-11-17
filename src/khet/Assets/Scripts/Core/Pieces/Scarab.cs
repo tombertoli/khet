@@ -43,18 +43,14 @@ public class Scarab : BasePiece {
 
     if (normal == -transform.forward || normal == transform.forward) {
       normal = Quaternion.AngleAxis(-90, Vector3.up) * normal;
-      point = Quaternion.AngleAxis(-90, Vector3.up) * point;
-
       temp.z = 0;
     } else if (normal == transform.right || normal == -transform.right) {
       normal = Quaternion.AngleAxis(90, Vector3.up) * normal;
-      point = Quaternion.AngleAxis(90, Vector3.up) * point;
-
       temp.x = 0;
     }
 
     normal.y = 0;
-    LaserController.AddPosition(transform.TransformPoint(point), normal);
+    LaserController.AddPosition(transform.TransformPoint(Vector3.zero), normal);
     return false;
   }
 }

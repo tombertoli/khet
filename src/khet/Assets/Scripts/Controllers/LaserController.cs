@@ -3,34 +3,52 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class LaserController : MonoBehaviour {
-  [SerializeField] private Material material;
-
   private static float waitTimeInSeconds = 2;
-  public static bool firing = false;
+  
+  #pragma warning disable 0649
+  [SerializeField] private GameObject prefab;
+  #pragma warning restore 0649
+
+  private static bool isFiring = false;
+  public static bool IsFiring { 
+    get { return isFiring; }
+    private set { 
+      isFiring = value;
+      for (int i = 0; i < lines.Count; i++)
+        if (lines[i] != null)
+          lines[i].enabled = value;
+     }
+  }
 
   public delegate void LaserHit();
   public static event LaserHit Hit;
 
   private static LaserController instance;
-  public static List<Vector3> points = new List<Vector3>();
+  private static Dictionary<LineRenderer, List<Vector3>> positions = new Dictionary<LineRenderer, List<Vector3>>();
+  private static List<LineRenderer> lines = new List<LineRenderer>();
 
   void Start() {
     instance = this;
   }
 
   public static void AddPosition(Vector3 position, Vector3 direction) {
-    if (firing) return;
+    if (IsFiring) return;
+
+    LineRenderer current = GetRenderer();
 
     Ray ray = new Ray(position, direction);
     RaycastHit hitInfo;
 
     Physics.Raycast(ray, out hitInfo, 50);
-    points.Add(ray.origin);
+
+    positions[current].Add(ray.origin);
+    current.SetPosition(0, ray.origin);
 
     Vector3 endPoint = hitInfo.point == Vector3.zero ? ray.GetPoint(50) : hitInfo.point;
 
     if (hitInfo.collider == null) { 
-      points.Add(endPoint);
+      positions[current].Add(ray.origin);
+      current.SetPosition(1, endPoint);
       return;
     }
 
@@ -41,15 +59,15 @@ public class LaserController : MonoBehaviour {
     endPoint = ps.transform.TransformPoint(0, 0, 0);
     endPoint.y = hitY;
 
-    points.Add(endPoint);
+    positions[current].Add(ray.origin);
+    current.SetPosition(1, endPoint);
 
     ps.LaserHit(hitInfo.point, hitInfo.normal);
   }
 
   private static IEnumerator TurnOff() {
     yield return new WaitForSeconds(waitTimeInSeconds);
-    PostRender.DrawOnPostRender -= instance.DrawLines;
-    firing = false;
+    IsFiring = false;
 
     PieceController.UpdateProbes();
 
@@ -58,41 +76,45 @@ public class LaserController : MonoBehaviour {
   }
 
   public static void Fire(Vector3 position, Vector3 direction) {
-    if (firing) return;
+    if (IsFiring) return;
 
     TargetChanged();
     AddPosition(position, direction);
-    PostRender.DrawOnPostRender += instance.DrawLines;
-    firing = true;
+    IsFiring = true;
 
     PieceController.UpdateProbes();
-
     instance.StartCoroutine(TurnOff());
   }
 
   private static void TargetChanged() {
-    if (firing) {
+    if (IsFiring) {
       instance.StartCoroutine(WaitForOff());
       return;
     }
 
-    points.Clear();
+    for (int i = 0; i < lines.Count; i++) 
+      Destroy(lines[i].gameObject);
+
+    lines.Clear();
+    positions.Clear();
   }
 
   private static IEnumerator WaitForOff() {
-    while (firing) yield return null;
+    while (IsFiring) yield return null;
 
     TargetChanged();
-  }  
+  }
 
-  private void DrawLines() {
-    for (int i = 0; i < LaserController.points.Count - 1; i++) {      
-      GL.Begin(GL.LINES);      
-      material.SetPass(0);
-      GL.Color(material.color);
-      GL.Vertex(LaserController.points[i]);
-      GL.Vertex(LaserController.points[i + 1]);
-      GL.End();
-    }
+  private static LineRenderer GetRenderer() {
+    if (lines.Count != 0 && positions[lines[lines.Count - 1]].Count < 2) return lines[lines.Count - 1];
+
+    GameObject lr = Instantiate(instance.prefab) as GameObject;
+    LineRenderer renderer = lr.GetComponent<LineRenderer>();
+    lr.transform.parent = instance.transform;
+
+    lines.Add(renderer);
+    positions.Add(lines[lines.Count - 1], new List<Vector3>());
+
+    return renderer;
   }
 }
