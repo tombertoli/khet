@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-//[RequireComponent(typeof(LineRenderer))]
 public class LaserController : MonoBehaviour {
   private static float waitTimeInSeconds = 2;
   
@@ -111,11 +110,12 @@ public class LaserController : MonoBehaviour {
     if (lines.Count != 0 && positions[lines[lines.Count - 1]].Count < 2) return lines[lines.Count - 1];
 
     GameObject lr = Instantiate(instance.prefab) as GameObject;
+    LineRenderer renderer = lr.GetComponent<LineRenderer>();
     lr.transform.parent = instance.transform;
 
-    lines.Add(lr.GetComponent<LineRenderer>());
+    lines.Add(renderer);
     positions.Add(lines[lines.Count - 1], new List<Vector3>());
 
-    return lr.GetComponent<LineRenderer>();
+    return renderer;
   }
 }

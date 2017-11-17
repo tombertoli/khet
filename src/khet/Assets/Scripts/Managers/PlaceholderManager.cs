@@ -32,7 +32,7 @@ public class PlaceholderManager : MonoBehaviour {
 		HidePlaceholders();
 
 		for (int i = 0; i < positions.Length; i++) {
-			placeholders.Add(Instantiate(prefab, positions [i], piece.Rotation) as GameObject);
+			placeholders.Add(Instantiate(prefab, positions[i], piece.Rotation) as GameObject);
 
 			Movement m = placeholders[placeholders.Count - 1].GetComponentInChildren<Movement>();
 			m.piece = piece;
