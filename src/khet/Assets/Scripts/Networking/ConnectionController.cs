@@ -18,7 +18,6 @@ public class ConnectionController : NetworkManager {
 	}
 
 	public void Disconnect() {
-		Debug.Log ("desconectando" + isHost);
 		if (isHost)
 			StopHost();
 		else

@@ -2,7 +2,7 @@
 
 public class BoardController : MonoBehaviour {
   #pragma warning disable 0649
-  [SerializeField] private GameObject scarab, pyramid, sphynx, pharaoh, anubis, piecePrefab, underlinePrefab;
+  [SerializeField] private GameObject scarab, pyramid, sphynx, pharaoh, anubis, defaultPiece, underlinePrefab;
   [SerializeField] private Transform pieceTransform, underlineTransform;
   #pragma warning restore 0649
 
@@ -11,7 +11,7 @@ public class BoardController : MonoBehaviour {
   
 	void Start() {
     TurnManager.Reset();
-    CurrentBoard = TemplateManager.CurrentLoadedBoard; //BoardTemplates.LoadClassic();
+    CurrentBoard = TemplateManager.CurrentLoadedBoard;
 
     silverDead = transform.FindChild("SilverDead");
     redDead = transform.FindChild("RedDead");
@@ -30,7 +30,7 @@ public class BoardController : MonoBehaviour {
   private void SetPiece(IPiece piece) {
     if (piece.Type == PieceTypes.Empty) return;
     
-    if (piece == null) throw new UnityException("Invalid board");
+    if (piece == null) Debug.LogError("Invalid board");
 
     Vector3 position = new Vector3(
                           piece.Position.x + pieceTransform.position.x,
@@ -64,7 +64,7 @@ public class BoardController : MonoBehaviour {
       case PieceTypes.Sphynx:
         return sphynx;
       default:
-        return piecePrefab;
+        return defaultPiece;
     }
   } 
 

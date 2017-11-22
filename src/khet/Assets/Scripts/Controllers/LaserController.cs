@@ -92,8 +92,14 @@ public class LaserController : MonoBehaviour {
       return;
     }
 
-    for (int i = 0; i < lines.Count; i++) 
+    for (int i = 0; i < lines.Count; i++) {
+      if (lines[i] == null) {
+        lines.Remove(lines[i]);
+        continue; 
+      }
+      
       Destroy(lines[i].gameObject);
+    }
 
     lines.Clear();
     positions.Clear();

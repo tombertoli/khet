@@ -44,26 +44,7 @@ Shader "Outline" {
 	SubShader {
 		Tags { "RenderType"="Opaque" }
 		UsePass "Toon/Basic/BASE"
-		/*Pass {
-			Name "OUTLINE"
-			Tags { "LightMode" = "Always" }
-			Cull Front
-			ZWrite On
-			ColorMask RGB
-			Blend SrcAlpha OneMinusSrcAlpha
-
-			CGPROGRAM
-			#pragma vertex vert
-			#pragma fragment frag
-			#pragma multi_compile_fog
-			fixed4 frag(v2f i) : SV_Target
-			{
-				UNITY_APPLY_FOG(i.fogCoord, i.color);
-				return i.color;
-			}
-			ENDCG
-		}*/
-
+		
 		Pass {
 			Name "OUTLINE"
 			Tags { "LightMode" = "Always" }

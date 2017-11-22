@@ -17,7 +17,7 @@ public class Board {
     this.height = board.GetLength(1);
 
     foreach (IPiece gp in this.pieces) {
-      if (gp == null) throw new UnityException("Incomplete board");
+      if (gp == null) Debug.LogError("Incomplete board");
 
       gp.Board = this;
     }
@@ -85,19 +85,6 @@ public class Board {
   public IPiece GetPieceAt(Point point) {
     return pieces[point.x, point.y];
   }
-
-  /*public Point GetPositionFrom(IGamePiece piece) {
-    for (int i = 0; i < pieces.GetLength(0); i++) {
-      for (int j = 0; j < pieces.GetLength(1); j++) {
-        if (pieces[i, j] == piece) {
-          Debug.Log(pieces[i, j]);
-          return new Point(i, j);                 
-        }
-      }
-    }
-
-    return new Point(-1, -1);
-  }*/
 
   public Underline GetUnderline(int x, int y) {
     return GetUnderline(new Point(x, y));

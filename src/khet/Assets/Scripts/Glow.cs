@@ -65,16 +65,8 @@ public class Glow : MonoBehaviour {
   }
 
   public static void SetRange(bool setTo, Glow[] gos) {
-    for (int i = 0; i < gos.Length; i++) {
-      //Glow glow = gos[i].GetComponentInChildren<Glow>();
-
-      /*if (glow == null) {
-        Debug.Log("nulleadisimo; que carajo pasa?");
-        continue;
-      }*/
-
+    for (int i = 0; i < gos.Length; i++)
       gos[i].SetOutline(setTo);
-    }
   }
   
   public void SetOutline(bool state) {
