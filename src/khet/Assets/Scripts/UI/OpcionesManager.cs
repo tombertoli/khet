@@ -19,15 +19,6 @@ public class OpcionesManager : MonoBehaviour
 		Debug.Log ("Controles = " + controles);
 
 		DontDestroyOnLoad (gameObject);
-		if (!musica) {
-			bmusica.GetComponent<Musica> ().EmpezoFalse ();	
-		}
-		if (!sonido) {
-			bsonido.GetComponent<Sonido> ().EmpezoFalse ();	
-		}		
-		if (!controles) {
-			bcontroles.GetComponent<Controles> ().EmpezoFalse ();	
-		}
 	}
   
 	public void CallMusica(bool opcionSeleccionada)

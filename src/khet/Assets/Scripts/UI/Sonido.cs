@@ -3,22 +3,28 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class Sonido : MonoBehaviour {
-	bool i = true;
+	[SerializeField] private AudioSource audioSource;
+
+	void Start() {
+		if (audioSource.mute) {
+			gameObject.GetComponentInChildren<Text> ().text = "Sonido: OFF";
+		} else {
+			gameObject.GetComponentInChildren<Text> ().text = "Sonido: ON";
+		}	
+	}
 
 	public void CambiarSonido()
 	{
-		if (i) {
+		if (!audioSource.mute) {
 			gameObject.GetComponentInChildren<Text> ().text = "Sonido: OFF";
-			i = false;
+			Debug.Log("false");
+			audioSource.mute = false;
 		} else {
 			gameObject.GetComponentInChildren<Text> ().text = "Sonido: ON";
-			i = true;
+			audioSource.mute = true;
+			Debug.Log(true);
 		}
-	}
 
-	public void EmpezoFalse()
-	{
-		i = false;
-		gameObject.GetComponentInChildren<Text> ().text = "Sonido: OFF";
+		SonidoToggle.Enabled = audioSource.mute;
 	}
 }

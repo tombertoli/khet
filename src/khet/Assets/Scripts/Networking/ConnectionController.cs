@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -18,6 +19,9 @@ public class ConnectionController : NetworkManager {
 	}
 
 	public void Disconnect() {
+		if (SceneManager.GetActiveScene().buildIndex != 4 || SceneManager.GetActiveScene().buildIndex != 1)
+			return;
+			
 		if (isHost)
 			StopHost();
 		else
