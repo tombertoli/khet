@@ -14,6 +14,20 @@ public class TextManager : MonoBehaviour {
 	}
 
 	public static void EndGame(PieceColor won) {
+		PieceController[] controllers = GameObject.FindObjectsOfType<PieceController>();
+
+		for (int i = 0; i < controllers.Length; i++) {
+		 	Glow glow = controllers[i].gameObject.GetComponent<Glow>();
+			PlaceholderManager pcm = controllers[i].transform.parent.GetComponent<PlaceholderManager>();
+
+			Destroy(glow);
+
+			if (pcm != null)
+				Destroy(pcm);
+
+			Destroy(controllers[i]);
+		}
+
 		string color = won == PieceColor.Red ? "Rojo" : "Gris";
 		instance.winText.text = "¡" + color + instance.winText.text;
 
