@@ -64,7 +64,7 @@ public class NetworkController : NetworkBehaviour {
 			return;
 		}
 
-		if (Network.connections.Length >= 2) return; 
+		if (NetworkServer.connections.Count > 2 || NetworkServer.connections.Count < 1) return;
 		
 		// TODO: UI.PlayerLeave
 		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
