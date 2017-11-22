@@ -12,6 +12,7 @@ public class BoardController : MonoBehaviour {
 	void Start() {
     TurnManager.Reset();
     CurrentBoard = TemplateManager.CurrentLoadedBoard;
+    if (CurrentBoard == null) Debug.LogError("No board");
 
     silverDead = transform.FindChild("SilverDead");
     redDead = transform.FindChild("RedDead");
