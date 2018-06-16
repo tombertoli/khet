@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Instrucciones Khet</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--<script src="main.js"></script>-->
+</head>
+
+<body>
+  <style>
+    * {
+      font-family: "Arial";
+      color: #b8b8b8;
+    }
+
+    #piezas,
+    #como-jugar {
+      border: #ab4642 solid 3px;
+      border-radius: 5px;
+      padding-left: 1em;
+    }
+
+    h2 {
+      border-bottom: #ab4642 3px solid;
+      padding-bottom: 1em;
+    }
+
+    body {
+      background-color: #181818;
+    }
+
+    .subtitle {
+      font-size: 14pt;
+      font-weight: bold;
+    }
+
+    img {
+      float: left;
+      width: 50%;
+    }
+
+    #board {
+      width: 50%;
+    }
+
+    .horizontal:before,
+    .horizontal:after,
+    #piezas:before,
+    #piezas:after {
+      content: " ";
+      display: table;
+    }
+
+    .horizontal:after, #piezas:after {
+      clear: both;
+    }
+
+    .text {
+      width: 49%;
+      float: right;
+    }
+    
+    .pieza {
+      width:49%;
+    }
+
+    /*# sourceMappingURL=style.css.map */
+  </style>
+  <h1>Manual de Instrucciones: Khet</h1>
+
+  <h3>
+    Khet es un juego en el cual hay dos equipos (rojo y gris) cada uno con sus propias piezas: una pieza laser, algunas reflejantes
+    y otras con habilidades especiales. Todo sucede sobre un tablero. Con el objetivo de eliminar a la pieza principal del
+    enemigo, el Fara&oacute;n, el jugador deber&aacute; mover sus piezas de tal modo que su laser elimine una pieza enemiga
+    al ser disparado.
+  </h3>
+
+  <div id="como-jugar">
+    <h2>C&oacute;mo Jugar</h2>
+    <br>
+    <div class="horizontal">
+      <img src="Board.png" alt="tablero" id="board">
+
+      <div class="text" style="float: right !important;">
+        Objetivo: Eliminar al Fara&oacute;n enemigo!
+        <br> El jugador con las piezas grises empieza el juego.
+
+        <br>
+        <br> En su turno, el jugador puede hacer 1 de 3 cosas:
+        <ol>
+          <li>Mover una pieza</li>
+          <li>Rotar, con las teclas 'R' o 'Y', cualquiera de sus piezas (incluyendo la Esfinge)</li>
+          <li>Intercambiar lugares con uno de sus Escarabajos</li>
+        </ol>
+
+        <br> Una vez realizado el movimiento, el laser se dispara, reflejando en todos los espejos que haya en su camino y eliminando
+        la pieza que sea tocada en una zona vulnerable.
+        <br> Cuidado, tu propio laser puede eliminar a tus piezas!
+      </div>
+    </div>
+
+    <br>
+  </div>
+
+  <br>
+
+  <div id="piezas">
+    <h2>Piezas</h2>
+
+    <div class="horizontal">
+      <div class="pieza" style="float: left;">
+        <div class="subtitle">
+          Fara&oacute;n
+        </div>
+        <br>
+
+        <div class="horizontal">
+          <img src="Pharaoh.png" alt="v-faraon">
+          <div class="text">
+            Es la pieza m&aacute;s importante del juego, si tu Fara&oacute;n es eliminado, perd&eacute;s! No refleja, es vulnerable de
+            todos lados.
+          </div>
+        </div>
+      </div>
+
+      <div class="pieza" style="float: right;">
+        <div class="subtitle">
+          Pir&aacute;mide
+        </div>
+        <br>
+
+        <img src="Pyramid.png" alt="v-piramide">
+        <div class="text">
+          Tiene dos lados vulnerables y dos lados reflejantes. Es de las m&aacute;s comunes.
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="horizontal">
+      <div class="pieza" style="float: left;">
+        <div class="subtitle">
+          Esfinge
+        </div>
+        <br>
+
+        <img src="Sphynx.png" alt="v-esfinge">
+        <div class="text">
+          De esta pieza se dispara tu laser! Aunque no se puede mover de lugar, se puede rotar. Esta pieza es invencible.
+        </div>
+      </div>
+
+      <br>
+      <br>
+
+      <div class="pieza" style="float: right;">
+        <div class="subtitle">
+          Escarabajo
+        </div>
+        <br> 
+        
+        <img src="Scarab.png" alt="v-scarab">
+        <div class="text">
+          El Escarabajo tiene una habilidad &uacute;nica: puede cambiar de lugar con otras piezas que no sean escarabajos,
+          pueden ser del mismo equipo o del equipo contrario. Es invencible.
+        </div>
+      </div>
+    </div>
+
+    <br>
+    <br>
+
+    <div class="horizontal pieza">
+      <div class="subtitle">
+        Anubis
+      </div>
+      <br>
+      
+      <img src="Anubis.png" alt="v-anubis">
+      <div class="text">
+        El Anubis es especial porque ninguno de sus lados refleja y, si le pega el laser de frente, absorbe el laser. Cuidado,
+        es muy vulnerable!
+      </div>
+      
+    </div>
+    <br>
+    <br>
+  </div>
+</body>
