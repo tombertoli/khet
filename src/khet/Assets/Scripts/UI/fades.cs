@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class fades : MonoBehaviour
 {
-    [SerializeField] ConnectionController controller;
-
     float timeOfTravelColor, currentTimeColor, normalizedValueColor;
     public GameObject host, jugar, jugadores, jugarText, jugadoresText;
     public GameObject conectar, ip, conectarText, ipText, hostearText;

@@ -9,12 +9,12 @@ public class Jugar : MonoBehaviour {
   private AudioSource audioSource;
 
   RectTransform rectTransform;
-  Vector2 startingPosition = new Vector2(0.411f, 0.5693408f);
-  Vector2 endPosition = new Vector2(0.22f, 0.5693408f);
+  Vector2 startingPosition;// = new Vector2(0.411f, 0.5693408f);
+  Vector2 endPosition;// = new Vector2(0.22f, 0.5693408f);
   float timeOfTravel = 1, timeOfTravelColor = 0.5f; //time after object reach a target place 
   float currentTime = 0, currentTimeColor = 0; // actual floting time 
   float normalizedValue, normalizedValueColor;
-  public GameObject instru, opcion, creditos;
+  public GameObject instru, creditos;
   public GameObject local, lan, localText, lanText;
   bool clickeoBotonDeJugar = false, clickeoBotonDeOpciones = false;
   bool terminoFadeInOpciones = false;
@@ -25,8 +25,17 @@ public class Jugar : MonoBehaviour {
     rectTransform = gameObject.GetComponent<RectTransform>();
     audioSource = Camera.main.GetComponent<AudioSource>();
 
+    startingPosition = rectTransform.anchorMin;
+    endPosition = new Vector2(rectTransform.anchorMin.x - .191f, rectTransform.anchorMin.y);
+
     local.SetActive(false);
     lan.SetActive(false);
+
+    GameObject go = GameObject.FindGameObjectWithTag("NetworkManager");
+    if (go != null) {
+      print("Destroying Network Manager");
+      Destroy(go);
+    }
   }
 
   void MostrarModos()
@@ -35,21 +44,17 @@ public class Jugar : MonoBehaviour {
     {
       if (terminoFadeInOpciones)
       {
-        opcion.GetComponent<Opciones>().CallFadeOut();
         clickeoBotonDeJugar = true;
         clickeoBotonDeOpciones = false;
         terminoFadeInOpciones = false;
-        opcion.GetComponent<Opciones>().CallJugarClickeado();
       }
     }
     else
     if (!clickeoBotonDeJugar)
     {
       clickeoBotonDeJugar = true;
-      opcion.GetComponent<Opciones>().CallJugarClickeado();
       StartCoroutine(Mover());
       instru.GetComponent<Instrucciones>().OLA();
-      opcion.GetComponent<Opciones>().OLA();
       creditos.GetComponent<Creditos>().OLA();
     }
   }
@@ -143,7 +148,6 @@ public class Jugar : MonoBehaviour {
     }
 
     puedeFadearOut = true;
-    opcion.GetComponent<Opciones>().CallPuedeTocarBoton();
     //Debug.Log("Termino Fade-In Jugar");
   }
 
@@ -183,6 +187,5 @@ public class Jugar : MonoBehaviour {
     local.SetActive(false);
     lan.SetActive(false);
     //Debug.Log("Termino Fade-Out Jugar");
-    opcion.GetComponent<Opciones>().CallFadeIn();
   }
 }

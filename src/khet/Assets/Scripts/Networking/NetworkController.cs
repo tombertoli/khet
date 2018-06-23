@@ -11,7 +11,7 @@ public class NetworkController : NetworkBehaviour {
 	private static short index = 0;
 	
 	[SyncVar] 
-	private PieceColor color;
+	public PieceColor color;
 
   [SyncVar]
   private bool allPlayersConnected = false;
@@ -19,7 +19,9 @@ public class NetworkController : NetworkBehaviour {
 	private bool sentByLocal = false;
 
 	void OnDestroy() {
-		if (NetworkServer.connections.Count > 2 || NetworkServer.connections.Count < 1) return;
+		print("destroying player");
+		index--;
+		if (NetworkServer.connections.Count > 2 || NetworkServer.connections.Count <= 1) return;
 
 		sentByLocal = true;
 		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
@@ -66,7 +68,6 @@ public class NetworkController : NetworkBehaviour {
 
 		if (NetworkServer.connections.Count > 2 || NetworkServer.connections.Count < 1) return;
 		
-		// TODO: UI.PlayerLeave
 		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
 	}
 

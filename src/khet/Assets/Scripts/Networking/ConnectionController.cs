@@ -7,24 +7,65 @@ using System.Collections.Generic;
 
 public class ConnectionController : NetworkManager {
 	private bool isHost = false;
+	private static bool started = false;
+
+	/*private void Start() {
+		var asd = GameObject.FindObjectsOfType<ConnectionController>();
+		int i = 0;
+		for (; i < asd.Length; i++) {
+			if (asd[i] != this) break;
+		}
+
+		if (started) Destroy(asd[i]);
+		else started = true;
+	}*/
 
 	public void Host() {
-		StartHost ();
+		NetworkServer.Reset();
+		NetworkManager.singleton.StartHost();
 		isHost = true;
 	}
 
 	public void Connect(string ip) {
-		StartClient();
-		client.Connect(ip, 7777);
+		SetIPAddress(ip);
+		SetPort();
+		NetworkManager.singleton.StartClient();
 	}
 
-	public void Disconnect() {
-		if (SceneManager.GetActiveScene().buildIndex != 4 || SceneManager.GetActiveScene().buildIndex != 1)
-			return;
-			
-		if (isHost)
-			StopHost();
-		else
-			client.Disconnect();
+	void SetIPAddress(string ip)
+	{
+		NetworkManager.singleton.networkAddress = ip;
+	}
+
+	void SetPort()
+	{
+		NetworkManager.singleton.networkPort = 7777;
+	}
+
+	/*public void Disconnect() {			
+		if (isHost) {
+			NetworkManager.singleton.StopHost();
+			//NetworkServer.Reset();
+		} else
+			NetworkManager.singleton.client.Disconnect();
+	}*/
+	public override void OnServerDisconnect(NetworkConnection conn) {
+		base.OnServerDisconnect(conn);
+		print(conn + " disconnected");
+	}
+ 
+	public override void OnServerAddPlayer (NetworkConnection conn, short playerControllerId) { 
+		GameObject player;
+
+		player = (GameObject)Object.Instantiate(this.playerPrefab, Vector3.zero, Quaternion.identity);
+		NetworkServer.AddPlayerForConnection(conn, player, playerControllerId);
+	}
+
+	public override void OnClientSceneChanged(NetworkConnection conn) {
+		ClientScene.AddPlayer(conn, 0);
+	}
+
+	public override void OnClientConnect(NetworkConnection conn) {
+		//base.OnClientConnect(conn);
 	}
 }

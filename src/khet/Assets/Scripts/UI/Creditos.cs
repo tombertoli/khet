@@ -7,8 +7,8 @@ using UnityEngine.SceneManagement;
 public class Creditos : MonoBehaviour
 {
   RectTransform rectTransform;
-  Vector2 startingPosition = new Vector2(0.411f, 0.2838527f);
-  Vector2 endPosition = new Vector2(0.22f, 0.2838527f);
+  Vector2 startingPosition;
+  Vector2 endPosition;
   float timeOfTravel = 1; //time after object reach a target place 
   float currentTime = 0; // actual time 
   float normalizedValue;
@@ -16,6 +16,9 @@ public class Creditos : MonoBehaviour
   void Start()
   {
     rectTransform = gameObject.GetComponent<RectTransform>();
+
+    startingPosition = rectTransform.anchorMin;
+    endPosition = new Vector2(rectTransform.anchorMin.x - .191f, rectTransform.anchorMin.y);
   }
 
   public void abrirCreditos()

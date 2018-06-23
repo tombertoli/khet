@@ -8,6 +8,8 @@ public class Conectar : MonoBehaviour {
 	[SerializeField] private ConnectionController controller;
 
 	public void OnClick() {
+		if (controller == null) controller = GameObject.FindObjectOfType<ConnectionController>();
+
     if (!IsValidIP(text.text) && text.text != "localhost") {
 			Debug.Log("invalid ip");
 			return;

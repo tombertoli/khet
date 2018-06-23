@@ -8,8 +8,8 @@ using UnityEngine.UI;
 public class Instrucciones : MonoBehaviour 
 {
 	RectTransform rectTransform;
-	Vector2 startingPosition = new Vector2 (0.411f, 0.4731066f); 
-	Vector2 endPosition = new Vector2(0.22f, 0.4731066f);
+	Vector2 startingPosition;// = new Vector2 (0.411f, 0.4731066f); 
+	Vector2 endPosition;// = new Vector2(0.22f, 0.4731066f);
 	float timeOfTravel=1; //time after object reach a target place 
 	float currentTime=0; // actual floting time 
 	float normalizedValue;
@@ -20,6 +20,8 @@ public class Instrucciones : MonoBehaviour
 	void Start()
 	{
 		rectTransform = gameObject.GetComponent<RectTransform> ();
+		startingPosition = rectTransform.anchorMin;
+    endPosition = new Vector2(rectTransform.anchorMin.x - .191f, rectTransform.anchorMin.y);
 
 		CheckFiles();
 	}

@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using UnityEngine.SceneManagement;
 
 public class volver : MonoBehaviour {
 	public void Clickea1000()
 	{
-		if (SceneManager.GetActiveScene().buildIndex != 4 || SceneManager.GetActiveScene().buildIndex != 1) {
-			SceneManager.LoadScene ("MainMenu");
+		if (SceneManager.GetActiveScene().buildIndex != 1) {
+			SceneManager.LoadScene("MainMenu");
 			return;
 		}
 
-		if (!TurnManager.IsLocalGame)
-			GameObject.FindGameObjectWithTag("NetworkManager").GetComponent<ConnectionController>().Disconnect();
+		if (TurnManager.IsLocalGame) return; 
+		
+		NetworkManager.singleton.StopHost();//GameObject.FindGameObjectWithTag("NetworkManager").GetComponent<ConnectionController>().Disconnect();
+		NetworkManager.Shutdown();
 
-		SceneManager.LoadScene ("MainMenu");
+		//SceneManager.LoadScene ("MainMenu");
 	}
 }
