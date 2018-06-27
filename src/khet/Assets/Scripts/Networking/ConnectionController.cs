@@ -29,6 +29,7 @@ public class ConnectionController : NetworkManager {
 	public void Connect(string ip) {
 		SetIPAddress(ip);
 		SetPort();
+        NetworkServer.Reset();
 		NetworkManager.singleton.StartClient();
 	}
 
@@ -42,13 +43,10 @@ public class ConnectionController : NetworkManager {
 		NetworkManager.singleton.networkPort = 7777;
 	}
 
-	/*public void Disconnect() {			
-		if (isHost) {
-			NetworkManager.singleton.StopHost();
-			//NetworkServer.Reset();
-		} else
-			NetworkManager.singleton.client.Disconnect();
-	}*/
+	public void Disconnect() {
+        NetworkController.PlayerLeft();
+		NetworkManager.singleton.StopHost();
+	}
 	public override void OnServerDisconnect(NetworkConnection conn) {
 		base.OnServerDisconnect(conn);
 		print(conn + " disconnected");

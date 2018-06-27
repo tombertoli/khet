@@ -24,7 +24,7 @@ public class NetworkController : NetworkBehaviour {
 		if (NetworkServer.connections.Count > 2 || NetworkServer.connections.Count <= 1) return;
 
 		sentByLocal = true;
-		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
+        EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
 	}
 
 	public override void OnStartLocalPlayer() {
@@ -33,6 +33,7 @@ public class NetworkController : NetworkBehaviour {
 		instance = this;
 		CmdPlayerReady();
 	}
+
 
 	#region RPCs
 
@@ -66,7 +67,7 @@ public class NetworkController : NetworkBehaviour {
 			return;
 		}
 
-		if (NetworkServer.connections.Count > 2 || NetworkServer.connections.Count < 1) return;
+		if (NetworkServer.connections.Count < 1) return;
 		
 		EndGame(PieceColor.Red == color ? PieceColor.Silver : PieceColor.Red);
 	}
@@ -109,11 +110,11 @@ public class NetworkController : NetworkBehaviour {
 	}
 
 	[Command]
-	private void CmdPlayerReady() {		
-    color = colors[Mathf.Clamp(index, 0, 2)];
-    index++;
+	private void CmdPlayerReady() {
+        color = colors[Mathf.Clamp(index, 0, 2)];
+        index++;
 
-    if (NetworkServer.connections.Count == 2)
+    if (NetworkServer.connections.Count >= 2)
       RpcSetAllReady();
 	}
 
@@ -139,6 +140,13 @@ public class NetworkController : NetworkBehaviour {
 		instance.sentByLocal = sentByLocal;
 		instance.CmdRotatePiece(position, rotation);
 	}
+
+    public static void PlayerLeft()
+    {
+        if (instance == null) return;
+
+        instance.CmdPlayerLeft();
+    }
 
 	public static void EndGame(PieceColor won) {
 		if (instance == null) return;

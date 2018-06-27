@@ -6,15 +6,19 @@ using UnityEngine.SceneManagement;
 public class volver : MonoBehaviour {
 	public void Clickea1000()
 	{
-		if (SceneManager.GetActiveScene().buildIndex != 1) {
+		if (SceneManager.GetActiveScene().buildIndex != 1 && SceneManager.GetActiveScene().buildIndex != 2) {
 			SceneManager.LoadScene("MainMenu");
 			return;
 		}
 
-		if (TurnManager.IsLocalGame) return; 
-		
-		NetworkManager.singleton.StopHost();//GameObject.FindGameObjectWithTag("NetworkManager").GetComponent<ConnectionController>().Disconnect();
-		NetworkManager.Shutdown();
+        if (TurnManager.IsLocalGame) {
+            SceneManager.LoadScene("MainMenu");
+            return;
+        }
+
+        var go = GameObject.FindObjectOfType<ConnectionController>();
+        if (go == null) return;
+        go.Disconnect();
 
 		//SceneManager.LoadScene ("MainMenu");
 	}
